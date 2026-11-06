@@ -1,5 +1,7 @@
 """Cloud-only RootHide build policy, parsed as JSON (valid YAML)."""
+import ast
 import json
+import shlex
 from pathlib import Path
 import unittest
 
@@ -37,6 +39,24 @@ class CloudBuildPolicyTests(unittest.TestCase):
         runs = "\n".join(step.get("run", "") for step in workflow["jobs"]["build"]["steps"])
         self.assertIn("reconstructed/Sources/GLTUnlocks.m", runs)
         self.assertIn("GLINT_UNLOCKS_HOST_PASS", runs)
+
+    def test_every_embedded_python_command_is_valid_python(self):
+        workflow = json.loads((ROOT / ".github/workflows/roothide.yml").read_text())
+        snippets = []
+        errors = []
+        for step in workflow["jobs"]["build"]["steps"]:
+            tokens = shlex.split(step.get("run", ""), comments=True)
+            for index in range(2, len(tokens) - 1):
+                if tokens[index-2:index+1] != ["python3", "-B", "-c"]:
+                    continue
+                snippet = tokens[index + 1]
+                snippets.append(snippet)
+                try:
+                    ast.parse(snippet, filename=step["name"])
+                except SyntaxError as error:
+                    errors.append((step["name"], error.msg))
+        self.assertEqual(errors, [], "shell syntax alone does not validate nested Python")
+        self.assertEqual(len(snippets), 3, "all workflow inline Python owners must be checked")
 
 
 if __name__ == "__main__":
