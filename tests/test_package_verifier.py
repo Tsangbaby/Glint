@@ -1,6 +1,8 @@
 """Archive-boundary negative control, not a synthesized build artifact."""
 from pathlib import Path
 import importlib.util
+import collections
+import re
 import io
 import sys
 import tarfile
@@ -10,6 +12,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class PackageVerifierTests(unittest.TestCase):
+    def test_control_does_not_duplicate_theos_generated_installed_size(self):
+        source = (ROOT / "reconstructed/control").read_text()
+        # The pinned Theos deb.mk appends this derived field unconditionally.
+        generated = source.rstrip() + "\nInstalled-Size: 0\n"
+        keys = re.findall(r"^([A-Za-z][A-Za-z0-9-]*):", generated, re.M)
+        counts = collections.Counter(key.lower() for key in keys)
+        self.assertEqual({key: count for key, count in counts.items() if count > 1}, {})
+        self.assertEqual(counts["installed-size"], 1)
+        self.assertNotRegex(source, r"(?im)^Installed-Size:")
+
     def test_payload_parser_rejects_escaping_archive_members(self):
         script = ROOT / "tools/verify_package.py"
         self.assertTrue(script.is_file(), "missing independent package verifier")
