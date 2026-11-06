@@ -176,6 +176,54 @@ class CompileReadinessTests(unittest.TestCase):
                 )
                 self.assertEqual(formats, expected, "timer format must match long long without losing zero padding")
 
+    def test_controller_has_no_orphan_platter_inset_constant(self):
+        self.assertNotIn("kGLTPlatterTopInset", read("Sources/GLTController.m"))
+
+    def test_eventkit_full_access_is_guarded_for_older_ios(self):
+        text = read("Sources/GLTEvents.m")
+        for method in ("hasCalendarAccess", "hasRemindersAccess"):
+            with self.subTest(method=method):
+                match = re.search(r'- \(BOOL\)' + method + r' \{(.*?)\n\}', text, re.S)
+                self.assertIsNotNone(match)
+                assert match is not None
+                body = match[1]
+                self.assertEqual(body.count("EKAuthorizationStatusFullAccess"), 1)
+                self.assertRegex(
+                    body,
+                    r'if \(@available\(iOS 17\.0, \*\)\) \{[^}]*'
+                    r'EKAuthorizationStatusFullAccess[^}]*\}\s*'
+                    r'return status == EKAuthorizationStatusAuthorized;',
+                )
+
+    def test_pill_inherits_init_without_unimplemented_redeclaration(self):
+        self.assertNotIn("- (instancetype)init;", read("Headers/GLTPillContent.h"))
+        source = read("Sources/GLTPillContent.m")
+        self.assertIn("[GLTPillContent new]", source)
+        self.assertNotRegex(source, r"-\s*\(instancetype\)\s*init\s*\{")
+
+    def test_compose_result_uses_the_system_enum_in_both_declarations(self):
+        header = read("Headers/GLTComposePlatterView.h")
+        self.assertIn("#import <MessageUI/MessageUI.h>", header)
+        self.assertIn("didFinishWithResult:(MessageComposeResult)", header)
+        self.assertNotIn("didFinishWithResult:(NSInteger)", header)
+        self.assertIn("didFinishWithResult:(MessageComposeResult)", read("Sources/GLTInteractivePlatters.m"))
+
+    def test_recipient_write_helpers_are_excluded_from_verification_build(self):
+        source = read("Sources/GLTModels.m")
+        recent = source.split("#pragma mark - Recent recipients", 1)[1].split("#pragma mark - iMessage", 1)[0]
+        self.assertRegex(recent, r"#if !GLINT_VERIFICATION_BUILD\s+static NSArray")
+        self.assertIn("GLTRecentRecipients(void)", recent)
+        self.assertIn("GLTRememberRecipient(GLTRecipient *recipient)", recent)
+        self.assertTrue(recent.rstrip().endswith("#endif"))
+        sending = source.split("BOOL GLTSendMessage", 1)[1]
+        self.assertRegex(sending, r"#if GLINT_VERIFICATION_BUILD\s+return NO;")
+
+    def test_weather_resumes_the_data_task_with_an_explicit_message(self):
+        source = read("Sources/GLTWeather.m")
+        self.assertNotIn("}].resume;", source)
+        self.assertIn("[[[NSURLSession sharedSession] dataTaskWithURL:", source)
+        self.assertIn("}] resume];", source)
+
     def test_native_replacement_needs_an_attached_overlay_scene(self):
         text = read("Sources/GLTController.m")
         guard = text.split("- (BOOL)canPresentOverlay {", 1)[1].split("- (UIView *)visibleClock", 1)[0]

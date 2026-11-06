@@ -266,6 +266,7 @@ NSArray<GLTRecipient *> *GLTSearchRecipients(NSString *query) {
 
 // Kept in the tweak's own defaults domain so the card can suggest the last few
 // people without touching the contacts database.
+#if !GLINT_VERIFICATION_BUILD
 static NSArray<NSDictionary *> *GLTRecentRecipients(void) {
     CFPropertyListRef stored = CFPreferencesCopyAppValue(CFSTR("recipients"),
                                                          CFSTR("com.antonym.glint.recents"));
@@ -289,6 +290,7 @@ static void GLTRememberRecipient(GLTRecipient *recipient) {
                              CFSTR("com.antonym.glint.recents"));
     CFPreferencesAppSynchronize(CFSTR("com.antonym.glint.recents"));
 }
+#endif
 
 #pragma mark - iMessage
 

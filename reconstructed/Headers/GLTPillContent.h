@@ -29,7 +29,6 @@
 + (GLTPillContent *)contentWithSymbol:(NSString *)arg1 text:(NSString *)arg2;
 
 #pragma mark - instance methods
-- (instancetype)init;
 - (NSAttributedString *)attributedStringWithFont:(UIFont *)arg1 color:(UIColor *)arg2;
 
 @end

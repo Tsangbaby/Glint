@@ -143,7 +143,7 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
     NSString *url = [NSString stringWithFormat:kGLTForecastURL,
                      location.coordinate.latitude, location.coordinate.longitude];
 
-    [[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:url]
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:url]
                                  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error || !data) {
             [self failWithProblem:@"The weather isn't available right now."];
@@ -160,7 +160,7 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self applyForecast:payload place:place];
         });
-    }].resume;
+    }] resume];
 }
 
 #pragma mark - Parsing

@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <MessageUI/MessageUI.h>
 
 #import "GLTPlatterContent.h"
 
@@ -38,6 +39,6 @@
 - (void)showStatus:(NSString *)arg1;
 - (void)send;
 - (void)composeWithApple:(BOOL)arg1 text:(NSString *)arg2;
-- (void)messageComposeViewController:(MFMessageComposeViewController *)arg1 didFinishWithResult:(NSInteger)arg2;
+- (void)messageComposeViewController:(MFMessageComposeViewController *)arg1 didFinishWithResult:(MessageComposeResult)arg2;
 
 @end

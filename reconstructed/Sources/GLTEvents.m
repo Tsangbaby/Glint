@@ -62,12 +62,18 @@ static const NSTimeInterval kGLTLookahead = 2 * 24 * 60 * 60;
 
 - (BOOL)hasCalendarAccess {
     EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
-    return status == EKAuthorizationStatusAuthorized || status == EKAuthorizationStatusFullAccess;
+    if (@available(iOS 17.0, *)) {
+        return status == EKAuthorizationStatusAuthorized || status == EKAuthorizationStatusFullAccess;
+    }
+    return status == EKAuthorizationStatusAuthorized;
 }
 
 - (BOOL)hasRemindersAccess {
     EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:EKEntityTypeReminder];
-    return status == EKAuthorizationStatusAuthorized || status == EKAuthorizationStatusFullAccess;
+    if (@available(iOS 17.0, *)) {
+        return status == EKAuthorizationStatusAuthorized || status == EKAuthorizationStatusFullAccess;
+    }
+    return status == EKAuthorizationStatusAuthorized;
 }
 
 #pragma mark - Snapshot

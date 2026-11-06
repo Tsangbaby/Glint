@@ -40,6 +40,17 @@ class CloudBuildPolicyTests(unittest.TestCase):
         self.assertIn("reconstructed/Sources/GLTUnlocks.m", runs)
         self.assertIn("GLINT_UNLOCKS_HOST_PASS", runs)
 
+    def test_package_build_collects_independent_errors_without_hiding_failure(self):
+        workflow = json.loads((ROOT / ".github/workflows/roothide.yml").read_text())
+        step = next(item for item in workflow["jobs"]["build"]["steps"]
+                    if item["name"] == "Compile sign and retain original RootHide deb")
+        commands = [shlex.split(line) for line in step["run"].splitlines()
+                    if line.strip().startswith("make ") and " package " in line]
+        self.assertEqual(len(commands), 1)
+        self.assertIn("-k", commands[0], "collect errors across independent targets in the same authorized build")
+        self.assertNotIn("-i", commands[0], "do not ignore compiler errors")
+        self.assertIn("set -euo pipefail", step["run"], "make failure must remain a failed workflow")
+
     def test_every_embedded_python_command_is_valid_python(self):
         workflow = json.loads((ROOT / ".github/workflows/roothide.yml").read_text())
         snippets = []

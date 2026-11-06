@@ -23,7 +23,6 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 
 // The status-bar time slot is ~9pt wide per character; the touch target is
 // padded beyond the pill so it stays comfortable.
-static const CGFloat kGLTPlatterTopInset = 22;
 static const CGFloat kGLTPlatterMinHeight = 44;
 
 @implementation GLTController
