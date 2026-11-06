@@ -71,6 +71,14 @@ def rgb(hex_color):
 
 
 class PillContrastTests(unittest.TestCase):
+    def test_system_headers_are_imported_before_objc_implementation(self):
+        source = PREFS.read_text()
+        headers = list(re.finditer(r'^#(?:import|include)\s*[<"]([^>"\n]+)[>"]', source, re.M))
+        self.assertEqual([match[1] for match in headers].count("math.h"), 1)
+        implementation = source.index("@implementation GLTPrefs")
+        self.assertTrue(all(match.start() < implementation for match in headers),
+                        "system header declarations must not enter an Objective-C implementation")
+
     def test_unreadable_colors_choose_maximum_wcag_contrast(self):
         library = compiled_helpers()
         # Same foreground/background is unreadable. -1 means black, +1 white.
@@ -135,6 +143,9 @@ class PillContrastTests(unittest.TestCase):
         baseline = subprocess.check_output(["git", "show", "2fad941aa78c15b306a8cf8f3494d13a5ee137ac:reconstructed/Sources/GLTPrefs.m"], cwd=ROOT).decode()
         original_line = '    _textColor = GLTColorFromString([self objectForKey:@"textColor"]) ?: [UIColor whiteColor];'
         inverse = re.sub(r"#pragma mark - Effective text contrast\n.*?(?=#pragma mark - Reload)", "", source, count=1, flags=re.S)
+        header = '#import "Glint.h"\n#include <math.h>'
+        self.assertEqual(inverse.count(header), 1)
+        inverse = inverse.replace(header, '#import "Glint.h"', 1)
         self.assertEqual(inverse.replace(effective_line, original_line), baseline)
 
     def test_source_extraction_rejects_missing_or_duplicate_helpers(self):

@@ -91,8 +91,16 @@ def protected_controller(text, *, beta2=False):
 
 def normalize_beta2_preferences(text):
     """Undo only the authorized contrast-helper insertion, not the hex parser."""
+    header = '#import "Glint.h"\n#include <math.h>'
+    if text.count(header) != 1:
+        raise AssertionError("beta2 top-level math header inverse is not unique")
+    text = text.replace(header, '#import "Glint.h"', 1)
     block = unique(r"(^#pragma mark - Effective text contrast\n.*?)(?=^#pragma mark - Reload)", text)
-    if hashlib.sha256(block.encode()).hexdigest() != "f0cecda342324c19029c76c4a7a76e48df6db70725829b78182dce079b5c0915":
+    # Canonicalize only the compile-correction relocation before checking the
+    # original beta2 helper digest; numeric/adapter statements stay frozen.
+    marker = "#pragma mark - Effective text contrast\n\n"
+    canonical = block.replace(marker, marker + "#include <math.h>\n\n", 1)
+    if hashlib.sha256(canonical.encode()).hexdigest() != "f0cecda342324c19029c76c4a7a76e48df6db70725829b78182dce079b5c0915":
         raise AssertionError("beta2 contrast helper changed outside the frozen inverse")
     return text.replace(block, "", 1)
 

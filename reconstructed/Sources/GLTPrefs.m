@@ -7,6 +7,7 @@
 //
 
 #import "Glint.h"
+#include <math.h>
 
 @interface GLTPrefs ()
 @property (nonatomic, readwrite) BOOL enabled;
@@ -154,8 +155,6 @@ static UIColor *GLTColorFromString(NSString *string) {
 }
 
 #pragma mark - Effective text contrast
-
-#include <math.h>
 
 static double GLTLinearizedSRGB(double component) {
     return component <= 0.04045 ? component / 12.92
