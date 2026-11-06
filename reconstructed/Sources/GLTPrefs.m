@@ -153,6 +153,57 @@ static UIColor *GLTColorFromString(NSString *string) {
                            alpha:1.0];
 }
 
+#pragma mark - Effective text contrast
+
+#include <math.h>
+
+static double GLTLinearizedSRGB(double component) {
+    return component <= 0.04045 ? component / 12.92
+        : pow((component + 0.055) / 1.055, 2.4);
+}
+
+static double GLTRelativeLuminance(double red, double green, double blue) {
+    return 0.2126 * GLTLinearizedSRGB(red)
+         + 0.7152 * GLTLinearizedSRGB(green)
+         + 0.0722 * GLTLinearizedSRGB(blue);
+}
+
+// 0 keeps the preferred color; -1 selects black; 1 selects white.
+static int GLTReadableForeground(double background, double preferred) {
+    double lighter = fmax(background, preferred);
+    double darker = fmin(background, preferred);
+    if ((lighter + 0.05) / (darker + 0.05) >= 4.5) return 0;
+    double blackContrast = (background + 0.05) / 0.05;
+    double whiteContrast = 1.05 / (background + 0.05);
+    return blackContrast >= whiteContrast ? -1 : 1;
+}
+
+// Preferences currently supply opaque sRGB hex colors. Unknown/alpha colors
+// stay untouched rather than guessing how they composite over SpringBoard.
+static BOOL GLTGetOpaqueLuminance(UIColor *color, double *luminance) {
+    CGFloat red, green, blue, alpha;
+    if (![color getRed:&red green:&green blue:&blue alpha:&alpha]) {
+        CGFloat white;
+        if (![color getWhite:&white alpha:&alpha]) return NO;
+        red = green = blue = white;
+    }
+    if (alpha != 1.0 || !(red >= 0.0 && red <= 1.0
+                       && green >= 0.0 && green <= 1.0
+                       && blue >= 0.0 && blue <= 1.0)) return NO;
+    *luminance = GLTRelativeLuminance(red, green, blue);
+    return YES;
+}
+
+static UIColor *GLTEffectiveTextColor(UIColor *preferred, UIColor *background) {
+    if (!background) return preferred;
+    double backgroundLuminance, preferredLuminance;
+    if (!GLTGetOpaqueLuminance(background, &backgroundLuminance)
+        || !GLTGetOpaqueLuminance(preferred, &preferredLuminance)) return preferred;
+    int foreground = GLTReadableForeground(backgroundLuminance, preferredLuminance);
+    if (foreground == 0) return preferred;
+    return foreground < 0 ? [UIColor blackColor] : [UIColor whiteColor];
+}
+
 #pragma mark - Reload
 
 - (void)reload {
@@ -176,7 +227,7 @@ static UIColor *GLTColorFromString(NSString *string) {
         _backgroundColor = nil;
     }
 
-    _textColor = GLTColorFromString([self objectForKey:@"textColor"]) ?: [UIColor whiteColor];
+    _textColor = GLTEffectiveTextColor(GLTColorFromString([self objectForKey:@"textColor"]) ?: [UIColor whiteColor], _backgroundColor);
 
     id city = [self objectForKey:@"weatherCity"];
     if ([city isKindOfClass:[NSString class]]) {

@@ -9,7 +9,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = "c4c7817f66a13b8e76677d2e000112cd8bbe7ae5"
-VERSION = "1.6.3-beta1"
+# Current package; the beta1 pruning/schema baseline remains immutable below.
+VERSION = "1.6.3-beta2"
 KEEP_IDS = [0, 11, 4, 8, 7, 14]
 KEEP_NAMES = ["Time", "Storage & Memory", "Now Playing", "Alarm & Timer", "Weather", "Quick Message"]
 WEATHER_FOOTER = "Leave empty to use an already-authorized location; otherwise enter a city. Open-Meteo receives the approximate coordinates (about 1 km) of the location or city."
@@ -70,7 +71,8 @@ class BetaSettingsTests(unittest.TestCase):
         self.assertIn('objectForInfoDictionaryKey:@"GLTPackageVersion"', banner)
         self.assertIn('@"Version %@", @"Localizable")', banner)
         workflow = json.loads((ROOT / ".github/workflows/roothide.yml").read_text())
-        self.assertEqual(workflow["on"], {"push": {"branches": ["candidate/roothide-readiness"]}})
+        self.assertEqual(workflow["on"], {"push": {"branches": [
+            "candidate/roothide-readiness", "candidate/" + VERSION]}})
         self.assertEqual(workflow["jobs"]["build"]["env"]["THEOS_PACKAGE_SCHEME"], "roothide")
         commands = "\n".join(step.get("run", "") for step in workflow["jobs"]["build"]["steps"])
         self.assertIn("com.antonym.glint_" + VERSION + "_iphoneos-arm64e.deb", commands)

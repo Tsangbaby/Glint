@@ -86,7 +86,7 @@ def verify_package(package):
     fields = {}
     for key in ("Package", "Version", "Architecture"):
         fields[key] = subprocess.check_output(["dpkg-deb", "-f", str(package), key], text=True).strip()
-    assert fields == {"Package": "com.antonym.glint", "Version": "1.6.3-beta1", "Architecture": "iphoneos-arm64e"}, fields
+    assert fields == {"Package": "com.antonym.glint", "Version": "1.6.3-beta2", "Architecture": "iphoneos-arm64e"}, fields
     payload = subprocess.check_output(["dpkg-deb", "--fsys-tarfile", str(package)])
     files = payload_files(payload)
     assert not any(name.startswith("var/jb/") for name in files), "rootless payload in RootHide package"

@@ -5,6 +5,8 @@ import shlex
 from pathlib import Path
 import unittest
 
+from test_beta1_settings import VERSION
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -13,7 +15,8 @@ class CloudBuildPolicyTests(unittest.TestCase):
         path = ROOT / ".github/workflows/roothide.yml"
         self.assertTrue(path.is_file(), "missing bounded cloud workflow")
         workflow = json.loads(path.read_text())
-        self.assertEqual(workflow["on"], {"push": {"branches": ["candidate/roothide-readiness"]}})
+        self.assertEqual(workflow["on"], {"push": {"branches": [
+            "candidate/roothide-readiness", "candidate/" + VERSION]}})
         self.assertEqual(workflow["permissions"], {"contents": "read"})
         self.assertEqual(set(workflow["jobs"]), {"build"})
         job = workflow["jobs"]["build"]

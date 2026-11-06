@@ -17,6 +17,8 @@ import subprocess
 import tempfile
 import unittest
 
+from test_platter_motion import normalize_beta2_controller
+
 ROOT = Path(os.environ.get("GLINT_SOURCE_ROOT", Path(__file__).resolve().parents[1]))
 SOURCE = ROOT / "reconstructed"
 CONTROLLER = SOURCE / "Sources/GLTController.m"
@@ -75,7 +77,9 @@ def spring_animations(body, source):
     ]
 
 
-def protected_controller(text):
+def protected_controller(text, *, beta2=False):
+    if beta2:
+        text = normalize_beta2_controller(text)
     names = re.findall(r"^[+-] \([^\n)]+\)(\w+)(?=\s|:)", text, re.M)
     if len(names) != len(set(names)):
         raise AssertionError("duplicate Controller method")
@@ -85,7 +89,17 @@ def protected_controller(text):
     return hashlib.sha256((protected + "\n" + "\n".join(constants)).encode()).hexdigest()
 
 
-def protected_preferences(text):
+def normalize_beta2_preferences(text):
+    """Undo only the authorized contrast-helper insertion, not the hex parser."""
+    block = unique(r"(^#pragma mark - Effective text contrast\n.*?)(?=^#pragma mark - Reload)", text)
+    if hashlib.sha256(block.encode()).hexdigest() != "f0cecda342324c19029c76c4a7a76e48df6db70725829b78182dce079b5c0915":
+        raise AssertionError("beta2 contrast helper changed outside the frozen inverse")
+    return text.replace(block, "", 1)
+
+
+def protected_preferences(text, *, beta2=False):
+    if beta2:
+        text = normalize_beta2_preferences(text)
     names = re.findall(r"^[+-] \([^\n)]+\)(\w+)(?=\s|:)", text, re.M)
     if len(names) != len(set(names)):
         raise AssertionError("duplicate Preferences method")
@@ -258,9 +272,11 @@ int main(void) {
         self.assertIn("CGRect anchor = _anchorFrame;", body)
         self.assertIn("initWithFrame:anchor", body)
         self.assertIn("platter.topInset = topInset;", body)
-        self.assertIn("platter.layer.cornerRadius = CGRectGetHeight(anchor) * 0.5;", body)
+        self.assertNotIn("platter.layer.cornerRadius = CGRectGetHeight(anchor) * 0.5;", body)
         self.assertIn("platter.frame = openFrame;", body)
         self.assertIn("platter.layer.cornerRadius = cornerRadius;", body)
+        before_animation = body.split("[UIView animateWithDuration:", 1)[0]
+        self.assertIn("platter.layer.cornerRadius = cornerRadius;\n    [platter layoutIfNeeded];", before_animation)
         self.assertNotIn("UIScreen", body)
         self.assertNotIn("MAX(height, 44)", body)
         self.assertIn("CGAffineTransformScale(", body)
@@ -278,12 +294,12 @@ int main(void) {
         self.assertEqual(len(animations), 2)
         self.assertEqual(
             animations[0],
-            (0.6, 0.0, 0.72, 0.4, "UIViewAnimationOptionAllowUserInteraction"),
+            (0.6, 0.0, 0.72, 0.4, "UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState"),
             "shell animation (duration, delay, damping, velocity, options)",
         )
         self.assertEqual(
             animations[1],
-            (0.55, 0.1, 0.8, 0.0, "UIViewAnimationOptionAllowUserInteraction"),
+            (0.55, 0.1, 0.8, 0.0, "UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState"),
             "content animation (duration, delay, damping, velocity, options)",
         )
         first = body.split("animations:^{", 1)[1].split("} completion:nil]", 1)[0]
@@ -317,7 +333,7 @@ int main(void) {
                                            cwd=ROOT).decode().replace('\r\n', '\n')
         text = CONTROLLER.read_text()
         expected = protected_controller(accepted('Sources/GLTController.m'))
-        self.assertEqual(protected_controller(text), expected)
+        self.assertEqual(protected_controller(text, beta2=True), expected)
         header = (SOURCE / "Headers/GLTController.h").read_text()
         baseline_header = accepted('Headers/GLTController.h')
         for field in ('_window', '_clockViews', '_dateViews', '_anchorFrame', '_touchView', '_pickerView',
@@ -335,14 +351,16 @@ int main(void) {
             self.assertEqual(hashlib.sha256((SOURCE / path).read_bytes()).hexdigest(), digest, path)
         prefs = (SOURCE / "Sources/GLTPrefs.m").read_text()
         prefs_digest = protected_preferences(accepted('Sources/GLTPrefs.m'))
-        self.assertEqual(protected_preferences(prefs), prefs_digest)
-        self.assertNotEqual(protected_preferences(prefs.replace('CFPreferencesCopyAppValue', 'CFPreferencesCopyWrongAppValue', 1)), prefs_digest)
-        self.assertNotEqual(protected_preferences(prefs.replace('scanner scanHexInt:', 'scanner scanInt:', 1)), prefs_digest)
+        self.assertEqual(protected_preferences(prefs, beta2=True), prefs_digest)
+        self.assertNotEqual(protected_preferences(prefs.replace('CFPreferencesCopyAppValue', 'CFPreferencesCopyWrongAppValue', 1), beta2=True), prefs_digest)
+        self.assertNotEqual(protected_preferences(prefs.replace('scanner scanHexInt:', 'scanner scanInt:', 1), beta2=True), prefs_digest)
         with self.assertRaises(AssertionError):
-            protected_preferences(prefs + '\n- (id)objectForKey:(NSString *)key {\n    return nil;\n}\n')
+            protected_preferences(prefs + '\n- (id)objectForKey:(NSString *)key {\n    return nil;\n}\n', beta2=True)
+        with self.assertRaisesRegex(AssertionError, "beta2 contrast helper changed"):
+            protected_preferences(prefs.replace(">= 4.5) return 0;", ">= 1.0) return 0;", 1), beta2=True)
         with self.assertRaises(AssertionError):
-            protected_controller(text + "\n- (NSInteger)cutout {\n    return 0;\n}\n")
-        self.assertNotEqual(protected_controller(text.replace("- (void)layoutTouchView {", "- (void)layoutTouchView {\n    (void)self;", 1)), expected)
+            protected_controller(text + "\n- (NSInteger)cutout {\n    return 0;\n}\n", beta2=True)
+        self.assertNotEqual(protected_controller(text.replace("- (void)layoutTouchView {", "- (void)layoutTouchView {\n    (void)self;", 1), beta2=True), expected)
 
 
 if __name__ == "__main__":

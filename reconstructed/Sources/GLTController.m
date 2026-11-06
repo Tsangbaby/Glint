@@ -15,7 +15,7 @@
 static const NSTimeInterval kGLTTickInterval = 1.0;
 static const NSTimeInterval kGLTPlatterSpringDamping = 0.72;
 static const CGFloat kGLTPlatterOpenDuration = 0.6;
-static const CGFloat kGLTPlatterCloseDuration = 0.24;
+static const CGFloat kGLTPlatterCloseDuration = 0.6;
 
 // The status-bar time slot is ~9pt wide per character; the touch target is
 // padded beyond the pill so it stays comfortable.
@@ -626,11 +626,18 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     platter.content = content;
 
     __weak typeof(self) weakSelf = self;
+    __weak GLTPlatterView *weakPlatter = platter;
     content.closeHandler = ^{
-        [weakSelf closePlatter];
+        GLTController *strongSelf = weakSelf;
+        GLTPlatterView *currentPlatter = weakPlatter;
+        if (!strongSelf || !currentPlatter || strongSelf->_platterView != currentPlatter) return;
+        [strongSelf closePlatter];
     };
     content.resizeHandler = ^{
-        [weakSelf fitPlatterToContent];
+        GLTController *strongSelf = weakSelf;
+        GLTPlatterView *currentPlatter = weakPlatter;
+        if (!strongSelf || !currentPlatter || strongSelf->_platterView != currentPlatter) return;
+        [strongSelf fitPlatterToContent];
     };
 
     CGFloat height = [platter heightForWidth:width];
@@ -641,7 +648,9 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     CGFloat rightLimit = CGRectGetWidth(host.bounds) - 6.0 - width;
     x = MIN(x, rightLimit);
     CGRect openFrame = CGRectMake(x, top, width, height);
-    platter.layer.cornerRadius = CGRectGetHeight(anchor) * 0.5;
+    // Keep one rounded clipping shell; its compact bounds clamp this radius.
+    platter.layer.cornerRadius = cornerRadius;
+    [platter layoutIfNeeded];
     [host addSubview:platter];
     _platterView = platter;
 
@@ -665,17 +674,17 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
                           delay:0
          usingSpringWithDamping:kGLTPlatterSpringDamping
           initialSpringVelocity:0.4
-                        options:UIViewAnimationOptionAllowUserInteraction
+                        options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
         platter.frame = openFrame;
-        platter.layer.cornerRadius = cornerRadius;
+        [platter layoutIfNeeded];
     } completion:nil];
 
     [UIView animateWithDuration:0.55
                           delay:0.1
          usingSpringWithDamping:0.8
           initialSpringVelocity:0
-                        options:UIViewAnimationOptionAllowUserInteraction
+                        options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
         content.alpha = 1;
         content.transform = CGAffineTransformIdentity;
@@ -690,7 +699,11 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     GLTPlatterView *platter = _platterView;
     if (!platter) return;
 
+    CGRect anchor = _anchorFrame;
     _platterView = nil;
+    platter.userInteractionEnabled = NO;
+    platter.content.closeHandler = nil;
+    platter.content.resizeHandler = nil;
 
     if (_window.acceptsKeyboard) {
         [_window endEditing:YES];
@@ -712,12 +725,18 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
         return;
     }
 
+    // Critical damping avoids overshooting a large shell into a tiny pill.
     [UIView animateWithDuration:kGLTPlatterCloseDuration
+                          delay:0
+         usingSpringWithDamping:1.0
+          initialSpringVelocity:0
+                        options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
+        platter.frame = anchor;
+        [platter layoutIfNeeded];
         platter.content.alpha = 0;
-        platter.content.transform = CGAffineTransformConcat(
-            CGAffineTransformMakeScale(0.94, 0.94),
-            CGAffineTransformMakeTranslation(0, -10));
+        platter.content.transform = CGAffineTransformScale(
+            CGAffineTransformMakeTranslation(0, -14), 0.94, 0.94);
     } completion:cleanup];
 }
 

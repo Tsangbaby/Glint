@@ -1,6 +1,6 @@
 export ARCHS = arm64 arm64e
 export TARGET = iphone:clang:latest:14.0
-export PACKAGE_VERSION = 1.6.3-beta1
+export PACKAGE_VERSION = 1.6.3-beta2
 
 include $(THEOS)/makefiles/common.mk
 

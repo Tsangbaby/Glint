@@ -10,6 +10,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from test_platter_motion import normalize_beta2_controller
+
 ROOT = Path(__file__).resolve().parents[1]
 PRODUCT = ROOT / "reconstructed"
 RETAINED = {"Time": 0, "NowPlaying": 4, "Weather": 7, "Alarm": 8,
@@ -20,16 +22,20 @@ REMOVED = ["Date", "Battery", "Network", "Calendar", "Reminders", "NextEvent",
 SCRATCH = Path(os.environ.get("TMPDIR", str(Path.home() / ".hermes/cache/scratch"))) / "glint-feature-pruning"
 
 
-def source(path):
+def source(path, *, beta2=False):
     text = (PRODUCT / path).read_text()
+    if beta2:
+        if path != "Sources/GLTController.m":
+            raise AssertionError("beta2 controller inverse applied to unrelated source")
+        text = normalize_beta2_controller(text)
     # Strip comments without destroying strings (URLs/quoted braces are legal).
     token = r'@?"(?:\\.|[^"\\])*"|//[^\n]*|/\*.*?\*/'
     return re.sub(token, lambda m: "" if m[0].startswith(("//", "/*")) else m[0],
                   text, flags=re.S)
 
 
-def method(path, selector):
-    text = source(path)
+def method(path, selector, *, beta2=False):
+    text = source(path, beta2=beta2)
     pattern = r"^[+-] \([^\n]+?\)" + re.escape(selector) + r"(?=\s|:|\{|$)"
     matches = list(re.finditer(pattern, text, re.M))
     if len(matches) != 1:
@@ -179,7 +185,7 @@ class RuntimePruningTests(unittest.TestCase):
         }
         for selector, digest in expected.items():
             with self.subTest(selector=selector):
-                self.assertEqual(hashlib.sha256(method("Sources/GLTController.m", selector).encode()).hexdigest(), digest)
+                self.assertEqual(hashlib.sha256(method("Sources/GLTController.m", selector, beta2=True).encode()).hexdigest(), digest)
         text = source("Sources/GLTController.m")
         self.assertIn("_dateViews", text)
         self.assertIn("_timeFormatter", text)
