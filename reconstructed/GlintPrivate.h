@@ -12,8 +12,11 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
+#import "GLTRuntime.h"
 
-@class GLTPillContent, GLTPlatterContent, GLTDevice, GLTNotification, GLTRecipient;
+@class GLTPillContent, GLTPlatterContent, GLTPlatterView, GLTDevice, GLTNotification, GLTRecipient;
 
 #pragma mark - Domains and notifications
 
@@ -109,6 +112,36 @@ NSString *GLTStorageSummary(void);
 + (UIImage *)_applicationIconImageForBundleIdentifier:(NSString *)identifier
                                                format:(int)format
                                                 scale:(CGFloat)scale;
+@end
+
+// Declarations describe the source call sites; runtime admission is checked separately.
+@class NCNotificationContent, SBApplication;
+@interface NCNotificationRequest : NSObject
+- (NSString *)sectionIdentifier;
+- (NCNotificationContent *)content;
+@end
+@interface NCNotificationContent : NSObject
+- (NSString *)header;
+- (NSString *)title;
+- (NSString *)message;
+@end
+@interface SBApplication : NSObject
+- (NSString *)displayName;
+@end
+@interface SBApplicationController : NSObject
++ (instancetype)sharedInstance;
+- (SBApplication *)applicationWithBundleIdentifier:(NSString *)identifier;
+@end
+@interface SBMediaController : NSObject
++ (instancetype)sharedInstance;
+- (BOOL)isPlaying;
+- (void)togglePlayPauseForEventSource:(NSInteger)source;
+- (void)changeTrack:(NSInteger)direction eventSource:(NSInteger)source;
+@end
+@protocol GLTStatusBarTimeItem <NSObject>
+- (UIView *)timeView;
+- (UIView *)dateView;
+- (UIView *)shortTimeView;
 @end
 
 #endif /* GLINT_PRIVATE_H */

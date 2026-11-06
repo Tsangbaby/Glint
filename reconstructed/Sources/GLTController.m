@@ -104,13 +104,17 @@ static const CGFloat kGLTPlatterMinHeight = 44;
                    name:UIDeviceBatteryStateDidChangeNotification object:nil];
     [center addObserver:self selector:@selector(sourcesChanged)
                    name:GLTSourcesDidChangeNotification object:nil];
+    [center addObserver:self selector:@selector(sourcesChanged)
+                   name:GLTLockStateDidChangeNotification object:nil];
     [center addObserver:self selector:@selector(prefsChanged)
                    name:GLTPrefsDidChangeNotification object:nil];
 
     [GLTEvents sharedEvents];
     [GLTUnlocks sharedUnlocks];
     [[GLTMedia sharedMedia] mediaDidChange];
-    [[GLTClockItems sharedItems] refresh];
+    if ([GLTPrefs sharedPrefs].enabled && [self currentPill] == GLTPillAlarm) {
+        [[GLTClockItems sharedItems] refresh];
+    }
 
     _timer = [NSTimer scheduledTimerWithTimeInterval:kGLTTickInterval
                                               target:self
@@ -185,15 +189,22 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 #pragma mark - Tick
 
 - (void)tick {
+    GLTPrefs *prefs = [GLTPrefs sharedPrefs];
+    if (!prefs.enabled || GLTDeviceIsLocked()) {
+        [self update];
+        return;
+    }
     _ticks++;
 
     [self sampleNetwork];
-    [self checkDevices];
+    if (prefs.deviceConnections || [self currentPill] == GLTPillBattery) {
+        [self checkDevices];
+    }
 
     if ([self wantsWeather]) {
         [[GLTWeather sharedWeather] refreshForcing:NO];
     }
-    if ([GLTPrefs sharedPrefs].enabled) {
+    if ([self currentPill] == GLTPillAlarm) {
         [[GLTClockItems sharedItems] refresh];
     }
 
@@ -268,6 +279,7 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 #pragma mark - Transient states
 
 - (void)showVolume:(float)volume {
+    if (![self canPresentOverlay]) return;
     _volume = volume;
     _volumeUntil = [NSDate dateWithTimeIntervalSinceNow:[GLTPrefs sharedPrefs].volumeDuration];
     [self update];
@@ -279,6 +291,7 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 }
 
 - (void)showNotification:(GLTNotification *)notification {
+    if (![self canPresentOverlay]) return;
     if ([self showsNotification]) {
         [_pendingNotifications addObject:notification];
         return;
@@ -321,6 +334,13 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 }
 
 - (void)update {
+    if (GLTDeviceIsLocked() || ![GLTPrefs sharedPrefs].enabled) {
+        _notification = nil;
+        _notificationUntil = nil;
+        [_pendingNotifications removeAllObjects];
+        [self closePlatterAnimated:NO];
+        [self hidePicker];
+    }
     if (_notification && ![self showsNotification]) {
         _notification = nil;
         if (_pendingNotifications.count) {
@@ -334,7 +354,7 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 }
 
 - (void)registerClockView:(UIView *)view dateView:(UIView *)dateView {
-    if (!view) return;
+    if (![view isKindOfClass:[UILabel class]]) return;
 
     [_clockViews addObject:view];
     if (dateView) {
@@ -342,6 +362,11 @@ static const CGFloat kGLTPlatterMinHeight = 44;
         [GLTClock setCompanion:dateView forLabel:view];
     }
     [self renderClocks];
+}
+
+- (BOOL)canPresentOverlay {
+    return _window && _window.windowScene && !_window.hidden && GLTStatusBarHooksReady() &&
+        [GLTPrefs sharedPrefs].enabled && !GLTDeviceIsLocked() && [self visibleClock] != nil;
 }
 
 - (UIView *)visibleClock {
@@ -373,7 +398,9 @@ static const CGFloat kGLTPlatterMinHeight = 44;
     if (!_window) return;
 
     GLTPrefs *prefs = [GLTPrefs sharedPrefs];
-    GLTPillContent *content = prefs.enabled ? [self pillContent] : nil;
+    BOOL admitted = prefs.enabled && GLTStatusBarHooksReady() && !GLTDeviceIsLocked();
+    _window.hidden = !admitted;
+    GLTPillContent *content = admitted ? [self pillContent] : nil;
 
     UIColor *background = prefs.backgroundColor;
     if (!background) {
@@ -819,9 +846,8 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 #pragma mark - Touch target
 
 - (void)layoutTouchView {
-    GLTPrefs *prefs = [GLTPrefs sharedPrefs];
-    _touchView.hidden = !prefs.enabled;
-    if (!prefs.enabled) return;
+    _touchView.hidden = ![self canPresentOverlay];
+    if (_touchView.hidden) return;
 
     UIView *clock = [self visibleClock];
     if (!clock) {
@@ -844,9 +870,6 @@ static const CGFloat kGLTPlatterMinHeight = 44;
     _touchView.frame = frame;
     _touchView.layer.cornerRadius = CGRectGetHeight(frame) * 0.5;
 
-    if (_window.windowScene) {
-        [self moveWindowToScene:_window.windowScene];
-    }
 }
 
 
@@ -896,7 +919,7 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 }
 
 - (void)openPlatter:(GLTPlatterContent *)content {
-    if (!content || _platterView) return;
+    if (!content || _platterView || ![self canPresentOverlay]) return;
 
     UIView *host = _window.rootViewController.view;
     CGRect anchor = [self frameOfClock:[self visibleClock]];
@@ -1026,6 +1049,7 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 #pragma mark - Tap handling
 
 - (void)clockTapped {
+    if (![self canPresentOverlay]) return;
     UIView *clock = [self visibleClock];
     if (!clock) return;
 
@@ -1084,7 +1108,6 @@ static const CGFloat kGLTPlatterMinHeight = 44;
     bounds.size.height  = MAX(bounds.size.height, 34);
     label.frame = CGRectMake(17, (bounds.size.height - CGRectGetHeight(label.bounds)) / 2,
                              CGRectGetWidth(label.bounds), CGRectGetHeight(label.bounds));
-    label.center = CGPointMake(CGRectGetMidX(label.center) + 0, CGRectGetMidY(label.center));
 
     UIView *container = [[UIView alloc] initWithFrame:bounds];
     container.backgroundColor = row.backgroundColor;
@@ -1162,8 +1185,7 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 }
 
 - (void)showPicker {
-    GLTPrefs *prefs = [GLTPrefs sharedPrefs];
-    if (!prefs.enabled || _pickerView) return;
+    if (![self canPresentOverlay] || _pickerView) return;
 
     UIView *clock = [self visibleClock];
     if (!clock) return;

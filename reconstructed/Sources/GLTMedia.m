@@ -24,6 +24,15 @@ static NSString *const kGLTNowPlayingElapsed  = @"kMRMediaRemoteNowPlayingInfoEl
 static NSString *const kGLTNowPlayingTime     = @"kMRMediaRemoteNowPlayingInfoTimestamp";
 static NSString *const kGLTNowPlayingRate     = @"kMRMediaRemoteNowPlayingInfoPlaybackRate";
 
+static void *GLTMediaRemoteHandle(void) {
+    static void *handle;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        handle = dlopen("/System/Library/PrivateFrameworks/MediaRemote.framework/MediaRemote", RTLD_LAZY);
+    });
+    return handle;
+}
+
 @implementation GLTMedia
 
 + (GLTMedia *)sharedMedia {
@@ -37,8 +46,7 @@ static NSString *const kGLTNowPlayingRate     = @"kMRMediaRemoteNowPlayingInfoPl
     self = [super init];
     if (!self) return nil;
 
-    void *handle = dlopen("/System/Library/PrivateFrameworks/MediaRemote.framework/MediaRemote",
-                          RTLD_LAZY);
+    void *handle = GLTMediaRemoteHandle();
     if (handle) {
         GLTMRRegisterFn registerForNotifications =
             (GLTMRRegisterFn)dlsym(handle, "MRMediaRemoteRegisterForNowPlayingNotifications");
@@ -79,8 +87,7 @@ static NSString *const kGLTNowPlayingRate     = @"kMRMediaRemoteNowPlayingInfoPl
 // Re-read both the metadata dictionary and the playing flag, then tell the UI
 // only when something actually moved.
 - (void)mediaDidChange {
-    void *handle = dlopen("/System/Library/PrivateFrameworks/MediaRemote.framework/MediaRemote",
-                          RTLD_LAZY);
+    void *handle = GLTMediaRemoteHandle();
     if (!handle) return;
 
     GLTMRGetInfoFn getInfo = (GLTMRGetInfoFn)dlsym(handle, "MRMediaRemoteGetNowPlayingInfo");

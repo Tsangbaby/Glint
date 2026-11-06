@@ -21,8 +21,6 @@
     UILabel *                      _statusLabel; // 0x40
     GLTRecipient *                 _recipient; // 0x48
     BOOL                           _sending; // 0x50
-    id /* block */                 _closeHandler; // 0x08
-    id /* block */                 _resizeHandler; // 0x10
 }
 
 #pragma mark - class methods
@@ -31,7 +29,7 @@
 - (id)initWithFrame:(CGRect)arg1;
 - (void)didMoveToWindow;
 - (void)resize;
-- (void)showSuggestions:(NSString *)arg1;
+- (void)showSuggestions:(NSArray<GLTRecipient *> *)arg1;
 - (void)searchChanged;
 - (void)chooseRecipient:(GLTRecipient *)arg1;
 - (void)clearRecipient;

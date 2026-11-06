@@ -18,8 +18,6 @@
     UIView *                       _track; // 0x28
     UIView *                       _fill; // 0x30
     NSTimer *                      _timer; // 0x38
-    id /* block */                 _closeHandler; // 0x08
-    id /* block */                 _resizeHandler; // 0x10
 }
 
 #pragma mark - class methods

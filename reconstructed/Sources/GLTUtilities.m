@@ -17,7 +17,10 @@ UIImage *GLTSymbol(NSString *name, CGFloat pointSize, UIImageSymbolWeight weight
 
     UIImageSymbolConfiguration *configuration =
         [UIImageSymbolConfiguration configurationWithPointSize:pointSize weight:weight];
-    configuration = [configuration configurationPreferringMulticolor];
+    if (@available(iOS 15.0, *)) {
+        configuration = [configuration configurationByApplyingConfiguration:
+                         [UIImageSymbolConfiguration configurationPreferringMulticolor]];
+    }
     return [UIImage systemImageNamed:name withConfiguration:configuration];
 }
 

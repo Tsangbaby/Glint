@@ -14,8 +14,6 @@
 @interface GLTNotificationPlatterView : GLTPlatterContent
 {
     GLTNotification *              _notification; // 0x18
-    id /* block */                 _closeHandler; // 0x08
-    id /* block */                 _resizeHandler; // 0x10
 }
 
 @property (nonatomic, strong) GLTNotification * notification;

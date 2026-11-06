@@ -23,8 +23,6 @@
     UIButton *                     _playButton; // 0x50
     NSTimer *                      _timer; // 0x58
     double                         _fraction; // 0x60
-    id /* block */                 _closeHandler; // 0x08
-    id /* block */                 _resizeHandler; // 0x10
 }
 
 #pragma mark - class methods

@@ -14,8 +14,6 @@
 @interface GLTRemindersPlatterView : GLTPlatterContent
 {
     NSArray *                      _shown; // 0x18
-    id /* block */                 _closeHandler; // 0x08
-    id /* block */                 _resizeHandler; // 0x10
 }
 
 #pragma mark - class methods

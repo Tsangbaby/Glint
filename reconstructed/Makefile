@@ -6,7 +6,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Glint
 Glint_FILES = Tweak.xm $(wildcard Sources/*.m)
-Glint_CFLAGS = -fobjc-arc -IHeaders -ISources -Wno-deprecated-declarations
+Glint_CFLAGS = -fobjc-arc -IHeaders -ISources -Wno-deprecated-declarations -DGLINT_VERIFICATION_BUILD=1
 Glint_FRAMEWORKS = UIKit Foundation CoreGraphics QuartzCore EventKit CoreLocation \
                    Contacts MessageUI
 Glint_LIBRARIES = substrate

@@ -80,7 +80,10 @@ static NSString *GLTDetailsForParts(NSArray *parts) {
 }
 
 NSArray<GLTDevice *> *GLTConnectedDevices(void) {
-    dlopen("/System/Library/PrivateFrameworks/BatteryCenter.framework/BatteryCenter", RTLD_LAZY);
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        dlopen("/System/Library/PrivateFrameworks/BatteryCenter.framework/BatteryCenter", RTLD_LAZY);
+    });
 
     Class controllerClass = NSClassFromString(@"BCBatteryDeviceController");
     if (![controllerClass respondsToSelector:@selector(sharedInstance)]) return @[];
@@ -293,6 +296,9 @@ static void GLTRememberRecipient(GLTRecipient *recipient) {
 // Every call is guarded: the private API drifts between iOS releases and a
 // failure must degrade to the system composer, not crash SpringBoard.
 BOOL GLTSendMessage(GLTRecipient *recipient, NSString *text) {
+#if GLINT_VERIFICATION_BUILD
+    return NO; // No real message submission in the first-device candidate.
+#else
     if (!recipient.address.length || !text.length) return NO;
 
     dlopen("/System/Library/PrivateFrameworks/IMCore.framework/IMCore", RTLD_LAZY);
@@ -361,4 +367,5 @@ BOOL GLTSendMessage(GLTRecipient *recipient, NSString *text) {
         GLTLog(@"Sending failed: %@", exception);
         return NO;
     }
+#endif
 }

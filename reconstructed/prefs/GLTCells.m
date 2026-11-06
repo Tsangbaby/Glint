@@ -135,10 +135,6 @@ static NSString *GLTHexFromColor(UIColor *color) {
     GLTWriteValue(properties[@"defaults"], properties[@"key"], @([self snappedValue]));
 }
 
-- (void).cxx_destruct {
-    // ARC handles the strong properties.
-}
-
 @end
 
 #pragma mark - Colour
@@ -189,9 +185,6 @@ static NSString *GLTHexFromColor(UIColor *color) {
                   GLTHexFromColor(_colorWell.selectedColor));
 }
 
-- (void).cxx_destruct {
-}
-
 @end
 
 #pragma mark - Date
@@ -238,9 +231,6 @@ static NSString *GLTHexFromColor(UIColor *color) {
 - (void)dateChanged {
     NSDictionary *properties = self.specifier.properties;
     GLTWriteValue(properties[@"defaults"], properties[@"key"], _picker.date);
-}
-
-- (void).cxx_destruct {
 }
 
 @end

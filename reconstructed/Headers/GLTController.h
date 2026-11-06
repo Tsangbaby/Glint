@@ -49,6 +49,7 @@
 #pragma mark - instance methods
 - (instancetype)init;
 - (void)start;
+- (BOOL)canPresentOverlay;
 - (void)moveWindowToScene:(UIWindowScene *)arg1;
 - (void)keyboardFrameChanged:(NSNotification *)arg1;
 - (void)prefsChanged;

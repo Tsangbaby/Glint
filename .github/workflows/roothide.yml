@@ -1,0 +1,84 @@
+{
+  "name": "Glint RootHide verification",
+  "on": {
+    "push": {
+      "branches": [
+        "candidate/roothide-readiness"
+      ]
+    }
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "jobs": {
+    "build": {
+      "runs-on": "macos-15",
+      "timeout-minutes": 30,
+      "defaults": {
+        "run": {
+          "shell": "bash"
+        }
+      },
+      "env": {
+        "DEVELOPER_DIR": "/Applications/Xcode_16.4.app/Contents/Developer",
+        "THEOS_COMMIT": "3ac89c984ec652fd16bcd91b33ae16de45ce76fa",
+        "THEOS_PACKAGE_SCHEME": "roothide",
+        "FINALPACKAGE": "1",
+        "PREFERENCES_STUB_SHA256": "9daceaff6cf94346594a12f9ef9c2ea23de15475b516f9e33c20871a018c098b"
+      },
+      "steps": [
+        {
+          "name": "Checkout frozen candidate",
+          "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "with": {
+            "fetch-depth": 0,
+            "persist-credentials": false
+          }
+        },
+        {
+          "name": "Bind source and failure evidence",
+          "run": "set -euo pipefail\nmkdir -p ci-artifacts\nprintf 'THEOS=%s/theos\n' \"$RUNNER_TEMP\" >> \"$GITHUB_ENV\"\ngit rev-parse HEAD > ci-artifacts/SOURCE_COMMIT.txt\nprintf '%s\n' \"$GITHUB_REPOSITORY\" > ci-artifacts/SOURCE_REPOSITORY.txt\ntest \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"\ntest \"$GITHUB_REPOSITORY\" = Tsangbaby/Glint\npython3 -B -c 'import json,os; from pathlib import Path; Path(\"ci-artifacts/scope.json\").write_text(json.dumps({\"source_sha\":os.environ[\"GITHUB_SHA\"],\"repository\":os.environ[\"GITHUB_REPOSITORY\"],\"run_id\":os.environ[\"GITHUB_RUN_ID\"],\"attempt\":os.environ[\"GITHUB_RUN_ATTEMPT\"],\"scheme\":\"roothide\",\"kind\":\"functional_verification\",\"verification_guards\":True,\"device_tested\":False,\"simulator_executed\":False},indent=2)+\"\n\")'\n"
+        },
+        {
+          "name": "Record selected Xcode and SDK",
+          "run": "set -euo pipefail\n{\n sw_vers\n uname -a\n xcodebuild -version\n test \"$(xcrun --sdk iphoneos --show-sdk-version)\" = 18.5\n xcrun clang --version\n xcrun --sdk iphoneos --show-sdk-path\n xcrun --sdk macosx --show-sdk-path\n} 2>&1 | tee ci-artifacts/toolchain.log\n"
+        },
+        {
+          "name": "Install packaging prerequisites",
+          "run": "set -euo pipefail\n{\n brew install make dpkg ldid\n printf '%s/libexec/gnubin\n' \"$(brew --prefix make)\" >> \"$GITHUB_PATH\"\n command -v gmake dpkg-deb ldid\n brew list --versions make dpkg ldid\n} 2>&1 | tee ci-artifacts/setup-tools.log\n"
+        },
+        {
+          "name": "Install fixed RootHide Theos",
+          "run": "set -euo pipefail\n{\n git clone --no-checkout https://github.com/roothide/theos.git \"$THEOS\"\n git -C \"$THEOS\" checkout --detach \"$THEOS_COMMIT\"\n git -C \"$THEOS\" submodule update --init --recursive\n test \"$(git -C \"$THEOS\" rev-parse HEAD)\" = \"$THEOS_COMMIT\"\n git -C \"$THEOS\" rev-parse HEAD > ci-artifacts/THEOS_COMMIT.txt\n git -C \"$THEOS\" submodule status --recursive\n} 2>&1 | tee ci-artifacts/setup-theos.log\n"
+        },
+        {
+          "name": "Stage fixed Preferences link stub only",
+          "run": "set -euo pipefail\n{\n mkdir -p \"$THEOS/lib/iphone/Preferences.framework\"\n target=\"$THEOS/lib/iphone/Preferences.framework/Preferences.tbd\"\n curl --fail --location --retry 2 https://raw.githubusercontent.com/theos/sdks/0222fd5413cf4b9af096f37b4621afa2688572f7/iPhoneOS16.5.sdk/System/Library/PrivateFrameworks/Preferences.framework/Preferences.tbd --output \"$target\"\n printf '%s  %s\n' \"$PREFERENCES_STUB_SHA256\" \"$target\" | shasum -a 256 --check\n printf '%s\n' \"$PREFERENCES_STUB_SHA256\" > ci-artifacts/PREFERENCES_STUB_SHA256.txt\n} 2>&1 | tee ci-artifacts/setup-preferences.log\n"
+        },
+        {
+          "name": "Source guards and actual Foundation ABI replay",
+          "run": "set -euo pipefail\npython3 -B -m unittest discover -s tests -p 'test_*.py' -v 2>&1 | tee ci-artifacts/source-tests.log\n{\n export SDKROOT=\"$(xcrun --sdk macosx --show-sdk-path)\"\n xcrun clang -fobjc-arc -fblocks -framework Foundation -framework CoreGraphics -Ireconstructed/Headers reconstructed/Sources/GLTRuntime.m reconstructed/Sources/GLTUnlocks.m tests/runtime_host.m -o \"$RUNNER_TEMP/glint-runtime-host\"\n \"$RUNNER_TEMP/glint-runtime-host\"\n} 2>&1 | tee ci-artifacts/runtime-host.log\npython3 -B -c 'from pathlib import Path; assert all(marker in Path(\"ci-artifacts/runtime-host.log\").read_text() for marker in (\"GLINT_RUNTIME_HOST_PASS\", \"GLINT_UNLOCKS_HOST_PASS\"))'\n"
+        },
+        {
+          "name": "Compile sign and retain original RootHide deb",
+          "run": "set -euo pipefail\n{\n export PATH=\"$(brew --prefix make)/libexec/gnubin:$THEOS/bin:$PATH\"\n sdk=\"$(xcrun --sdk iphoneos --show-sdk-path)\"\n prefix=\"$(dirname \"$(xcrun --find clang)\")/\"\n make -C reconstructed clean THEOS_PACKAGE_SCHEME=roothide SYSROOT=\"$sdk\" SDKVERSION=18.5 PREFIX=\"$prefix\"\n make -C reconstructed -j2 package FINALPACKAGE=1 INSTALL=0 THEOS_PACKAGE_SCHEME=roothide SYSROOT=\"$sdk\" SDKVERSION=18.5 PREFIX=\"$prefix\"\n} 2>&1 | tee ci-artifacts/theos-build.log\npython3 -B -c 'from pathlib import Path; import shutil,hashlib; files=list(Path(\"reconstructed/packages\").glob(\"*.deb\")); assert len(files)==1,files; p=files[0]; assert p.name==\"com.antonym.glint_1.6.3_iphoneos-arm64e.deb\",p; target=Path(\"ci-artifacts\")/p.name; shutil.copyfile(p,target); Path(\"ci-artifacts/SHA256SUMS.txt\").write_text(hashlib.sha256(target.read_bytes()).hexdigest()+\"  \"+target.name+\"\n\")'\n"
+        },
+        {
+          "name": "Verify retained original package",
+          "run": "set -euo pipefail\npython3 -B tools/verify_package.py ci-artifacts/com.antonym.glint_1.6.3_iphoneos-arm64e.deb --report ci-artifacts/package-verification.json 2>&1 | tee ci-artifacts/package-verification.log\n"
+        },
+        {
+          "name": "Upload original package and complete failure evidence",
+          "if": "always()",
+          "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "with": {
+            "name": "glint-roothide-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}",
+            "path": "ci-artifacts/",
+            "if-no-files-found": "error",
+            "retention-days": 14
+          }
+        }
+      ]
+    }
+  }
+}

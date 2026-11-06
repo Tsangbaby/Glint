@@ -415,6 +415,7 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
     // Becoming first responder immediately fights the presentation animation.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^{
+        if (!self.window || GLTDeviceIsLocked()) return;
         [self->_toField becomeFirstResponder];
     });
 }
@@ -524,6 +525,11 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
 }
 
 - (void)send {
+#if GLINT_VERIFICATION_BUILD
+    [self showStatus:@"Messaging is disabled in this verification build."];
+    return;
+#endif
+    if (GLTDeviceIsLocked() || !self.window || _sending) return;
     NSString *text = [_messageField.text stringByTrimmingCharactersInSet:
                       [NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (!_recipient || !text.length) return;

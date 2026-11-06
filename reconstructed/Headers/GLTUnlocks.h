@@ -6,8 +6,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <CoreGraphics/CoreGraphics.h>
 
 
 @interface GLTUnlocks : NSObject
@@ -17,6 +15,7 @@
     int                            _lockToken; // 0x18
     BOOL                           _locked; // 0x1c
     NSString *                     _day; // 0x20
+    BOOL                           _hasLockState; // defensive reconstruction state
 }
 
 @property (nonatomic, assign, readonly) long long today;
@@ -28,7 +27,7 @@
 #pragma mark - instance methods
 - (instancetype)init;
 - (void)rollOverIfNeeded;
-- (void)lockStateChanged:(int)arg1;
+- (void)lockStateChanged:(BOOL)arg1;
 - (void)save;
 
 @end

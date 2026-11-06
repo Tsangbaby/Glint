@@ -108,6 +108,10 @@ static const NSTimeInterval kGLTLookahead = 2 * 24 * 60 * 60;
 }
 
 - (void)completeReminder:(EKReminder *)reminder {
+#if GLINT_VERIFICATION_BUILD
+    return; // Read-only reminders during the first-device smoke test.
+#endif
+    if (GLTDeviceIsLocked()) return;
     reminder.completed = YES;
     [_store saveReminder:reminder commit:YES error:nil];
     [self refresh];

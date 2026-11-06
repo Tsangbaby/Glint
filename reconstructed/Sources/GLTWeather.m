@@ -87,28 +87,18 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
         return;
     }
 
+#if GLINT_VERIFICATION_BUILD
+    [self failWithProblem:@"Set a city in Glint's settings for this verification build."];
+    return;
+#else
     CLAuthorizationStatus status = _locationManager.authorizationStatus;
-    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
-        [self failWithProblem:@"Location is off. Type a city in Glint's settings."];
+    if (status != kCLAuthorizationStatusAuthorizedAlways &&
+        status != kCLAuthorizationStatusAuthorizedWhenInUse) {
+        [self failWithProblem:@"Location is not authorized. Type a city in Glint's settings."];
         return;
     }
-
-    // The tweak runs inside SpringBoard, whose bundle has no location usage
-    // description; ask CoreLocation to treat it as authorised.
-    if ([_locationManager respondsToSelector:@selector(setAuthorizationStatusByType:forBundleIdentifier:)]) {
-        NSString *bundle = [NSBundle mainBundle].bundleIdentifier ?: @"com.apple.springboard";
-        void (*setStatus)(id, SEL, NSInteger, NSString *) =
-            (void (*)(id, SEL, NSInteger, NSString *))objc_msgSend;
-        setStatus(_locationManager,
-                  @selector(setAuthorizationStatusByType:forBundleIdentifier:),
-                  kCLAuthorizationStatusAuthorizedAlways,
-                  bundle);
-    }
-
-    if (status == kCLAuthorizationStatusNotDetermined) {
-        [_locationManager requestAlwaysAuthorization];
-    }
     [_locationManager requestLocation];
+#endif
 }
 
 - (void)failWithProblem:(NSString *)problem {

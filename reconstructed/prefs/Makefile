@@ -5,6 +5,7 @@ BUNDLE_NAME = GlintPrefs
 GlintPrefs_FILES = GLTRootListController.m GLTCells.m
 GlintPrefs_FRAMEWORKS = UIKit Foundation
 GlintPrefs_PRIVATE_FRAMEWORKS = Preferences
+GlintPrefs_LDFLAGS += -F$(THEOS)/lib/iphone
 GlintPrefs_INSTALL_PATH = /Library/PreferenceBundles
 GlintPrefs_CFLAGS = -fobjc-arc -IResources -Wno-deprecated-declarations
 GlintPrefs_RESOURCE_DIRS = Resources

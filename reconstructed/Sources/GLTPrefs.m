@@ -155,13 +155,13 @@ static UIColor *GLTColorFromString(NSString *string) {
 - (void)reload {
     CFPreferencesAppSynchronize((__bridge CFStringRef)kGLTPrefsDomain);
 
-    _enabled              = [self boolForKey:@"enabled" fallback:YES];
+    _enabled              = [self boolForKey:@"enabled" fallback:NO];
     _tapToCycle           = [self boolForKey:@"tapToCycle" fallback:YES];
     _showSeconds          = [self boolForKey:@"showSeconds" fallback:NO];
-    _showMediaWhilePlaying = [self boolForKey:@"showMediaWhilePlaying" fallback:YES];
-    _replaceBanners       = [self boolForKey:@"replaceBanners" fallback:YES];
-    _deviceConnections    = [self boolForKey:@"deviceConnections" fallback:YES];
-    _replaceVolumeHUD     = [self boolForKey:@"replaceVolumeHUD" fallback:YES];
+    _showMediaWhilePlaying = [self boolForKey:@"showMediaWhilePlaying" fallback:NO];
+    _replaceBanners       = [self boolForKey:@"replaceBanners" fallback:NO];
+    _deviceConnections    = [self boolForKey:@"deviceConnections" fallback:NO];
+    _replaceVolumeHUD     = [self boolForKey:@"replaceVolumeHUD" fallback:NO];
 
     _notificationDuration = [self doubleForKey:@"notificationDuration" fallback:3 min:1 max:8];
     _volumeDuration       = [self doubleForKey:@"volumeDuration" fallback:1.5 min:0.5 max:5];
