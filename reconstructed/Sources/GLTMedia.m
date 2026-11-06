@@ -24,6 +24,18 @@ static NSString *const kGLTNowPlayingElapsed  = @"kMRMediaRemoteNowPlayingInfoEl
 static NSString *const kGLTNowPlayingTime     = @"kMRMediaRemoteNowPlayingInfoTimestamp";
 static NSString *const kGLTNowPlayingRate     = @"kMRMediaRemoteNowPlayingInfoPlaybackRate";
 
+// Original metadata fallback at 0x156c0..0x156e8; keep the private declaration
+// local to this provider rather than changing the shared SpringBoard surface.
+@interface SBMediaController (GLTMetadata)
+- (NSDictionary *)_nowPlayingInfo;
+@end
+
+static BOOL GLTMediaInfoHasTitle(NSDictionary *info) {
+    if (![info isKindOfClass:[NSDictionary class]]) return NO;
+    id title = info[kGLTNowPlayingTitle];
+    return [title isKindOfClass:[NSString class]] && [title length] > 0;
+}
+
 static void *GLTMediaRemoteHandle(void) {
     static void *handle;
     static dispatch_once_t once;
@@ -45,6 +57,7 @@ static void *GLTMediaRemoteHandle(void) {
 - (instancetype)init {
     self = [super init];
     if (!self) return nil;
+    _remotePlaying = -1;
 
     void *handle = GLTMediaRemoteHandle();
     if (handle) {
@@ -84,39 +97,44 @@ static void *GLTMediaRemoteHandle(void) {
 
 #pragma mark - Refresh
 
-// Re-read both the metadata dictionary and the playing flag, then tell the UI
-// only when something actually moved.
+// Publish each refreshed snapshot from its main-queue completion. The remote
+// readers are asynchronous: posting at request time leaves observers stale.
 - (void)mediaDidChange {
     void *handle = GLTMediaRemoteHandle();
-    if (!handle) return;
-
-    GLTMRGetInfoFn getInfo = (GLTMRGetInfoFn)dlsym(handle, "MRMediaRemoteGetNowPlayingInfo");
-    GLTMRGetPlayingFn getPlaying =
-        (GLTMRGetPlayingFn)dlsym(handle, "MRMediaRemoteGetNowPlayingApplicationIsPlaying");
+    GLTMRGetInfoFn getInfo = handle
+        ? (GLTMRGetInfoFn)dlsym(handle, "MRMediaRemoteGetNowPlayingInfo") : NULL;
+    GLTMRGetPlayingFn getPlaying = handle
+        ? (GLTMRGetPlayingFn)dlsym(handle, "MRMediaRemoteGetNowPlayingApplicationIsPlaying") : NULL;
 
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         GLTMedia *strongSelf = weakSelf;
         if (!strongSelf) return;
 
-        NSDictionary *previous = strongSelf->_info;
-
+        void (^publishInfo)(CFDictionaryRef) = ^(CFDictionaryRef info) {
+            NSDictionary *snapshot = (__bridge NSDictionary *)info;
+            if (!GLTMediaInfoHasTitle(snapshot)) {
+                id controller = [strongSelf controller];
+                snapshot = [controller respondsToSelector:@selector(_nowPlayingInfo)]
+                    ? [controller _nowPlayingInfo] : nil;
+            }
+            strongSelf->_info = [snapshot isKindOfClass:[NSDictionary class]] ? [snapshot copy] : nil;
+            strongSelf->_infoDate = [NSDate date];
+            [[NSNotificationCenter defaultCenter] postNotificationName:GLTSourcesDidChangeNotification
+                                                                object:nil];
+        };
         if (getInfo) {
-            getInfo(dispatch_get_main_queue(), ^(CFDictionaryRef info) {
-                strongSelf->_info = [(__bridge NSDictionary *)info copy];
-                strongSelf->_infoDate = [NSDate date];
-            });
+            getInfo(dispatch_get_main_queue(), publishInfo);
+        } else {
+            publishInfo(NULL);
         }
 
         if (getPlaying) {
             getPlaying(dispatch_get_main_queue(), ^(Boolean playing) {
                 strongSelf->_remotePlaying = playing ? 1 : 0;
+                [[NSNotificationCenter defaultCenter] postNotificationName:GLTSourcesDidChangeNotification
+                                                                    object:nil];
             });
-        }
-
-        if (previous == nil || ![previous isEqualToDictionary:strongSelf->_info]) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:GLTSourcesDidChangeNotification
-                                                                object:nil];
         }
     });
 }
@@ -124,15 +142,16 @@ static void *GLTMediaRemoteHandle(void) {
 #pragma mark - Metadata
 
 - (BOOL)hasMedia {
-    return _info != nil;
+    return GLTMediaInfoHasTitle(_info);
 }
 
 - (BOOL)isPlaying {
+    if (_remotePlaying != -1) return _remotePlaying != 0;
     id controller = [self controller];
     if ([controller respondsToSelector:@selector(isPlaying)]) {
         return [controller isPlaying];
     }
-    return _remotePlaying != 0;
+    return NO;
 }
 
 - (NSString *)title {
@@ -159,6 +178,7 @@ static void *GLTMediaRemoteHandle(void) {
     if (![self isPlaying]) return elapsed;
 
     NSDate *timestamp = _info[kGLTNowPlayingTime];
+    if (![timestamp isKindOfClass:[NSDate class]]) timestamp = _infoDate;
     double rate = [_info[kGLTNowPlayingRate] doubleValue];
     if ([timestamp isKindOfClass:[NSDate class]] && rate > 0) {
         elapsed += -[timestamp timeIntervalSinceNow] * rate;

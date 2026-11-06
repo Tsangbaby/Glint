@@ -20,15 +20,18 @@ import unittest
 ROOT = Path(os.environ.get("GLINT_SOURCE_ROOT", Path(__file__).resolve().parents[1]))
 SOURCE = ROOT / "reconstructed"
 CONTROLLER = SOURCE / "Sources/GLTController.m"
-# The new original-card/menu restoration explicitly widens only these bodies.
-# The unchanged-zone digest below is derived from frozen predecessor
-# 1bb2313d9b2e7e5e651f47b654419f26968c87be, NOT from the edited worktree.
-APPROVED_METHODS = (
-    "cutout", "openPlatter", "fitPlatterToContent", "clockTapped",
-    "contentForPill", "storageContent", "weatherContent", "countContent", "sunContent",
-    "platterContent", "pickerRowForPill", "pickerCellForPill", "showPicker",
-    "pickerRowTapped", "hidePicker",
-)
+# Device-accepted predecessor, not a digest blessed from the edited worktree.
+ACCEPTED_BASELINE = "c4c7817f66a13b8e76677d2e000112cd8bbe7ae5"
+# Only feature deletion/text and Weather completion wiring may change this round.
+# Shell geometry, Scene/touch ownership, input and picker methods remain bound.
+APPROVED_METHODS = {
+    "init", "start", "updateFormatters", "tick", "wantsWeather", "showsPlainTime",
+    "shownKind", "pillContent", "contentForPill", "mediaContent", "alarmContent",
+    "platterContent", "sourcesChanged",
+    "batteryChanged", "batteryContent", "checkDevices", "showConnection", "showsConnection",
+    "nextEventContent", "countdownContent", "sunContent", "eventsLeftToday", "countContent",
+    "sampleNetwork", "speed",
+}
 
 
 def method(text, name):
@@ -73,36 +76,23 @@ def spring_animations(body, source):
 
 
 def protected_controller(text):
-    # These are the only approved bodies; shared Scene/touch/lifecycle code remains
-    # byte-bound (with the baseline's existing CRLF normalized for this digest).
-    for name in APPROVED_METHODS:
-        body = method(text, name)
-        text = text.replace(body, "/* APPROVED_CARD_METHOD:" + name + " */", 1)
-    for name, allowed in (
-        ("kGLTPlatterSpringDamping", {"0.78", "0.72"}),
-        ("kGLTPlatterOpenDuration", {"0.42", "0.6"}),
-        ("kGLTPlatterMinHeight", {"44"}),
-    ):
-        pattern = r"^static const [^\n]*\b" + name + r"\s*=\s*([^;\n]+);\n"
-        values = re.findall(pattern, text, re.M)
-        if len(values) > 1 or any(v.strip() not in allowed for v in values):
-            raise AssertionError("unauthorized constant mutation: " + name)
-        if name != "kGLTPlatterMinHeight" and len(values) != 1:
-            raise AssertionError("missing retained card constant: " + name)
-        text = re.sub(pattern, "", text, flags=re.M)
-    return hashlib.sha256(text.encode()).hexdigest()
+    names = re.findall(r"^[+-] \([^\n)]+\)(\w+)(?=\s|:)", text, re.M)
+    if len(names) != len(set(names)):
+        raise AssertionError("duplicate Controller method")
+    retained = sorted(set(names) - APPROVED_METHODS)
+    protected = "\n".join(method(text, name) for name in retained)
+    constants = re.findall(r"^static const [^\n]+;$", text, re.M)
+    return hashlib.sha256((protected + "\n" + "\n".join(constants)).encode()).hexdigest()
 
 
 def protected_preferences(text):
-    # Only presentation/cycle order and its original-provenance comment may
-    # change. Persisted IDs, names/symbols, defaults and all readers stay frozen.
-    start, end = "#pragma mark - Pill catalogue\n\n", "// Backed by the __const tables"
-    if text.count(start) != 1 or text.count(end) != 1 or text.index(start) >= text.index(end):
-        raise AssertionError("missing/duplicate/out-of-order pill-order boundaries")
-    prefix, rest = text.split(start, 1)
-    order, suffix = rest.split(end, 1)
-    method(start + order, "pillOrder")
-    return hashlib.sha256((prefix + start + "/* AUTHORIZED_PILL_ORDER */\n\n" + end + suffix).encode()).hexdigest()
+    names = re.findall(r"^[+-] \([^\n)]+\)(\w+)(?=\s|:)", text, re.M)
+    if len(names) != len(set(names)):
+        raise AssertionError("duplicate Preferences method")
+    allowed = {"pillOrder", "nameForPill", "symbolForPill", "setPill", "reload"}
+    protected = "\n".join(method(text, name) for name in sorted(set(names) - allowed))
+    color = unique(r"(#pragma mark - Colour parsing\n.*?)(?=#pragma mark - Reload)", text)
+    return hashlib.sha256((protected + color).encode()).hexdigest()
 
 
 C_PREFIX = r'''
@@ -322,27 +312,34 @@ int main(void) {
         self.assertIn("[platter layoutIfNeeded];", body)
 
     def test_accepted_hooks_scene_and_unauthorized_preferences_stay_frozen(self):
+        def accepted(relative):
+            return subprocess.check_output(['git', 'show', ACCEPTED_BASELINE + ':reconstructed/' + relative],
+                                           cwd=ROOT).decode().replace('\r\n', '\n')
         text = CONTROLLER.read_text()
-        expected = "e3f8b428f71b71e91a99ed9c6ede4ddbf40221b4557fe41e086dd8ecb169e2a0"
+        expected = protected_controller(accepted('Sources/GLTController.m'))
         self.assertEqual(protected_controller(text), expected)
-        header = (SOURCE / "Headers/GLTController.h").read_bytes()
-        old, new = b"- (double)cutout;", b"- (NSInteger)cutout;"
-        self.assertEqual(header.count(old) + header.count(new), 1)
-        self.assertEqual(hashlib.sha256(header.replace(new, old)).hexdigest(),
-                         "736e3d5eb90ba86799b553e3a6031c0455d91c7ac1213c99f27b239f9efa7f0e")
+        header = (SOURCE / "Headers/GLTController.h").read_text()
+        baseline_header = accepted('Headers/GLTController.h')
+        for field in ('_window', '_clockViews', '_dateViews', '_anchorFrame', '_touchView', '_pickerView',
+                      '_shownKind', '_previousKeyWindow', '_timer', '_timeFormatter', '_volumeUntil',
+                      '_volume', '_notification', '_notificationUntil', '_pendingNotifications',
+                      '_platterView', '_dismissView'):
+            declaration = unique(r'^[^\n]*\b' + field + r'\b[^\n]*$', baseline_header)
+            self.assertIn(declaration, header, field)
+        self.assertEqual(header.count('- (NSInteger)cutout;'), 1)
+        self.assertIn('__weak GLTPlatterContent *', header)
         for path, digest in (
             ("Tweak.xm", "6c2c17de816b55b43b5e7e780ebf5cca54dd5bd97c9d5dece7e777a6df198a33"),
             ("Sources/GLTClock.m", "fe9cbe44f54eadf1baad271f03fbad2d91969bc0ea7c2239b2717b653928c13f"),
         ):
             self.assertEqual(hashlib.sha256((SOURCE / path).read_bytes()).hexdigest(), digest, path)
         prefs = (SOURCE / "Sources/GLTPrefs.m").read_text()
-        prefs_digest = "ce59ebf0e579134fa1c2c7cf736cba41405227724b5f0fe23a89e5725198850a"
+        prefs_digest = protected_preferences(accepted('Sources/GLTPrefs.m'))
         self.assertEqual(protected_preferences(prefs), prefs_digest)
-        self.assertNotEqual(protected_preferences(prefs.replace('fallback:NO', 'fallback:YES', 1)), prefs_digest)
-        for anchor in ("#pragma mark - Pill catalogue\n\n", "// Backed by the __const tables"):
-            for replacement in ("", anchor + "\n" + anchor):
-                with self.assertRaises(AssertionError):
-                    protected_preferences(prefs.replace(anchor, replacement, 1))
+        self.assertNotEqual(protected_preferences(prefs.replace('CFPreferencesCopyAppValue', 'CFPreferencesCopyWrongAppValue', 1)), prefs_digest)
+        self.assertNotEqual(protected_preferences(prefs.replace('scanner scanHexInt:', 'scanner scanInt:', 1)), prefs_digest)
+        with self.assertRaises(AssertionError):
+            protected_preferences(prefs + '\n- (id)objectForKey:(NSString *)key {\n    return nil;\n}\n')
         with self.assertRaises(AssertionError):
             protected_controller(text + "\n- (NSInteger)cutout {\n    return 0;\n}\n")
         self.assertNotEqual(protected_controller(text.replace("- (void)layoutTouchView {", "- (void)layoutTouchView {\n    (void)self;", 1)), expected)

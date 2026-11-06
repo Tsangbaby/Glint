@@ -1,161 +1,16 @@
 //
 //  GLTModels.m
 //
-//  The plain value objects plus the three lookups that need private frameworks:
-//  accessory batteries (BCBatteryDeviceController), the contact/recents search
-//  used by the composer, and the iMessage sender (IMCore).
+//  Plain value objects, contact/recents lookup for the composer, and
+//  the iMessage sender (IMCore).
 //
-//  Recovered from 0x16448 (devices), 0x1871c (contacts), 0x191e4 / 0x1938c
+//  Recovered from 0x1871c (contacts), 0x191e4 / 0x1938c
 //  (iMessage), 0x17418 (alarm equality), 0x19b6c (opening an app).
 //
 
 #import "Glint.h"
 #import "GlintPrivate.h"
 #import <dlfcn.h>
-
-#pragma mark - Battery devices
-
-@interface BCBatteryDevice : NSObject
-@property (nonatomic, readonly) NSString *identifier;
-@property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) NSString *groupName;
-@property (nonatomic, readonly) long long percentCharge;
-@property (nonatomic, readonly, getter=isCharging) BOOL charging;
-@property (nonatomic, readonly, getter=isInternal) BOOL internal;
-@property (nonatomic, readonly) NSArray *parts;
-@end
-
-@interface BCBatteryDeviceController : NSObject
-+ (instancetype)sharedInstance;
-- (NSArray *)connectedDevices;
-@end
-
-// Substring -> SF Symbol, checked in order. The original keeps this as an
-// array of arrays in __objc_arrayobj (0x2f1c0), 11 groups in total.
-static NSString *GLTGlyphForDeviceName(NSString *name) {
-    static NSArray<NSArray *> *table;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        table = @[@[@"airpods max", @"airpodsmax"],
-                  @[@"airpods pro", @"airpodspro"],
-                  @[@"airpods"],
-                  @[@"beats"],
-                  @[@"watch", @"applewatch"],
-                  @[@"pencil", @"applepencil"],
-                  @[@"mouse", @"magicmouse"],
-                  @[@"trackpad"],
-                  @[@"keyboard"],
-                  @[@"iphone"],
-                  @[@"ipad"]];
-    });
-
-    NSString *lower = [name lowercaseString];
-    NSArray<NSString *> *symbols = @[@"airpods.max", @"airpods.pro", @"airpods",
-                                     @"beats.headphones", @"applewatch", @"applepencil",
-                                     @"magicmouse", @"rectangle.and.hand.point.up.left",
-                                     @"keyboard", @"iphone", @"ipad"];
-
-    for (NSUInteger i = 0; i < table.count; i++) {
-        for (NSString *needle in table[i]) {
-            if ([lower containsString:needle]) {
-                return symbols[i];
-            }
-        }
-    }
-    return @"headphones";
-}
-
-// Parts of a multi-piece accessory (AirPods L / R / Case) are folded into one
-// row whose details string lists each piece.
-static NSString *GLTDetailsForParts(NSArray *parts) {
-    if (parts.count < 2) return nil;
-
-    NSMutableArray<NSString *> *chunks = [NSMutableArray array];
-    for (BCBatteryDevice *part in parts) {
-        NSString *label = part.name;
-        if (!label.length) continue;
-        [chunks addObject:[NSString stringWithFormat:@"%@ %lld%%", label, part.percentCharge]];
-    }
-    return chunks.count ? [chunks componentsJoinedByString:@"  "] : nil;
-}
-
-NSArray<GLTDevice *> *GLTConnectedDevices(void) {
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        dlopen("/System/Library/PrivateFrameworks/BatteryCenter.framework/BatteryCenter", RTLD_LAZY);
-    });
-
-    Class controllerClass = NSClassFromString(@"BCBatteryDeviceController");
-    if (![controllerClass respondsToSelector:@selector(sharedInstance)]) return @[];
-
-    NSMutableArray<GLTDevice *> *result = [NSMutableArray array];
-    NSMutableDictionary<NSString *, GLTDevice *> *byIdentifier = [NSMutableDictionary dictionary];
-
-    @try {
-        for (BCBatteryDevice *device in [[controllerClass sharedInstance] connectedDevices]) {
-            if (![device respondsToSelector:@selector(identifier)]) continue;
-
-            NSString *identifier = device.identifier ?: [[NSUUID UUID] UUIDString];
-            GLTDevice *entry = byIdentifier[identifier];
-
-            if (!entry) {
-                entry = [GLTDevice new];
-                entry.identifier = identifier;
-                entry.name = device.groupName.length ? device.groupName : device.name;
-                entry.percent = device.percentCharge;
-                entry.charging = device.charging;
-                entry.internal = device.internal;
-                entry.glyph = GLTSymbol(GLTGlyphForDeviceName(entry.name ?: @""), 15, UIFontWeightRegular);
-                byIdentifier[identifier] = entry;
-                [result addObject:entry];
-            } else if (device.percentCharge > entry.percent) {
-                entry.percent = device.percentCharge;
-                entry.charging = entry.charging || device.charging;
-            }
-
-            if ([device respondsToSelector:@selector(parts)]) {
-                NSString *details = GLTDetailsForParts(device.parts);
-                if (details.length) entry.details = details;
-            }
-        }
-    } @catch (NSException *exception) {
-        GLTLog(@"battery devices: %@", exception);
-    }
-
-    // The phone itself is not part of connectedDevices on every build; append
-    // it from UIDevice when missing.
-    BOOL hasInternal = NO;
-    for (GLTDevice *device in result) {
-        if (device.internal) { hasInternal = YES; break; }
-    }
-    if (!hasInternal) {
-        UIDevice *current = [UIDevice currentDevice];
-        if (current.batteryLevel >= 0) {
-            GLTDevice *phone = [GLTDevice new];
-            phone.identifier = @"com.apple.internal";
-            phone.name = current.name;
-            phone.percent = (long long)lroundf(current.batteryLevel * 100.0f);
-            phone.charging = current.batteryState == UIDeviceBatteryStateCharging
-                          || current.batteryState == UIDeviceBatteryStateFull;
-            phone.internal = YES;
-            phone.glyph = GLTSymbol([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad
-                                    ? @"ipad" : @"iphone", 15, UIFontWeightRegular);
-            [result insertObject:phone atIndex:0];
-        }
-    }
-
-    // Internal (the phone) first, then accessories by descending charge.
-    [result sortUsingComparator:^NSComparisonResult(GLTDevice *a, GLTDevice *b) {
-        if (a.internal != b.internal) return a.internal ? NSOrderedAscending : NSOrderedDescending;
-        if (a.percent == b.percent) return NSOrderedSame;
-        return a.percent > b.percent ? NSOrderedAscending : NSOrderedDescending;
-    }];
-
-    return result;
-}
-
-@implementation GLTDevice
-@end
 
 #pragma mark - Alarm
 
@@ -214,7 +69,7 @@ NSArray<GLTRecipient *> *GLTSearchRecipients(NSString *query) {
         GLTRecipient *direct = [GLTRecipient new];
         direct.name = nil;
         direct.address = trimmed;
-        direct.detail = looksLikeEmail ? @"Email" : @"Number";
+        direct.detail = looksLikeEmail ? GLTLocalizedString(@"Email") : GLTLocalizedString(@"Number");
         [results addObject:direct];
     }
 
@@ -239,7 +94,7 @@ NSArray<GLTRecipient *> *GLTSearchRecipients(NSString *query) {
                 GLTRecipient *recipient = [GLTRecipient new];
                 recipient.name = name;
                 recipient.address = phone.value.stringValue;
-                recipient.detail = [CNLabeledValue localizedStringForLabel:phone.label] ?: @"phone";
+                recipient.detail = [CNLabeledValue localizedStringForLabel:phone.label] ?: GLTLocalizedString(@"phone");
                 [results addObject:recipient];
                 if (results.count >= 8) return results;
             }
@@ -249,7 +104,7 @@ NSArray<GLTRecipient *> *GLTSearchRecipients(NSString *query) {
                 GLTRecipient *recipient = [GLTRecipient new];
                 recipient.name = name;
                 recipient.address = email.value;
-                recipient.detail = [CNLabeledValue localizedStringForLabel:email.label] ?: @"Email";
+                recipient.detail = [CNLabeledValue localizedStringForLabel:email.label] ?: GLTLocalizedString(@"Email");
                 [results addObject:recipient];
                 if (results.count >= 8) return results;
             }

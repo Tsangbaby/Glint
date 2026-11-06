@@ -12,8 +12,14 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "reconstructed/Sources/GLTInteractivePlatters.m"
 
 
+def english_source():
+    # Strip only fixed localization wrappers. Runtime coverage/format tests
+    # separately require them; rendering/lifecycle bytes remain protected here.
+    return re.sub(r'GLTLocalizedString\((@"(?:\\.|[^"\\])*")\)', r'\1', SOURCE.read_text())
+
+
 def section(name):
-    text = SOURCE.read_text()
+    text = english_source()
     return text.split("@implementation " + name, 1)[1].split("\n@end", 1)[0]
 
 
@@ -184,7 +190,7 @@ class InteractiveCards(unittest.TestCase):
                 self.assertEqual(lib.timerFraction(remaining, duration), expected)
 
     def test_submission_and_lifecycle_bytes_remain_baseline(self):
-        text = SOURCE.read_text()
+        text = english_source()
         self.assertEqual(hashlib.sha256(text.split('#pragma mark - Sending', 1)[1].encode()).hexdigest(),
                          '00022a489020421f4372dd96bed6cf0b7332015093689e727a0b0e7f9bcbd957')
         expected = {

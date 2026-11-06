@@ -1,14 +1,9 @@
 //
 //  GLTInfoPlatters.m
 //
-//  The read-only cards: calendar, weather, storage, countdown, unlocks, the
-//  accessory list, and the notification card. Each one is a thin layout over
-//  data the controller already owns, so they are collected here.
-//
-//  Factories recovered from the anonymous sub-functions that follow each
-//  class's .cxx_destruct: 0xf7f4 (events), 0x10ad8 (weather), 0x12600
-//  (storage), 0x12e7c (countdown), 0x13340 (unlocks), 0xf19c (devices),
-//  0x10640 (notification), 0xffd8 (reminders).
+//  Read-only weather, storage/memory, and notification cards.
+//  Factories recovered from 0x10ad8 (weather), 0x12600 (storage), and
+//  0x10640 (notification). Layout remains a thin view over controller data.
 //
 
 #import "Glint.h"
@@ -93,134 +88,19 @@ GLTPlatterContent *GLTMakeNotificationPlatter(GLTNotification *notification) {
     return content;
 }
 
-#pragma mark - Reminders card
-
-@implementation GLTRemindersPlatterView
-
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (!self) return nil;
-
-    GLTEvents *events = [GLTEvents sharedEvents];
-    NSMutableArray *rows = [NSMutableArray arrayWithObject:GLTCaption(@"Reminders")];
-
-    if (![events hasRemindersAccess]) {
-        [rows addObject:GLTInfoMessage(@"Glint can't read your reminders.")];
-    } else if (events.reminders.count == 0) {
-        [rows addObject:GLTInfoMessage(@"All done.")];
-    } else {
-        _shown = [events.reminders subarrayWithRange:
-                  NSMakeRange(0, MIN((NSUInteger)5, events.reminders.count))];
-
-        NSUInteger index = 0;
-        for (EKReminder *reminder in _shown) {
-            UIButton *check = [UIButton buttonWithType:UIButtonTypeSystem];
-            UIImage *image = [UIImage systemImageNamed:@"circle"
-                                     withConfiguration:[UIImageSymbolConfiguration
-                                                          configurationWithPointSize:20 weight:UIImageSymbolWeightRegular]];
-            [check setImage:image forState:UIControlStateNormal];
-            check.tintColor = [UIColor colorWithCGColor:reminder.calendar.CGColor];
-            check.tag = (NSInteger)index++;
-            [check addTarget:self action:@selector(complete:) forControlEvents:UIControlEventTouchUpInside];
-            [check setContentHuggingPriority:UILayoutPriorityRequired
-                                     forAxis:UILayoutConstraintAxisHorizontal];
-
-            UIStackView *row = [[UIStackView alloc] initWithArrangedSubviews:
-                                @[check, GLTLabel(reminder.title ?: @"", 15,
-                                                  UIFontWeightRegular, [UIColor whiteColor])]];
-            row.axis = UILayoutConstraintAxisHorizontal;
-            row.spacing = 10;
-            row.alignment = UIStackViewAlignmentCenter;
-            [rows addObject:row];
-        }
-    }
-
-    [self fillWith:@[GLTStack(rows, 12)]];
-    return self;
-}
-
-- (void)complete:(UIButton *)button {
-    if (button.tag < 0 || button.tag >= (NSInteger)_shown.count) return;
-
-    EKReminder *reminder = _shown[(NSUInteger)button.tag];
-    [button setImage:[UIImage systemImageNamed:@"checkmark.circle.fill"
-                             withConfiguration:[UIImageSymbolConfiguration
-                                                  configurationWithPointSize:20 weight:UIImageSymbolWeightRegular]]
-            forState:UIControlStateNormal];
-    button.enabled = NO;
-
-    [[GLTEvents sharedEvents] completeReminder:reminder];
-}
-
-@end
-
-GLTPlatterContent *GLTMakeRemindersPlatter(void) {
-    return [[GLTRemindersPlatterView alloc] initWithFrame:CGRectZero];
-}
-
-#pragma mark - Events card
-
-GLTPlatterContent *GLTMakeEventsPlatter(void) {
-    GLTEvents *events = [GLTEvents sharedEvents];
-    NSMutableArray *rows = [NSMutableArray arrayWithObject:GLTCaption(@"Upcoming")];
-    if (![events hasCalendarAccess]) {
-        [rows addObject:GLTInfoMessage(@"Glint can't read your calendar.")];
-        return GLTFill(@[GLTStack(rows, 12)]);
-    }
-    NSArray<EKEvent *> *shown = [events.upcomingEvents subarrayWithRange:
-                                NSMakeRange(0, MIN((NSUInteger)4, events.upcomingEvents.count))];
-    if (shown.count == 0) {
-        [rows addObject:GLTInfoMessage(@"No more events today or tomorrow.")];
-        return GLTFill(@[GLTStack(rows, 12)]);
-    }
-    NSDateFormatter *timeFormatter = [NSDateFormatter new];
-    timeFormatter.dateStyle = NSDateFormatterNoStyle;
-    timeFormatter.timeStyle = NSDateFormatterShortStyle;
-    timeFormatter.doesRelativeDateFormatting = YES;
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    for (EKEvent *event in shown) {
-        UIView *dot = [UIView new];
-        dot.backgroundColor = [UIColor colorWithCGColor:event.calendar.CGColor];
-        dot.layer.cornerRadius = 2;
-        dot.translatesAutoresizingMaskIntoConstraints = NO;
-        [dot.widthAnchor constraintEqualToConstant:4].active = YES;
-        UILabel *title = GLTLabel(event.title ?: @"", 15, UIFontWeightSemibold, [UIColor whiteColor]);
-        title.numberOfLines = 1;
-        NSString *when;
-        if (event.isAllDay) {
-            when = @"All day";
-        } else {
-            when = [NSString stringWithFormat:@"%@ – %@",
-                    [timeFormatter stringFromDate:event.startDate],
-                    [timeFormatter stringFromDate:event.endDate]];
-        }
-        if ([calendar isDateInTomorrow:event.startDate]) {
-            when = [NSString stringWithFormat:@"Tomorrow, %@", when];
-        }
-        UILabel *subtitle = GLTLabel(when, 13, UIFontWeightRegular,
-                                    [UIColor colorWithWhite:1 alpha:0.6]);
-        UIStackView *row = [[UIStackView alloc] initWithArrangedSubviews:
-                            @[dot, GLTStack(@[title, subtitle], 2)]];
-        row.axis = UILayoutConstraintAxisHorizontal;
-        row.spacing = 10;
-        [rows addObject:row];
-    }
-    return GLTFill(@[GLTStack(rows, 12)]);
-}
-
 #pragma mark - Weather card
 
 GLTPlatterContent *GLTMakeWeatherPlatter(void) {
     GLTWeather *weather = [GLTWeather sharedWeather];
     if (!weather.hasData) {
-        return GLTFill(@[GLTStack(@[GLTCaption(@"Weather"),
-                                   GLTInfoMessage(weather.problem ?: @"Loading the weather…")], 12)]);
+        return GLTFill(@[GLTStack(@[GLTCaption(GLTLocalizedString(@"Weather")),
+                                   GLTInfoMessage(weather.problem ?: GLTLocalizedString(@"Loading the weather…"))], 12)]);
     }
-    NSString *place = weather.place.length ? weather.place : @"Current Location";
+    NSString *place = weather.place.length ? weather.place : GLTLocalizedString(@"Current Location");
     UILabel *location = GLTLabel(place, 17, UIFontWeightSemibold, [UIColor whiteColor]);
     UILabel *condition = GLTLabel([GLTWeather descriptionForCode:weather.code], 14,
                                   UIFontWeightRegular, [UIColor whiteColor]);
-    UILabel *feels = GLTLabel([NSString stringWithFormat:@"Feels like %@ · Rain %ld%%",
+    UILabel *feels = GLTLabel([NSString stringWithFormat:GLTLocalizedString(@"Feels like %@ · Rain %ld%%"),
                                [GLTWeather temperatureString:weather.feelsLike], (long)weather.rainChance],
                               13, UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.6]);
     UIImageView *glyph = [[UIImageView alloc] initWithImage:
@@ -235,7 +115,7 @@ GLTPlatterContent *GLTMakeWeatherPlatter(void) {
         NSDateFormatter *sunFormatter = [NSDateFormatter new];
         sunFormatter.dateStyle = NSDateFormatterNoStyle;
         sunFormatter.timeStyle = NSDateFormatterShortStyle;
-        [details addObject:GLTLabel([NSString stringWithFormat:@"Sunrise %@ · Sunset %@",
+        [details addObject:GLTLabel([NSString stringWithFormat:GLTLocalizedString(@"Sunrise %@ · Sunset %@"),
                                      [sunFormatter stringFromDate:sunrise], [sunFormatter stringFromDate:sunset]],
                                     13, UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.6])];
     }
@@ -244,7 +124,7 @@ GLTPlatterContent *GLTMakeWeatherPlatter(void) {
     UILabel *temperature = GLTLabel([GLTWeather temperatureString:weather.temperature],
                                     46, UIFontWeightLight, [UIColor whiteColor]);
     temperature.textAlignment = NSTextAlignmentRight;
-    UILabel *range = GLTLabel([NSString stringWithFormat:@"H %@  L %@",
+    UILabel *range = GLTLabel([NSString stringWithFormat:GLTLocalizedString(@"H %@  L %@"),
                                [GLTWeather temperatureString:weather.high],
                                [GLTWeather temperatureString:weather.low]],
                               13, UIFontWeightMedium, [UIColor colorWithWhite:1 alpha:0.6]);
@@ -261,7 +141,7 @@ GLTPlatterContent *GLTMakeWeatherPlatter(void) {
     NSMutableArray<UIView *> *hours = [NSMutableArray array];
     NSUInteger index = 0;
     for (GLTWeatherHour *hour in weather.hours) {
-        UILabel *time = GLTLabel(index++ == 0 ? @"Now" : [formatter stringFromDate:hour.date],
+        UILabel *time = GLTLabel(index++ == 0 ? GLTLocalizedString(@"Now") : [formatter stringFromDate:hour.date],
                                  12, UIFontWeightMedium, [UIColor colorWithWhite:1 alpha:0.6]);
         time.textAlignment = NSTextAlignmentCenter;
         UIImageView *icon = [[UIImageView alloc] initWithImage:
@@ -281,7 +161,7 @@ GLTPlatterContent *GLTMakeWeatherPlatter(void) {
     UIStackView *strip = [[UIStackView alloc] initWithArrangedSubviews:hours];
     strip.axis = UILayoutConstraintAxisHorizontal;
     strip.distribution = UIStackViewDistributionFillEqually;
-    UILabel *attribution = GLTLabel(@"Weather data by Open-Meteo.com", 10,
+    UILabel *attribution = GLTLabel(GLTLocalizedString(@"Weather data by Open-Meteo.com"), 10,
                                     UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.35]);
     attribution.textAlignment = NSTextAlignmentRight;
     UIStackView *stack = GLTStack(@[headline, strip, attribution], 14);
@@ -325,7 +205,7 @@ static UIView *GLTInfoUsageRow(NSString *title, NSString *symbol, long long free
     UIImageView *icon = [[UIImageView alloc] initWithImage:[UIImage systemImageNamed:symbol]];
     icon.tintColor = color;
     UILabel *name = GLTLabel(title, 15, UIFontWeightSemibold, [UIColor whiteColor]);
-    NSString *value = [NSString stringWithFormat:@"%@ free of %@",
+    NSString *value = [NSString stringWithFormat:GLTLocalizedString(@"%@ free of %@"),
                       [NSByteCountFormatter stringFromByteCount:free countStyle:NSByteCountFormatterCountStyleFile],
                       [NSByteCountFormatter stringFromByteCount:total countStyle:NSByteCountFormatterCountStyleFile]];
     UILabel *capacity = GLTLabel(value, 13, UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.6]);
@@ -360,113 +240,9 @@ static UIView *GLTInfoUsageRow(NSString *title, NSString *symbol, long long free
 
 GLTPlatterContent *GLTMakeStoragePlatter(void) {
     GLTInfoSystemUsage usage = GLTInfoCurrentSystemUsage();
-    UIView *storage = GLTInfoUsageRow(@"Storage", @"internaldrive.fill",
+    UIView *storage = GLTInfoUsageRow(GLTLocalizedString(@"Storage"), @"internaldrive.fill",
                                     usage.storageFree, usage.storageTotal, [UIColor systemBlueColor]);
-    UIView *memory = GLTInfoUsageRow(@"Memory", @"memorychip.fill",
+    UIView *memory = GLTInfoUsageRow(GLTLocalizedString(@"Memory"), @"memorychip.fill",
                                    usage.memoryFree, usage.memoryTotal, [UIColor systemPurpleColor]);
     return GLTFill(@[GLTStack(@[storage, memory], 18)]);
-}
-
-#pragma mark - Countdown card
-
-// The original statistic block (0x1314c) is shared by Countdown and Unlocks.
-static UIView *GLTInfoStatistic(NSString *value, NSString *phrase, NSString *detail) {
-    UILabel *number = GLTLabel(value, 46, UIFontWeightLight, [UIColor whiteColor]);
-    UILabel *caption = GLTLabel(phrase, 15, UIFontWeightSemibold, [UIColor whiteColor]);
-    caption.numberOfLines = 2;
-    NSMutableArray *rows = [NSMutableArray arrayWithObjects:number, caption, nil];
-    if (detail) {
-        [rows addObject:GLTLabel(detail, 13, UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.6])];
-    }
-    return GLTStack(rows, 2);
-}
-
-GLTPlatterContent *GLTMakeCountdownPlatter(void) {
-    GLTPrefs *prefs = [GLTPrefs sharedPrefs];
-    NSMutableArray *rows = [NSMutableArray arrayWithObject:GLTCaption(@"Countdown")];
-    if (!prefs.countdownDate) {
-        [rows addObject:GLTInfoMessage(@"Set a date in Glint's settings.")];
-        return GLTFill(@[GLTStack(rows, 10)]);
-    }
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDate *from = [calendar startOfDayForDate:[NSDate date]];
-    NSDate *to = [calendar startOfDayForDate:prefs.countdownDate];
-    NSInteger days = [[calendar components:NSCalendarUnitDay fromDate:from toDate:to options:0] day];
-    NSString *title = prefs.countdownTitle.length ? prefs.countdownTitle : @"the date";
-    NSString *phrase;
-    if (days == 0) {
-        phrase = [NSString stringWithFormat:@"%@ is today", title];
-    } else if (days > 0) {
-        phrase = [NSString stringWithFormat:@"%@ until %@", days == 1 ? @"day" : @"days", title];
-    } else {
-        phrase = [NSString stringWithFormat:@"%@ since %@", days == -1 ? @"day" : @"days", title];
-    }
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    formatter.dateStyle = NSDateFormatterFullStyle;
-    formatter.timeStyle = NSDateFormatterNoStyle;
-    NSString *number = [NSString stringWithFormat:@"%ld", (long)(days < 0 ? -days : days)];
-    [rows addObject:GLTInfoStatistic(number, phrase, [formatter stringFromDate:prefs.countdownDate])];
-    return GLTFill(@[GLTStack(rows, 10)]);
-}
-
-#pragma mark - Unlocks card
-
-GLTPlatterContent *GLTMakeUnlocksPlatter(void) {
-    GLTUnlocks *unlocks = [GLTUnlocks sharedUnlocks];
-    NSMutableArray *rows = [NSMutableArray arrayWithObject:GLTCaption(@"Unlocks")];
-    NSString *phrase = unlocks.today == 1 ? @"unlock today" : @"unlocks today";
-    NSString *yesterday = [NSString stringWithFormat:@"Yesterday: %ld", (long)unlocks.yesterday];
-    [rows addObject:GLTInfoStatistic([NSString stringWithFormat:@"%ld", (long)unlocks.today],
-                                   phrase, yesterday)];
-    return GLTFill(@[GLTStack(rows, 10)]);
-}
-
-#pragma mark - Device card
-
-GLTPlatterContent *GLTMakeDevicePlatter(GLTPillContent *summary) {
-    (void)summary;
-    NSMutableArray *columns = [NSMutableArray array];
-    for (GLTDevice *device in GLTConnectedDevices()) {
-        UIImageView *icon = [[UIImageView alloc] initWithImage:device.glyph];
-        icon.tintColor = [UIColor whiteColor];
-        icon.contentMode = UIViewContentModeScaleAspectFit;
-        icon.translatesAutoresizingMaskIntoConstraints = NO;
-        [icon.heightAnchor constraintEqualToConstant:30].active = YES;
-        UILabel *percent = GLTLabel(GLTPercentText(device.percent), 15, UIFontWeightSemibold,
-                                    [UIColor whiteColor]);
-        percent.textAlignment = NSTextAlignmentCenter;
-        NSString *batterySymbol;
-        if (device.charging) batterySymbol = @"battery.100.bolt";
-        else if (device.percent < 0) batterySymbol = @"battery.100";
-        else if (device.percent <= 20) batterySymbol = @"battery.25";
-        else if (device.percent <= 60) batterySymbol = @"battery.50";
-        else if (device.percent <= 85) batterySymbol = @"battery.75";
-        else batterySymbol = @"battery.100";
-        UIImageView *battery = [[UIImageView alloc] initWithImage:[UIImage systemImageNamed:batterySymbol]];
-        battery.tintColor = !device.charging && device.percent >= 0 && device.percent <= 20
-                            ? [UIColor systemRedColor] : [UIColor systemGreenColor];
-        battery.contentMode = UIViewContentModeScaleAspectFit;
-        UILabel *name = GLTLabel(device.name ?: @"", 12, UIFontWeightRegular,
-                                 [UIColor colorWithWhite:1 alpha:0.6]);
-        name.textAlignment = NSTextAlignmentCenter;
-        name.numberOfLines = 2;
-        NSMutableArray *parts = [NSMutableArray arrayWithObjects:icon, percent, battery, name, nil];
-        if (device.details) {
-            UILabel *details = GLTLabel(device.details, 11, UIFontWeightMedium,
-                                        [UIColor colorWithWhite:1 alpha:0.6]);
-            details.font = [UIFont monospacedDigitSystemFontOfSize:11 weight:UIFontWeightMedium];
-            details.textAlignment = NSTextAlignmentCenter;
-            details.numberOfLines = 2;
-            [parts addObject:details];
-        }
-        UIStackView *column = GLTStack(parts, 6);
-        column.alignment = UIStackViewAlignmentCenter;
-        [columns addObject:column];
-    }
-    UIStackView *stack = [[UIStackView alloc] initWithArrangedSubviews:columns];
-    stack.axis = UILayoutConstraintAxisHorizontal;
-    stack.spacing = 8;
-    stack.distribution = UIStackViewDistributionFillEqually;
-    stack.alignment = UIStackViewAlignmentTop;
-    return GLTFill(@[stack]);
 }

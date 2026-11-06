@@ -1,9 +1,9 @@
 //
 //  GLTCells.m
-//  GLTSliderCell + GLTColorCell + GLTDateCell
+//  GLTSliderCell + GLTColorCell
 //
-//  The three custom cells referenced by Root.plist via `cellClass`.
-//  Recovered from GlintPrefs 0x4758 (slider), 0x4fd8 (colour), 0x53ac (date).
+//  The retained custom cells referenced by Root.plist via `cellClass`.
+//  Recovered from GlintPrefs 0x4758 (slider) and 0x4fd8 (colour).
 //
 
 #import <Preferences/PSTableCell.h>
@@ -190,54 +190,6 @@ static NSString *GLTHexFromColor(UIColor *color) {
     NSDictionary *properties = self.specifier.properties;
     GLTWriteValue(properties[@"defaults"], properties[@"key"],
                   GLTHexFromColor(_colorWell.selectedColor));
-}
-
-@end
-
-#pragma mark - Date
-
-@interface GLTDateCell : PSTableCell
-@property (nonatomic, strong) UIDatePicker *picker;
-@end
-
-@implementation GLTDateCell
-
-- (instancetype)initWithStyle:(UITableViewCellStyle)style
-              reuseIdentifier:(NSString *)reuseIdentifier
-                    specifier:(PSSpecifier *)specifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier specifier:specifier];
-    if (!self) return nil;
-
-    _picker = [UIDatePicker new];
-    _picker.datePickerMode = UIDatePickerModeDate;
-    if (@available(iOS 14, *)) {
-        _picker.preferredDatePickerStyle = UIDatePickerStyleCompact;
-    }
-    _picker.translatesAutoresizingMaskIntoConstraints = NO;
-    [_picker addTarget:self action:@selector(dateChanged)
-      forControlEvents:UIControlEventValueChanged];
-    [self.contentView addSubview:_picker];
-
-    [NSLayoutConstraint activateConstraints:@[
-        [_picker.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-16],
-        [_picker.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor],
-    ]];
-
-    return self;
-}
-
-- (void)refreshCellContentsWithSpecifier:(PSSpecifier *)specifier {
-    [super refreshCellContentsWithSpecifier:specifier];
-
-    NSDictionary *properties = specifier.properties;
-    NSDate *stored = GLTReadValue(properties[@"defaults"], properties[@"key"]);
-    _picker.date = [stored isKindOfClass:[NSDate class]] ? stored : [NSDate date];
-}
-
-- (void)dateChanged {
-    NSDictionary *properties = self.specifier.properties;
-    GLTWriteValue(properties[@"defaults"], properties[@"key"], _picker.date);
 }
 
 @end

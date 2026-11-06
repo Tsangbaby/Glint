@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <CoreLocation/CoreLocation.h>
 
 
 @interface GLTWeather : NSObject
@@ -30,6 +31,7 @@
     NSArray *                      _hours; // 0x78
     NSArray *                      _sunrises; // 0x80
     NSArray *                      _sunsets; // 0x88
+    NSDate *                       _attempted; // failed-request backoff, not forecast freshness
 }
 
 @property (nonatomic, assign, readonly) BOOL hasData;
@@ -61,6 +63,6 @@
 - (void)failWithProblem:(id)arg1;
 - (void)fetchForLocation:(CLLocation *)arg1 place:(NSString *)arg2;
 - (void)applyForecast:(NSDictionary *)arg1 place:(NSString *)arg2;
-- (NSDate *)nextSunEvent:(BOOL *)arg1;
+
 
 @end

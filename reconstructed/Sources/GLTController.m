@@ -2,7 +2,7 @@
 //  GLTController.m
 //
 //  The state machine: one overlay window, one touch target over the clock, one
-//  card at a time, plus the transient volume / connection / notification
+//  card at a time, plus the transient volume / notification
 //  states that temporarily take over the pill.
 //
 //  Recovered from 0x504c…0xb648.
@@ -10,10 +10,6 @@
 
 #import "Glint.h"
 #import "GlintPrivate.h"
-#import <ifaddrs.h>
-#import <net/if.h>
-#import <mach/mach.h>
-#import <dlfcn.h>
 
 // Haptic + timer tuning, all read out of the original.
 static const NSTimeInterval kGLTTickInterval = 1.0;
@@ -42,7 +38,6 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     _clockViews = [NSHashTable weakObjectsHashTable];
     _dateViews = [NSHashTable weakObjectsHashTable];
     _pendingNotifications = [NSMutableArray array];
-    _ticks = 0;
     return self;
 }
 
@@ -86,29 +81,20 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     [root.view addSubview:_touchView];
 
     _timeFormatter = [NSDateFormatter new];
-    _dateFormatter = [NSDateFormatter new];
     [self updateFormatters];
-
-    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(keyboardFrameChanged:)
                    name:UIKeyboardWillChangeFrameNotification object:nil];
     [center addObserver:self selector:@selector(keyboardFrameChanged:)
                    name:UIKeyboardWillHideNotification object:nil];
-    [center addObserver:self selector:@selector(batteryChanged)
-                   name:UIDeviceBatteryLevelDidChangeNotification object:nil];
-    [center addObserver:self selector:@selector(batteryChanged)
-                   name:UIDeviceBatteryStateDidChangeNotification object:nil];
-    [center addObserver:self selector:@selector(sourcesChanged)
+    [center addObserver:self selector:@selector(sourcesChanged:)
                    name:GLTSourcesDidChangeNotification object:nil];
-    [center addObserver:self selector:@selector(sourcesChanged)
+    [center addObserver:self selector:@selector(sourcesChanged:)
                    name:GLTLockStateDidChangeNotification object:nil];
     [center addObserver:self selector:@selector(prefsChanged)
                    name:GLTPrefsDidChangeNotification object:nil];
 
-    [GLTEvents sharedEvents];
-    [GLTUnlocks sharedUnlocks];
     [[GLTMedia sharedMedia] mediaDidChange];
     if ([GLTPrefs sharedPrefs].enabled && [self currentPill] == GLTPillAlarm) {
         [[GLTClockItems sharedItems] refresh];
@@ -143,9 +129,6 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
         [NSDateFormatter dateFormatFromTemplate:(GLTPrefs.sharedPrefs.showSeconds ? @"jmmss" : @"jmm")
                                         options:0
                                          locale:locale];
-    _dateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"EEEdMMM"
-                                                               options:0
-                                                                locale:locale];
 }
 
 #pragma mark - Notifications
@@ -160,11 +143,19 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     _window.acceptsKeyboard = !CGRectIsEmpty(frame);
 }
 
-- (void)batteryChanged {
-    [self update];
-}
-
-- (void)sourcesChanged {
+- (void)sourcesChanged:(NSNotification *)note {
+    // Only the Weather provider may replace its already-open content. Keeping
+    // the shell and callback owners avoids closing/reopening unrelated cards.
+    if ([note.object isKindOfClass:[GLTWeather class]] &&
+        _weatherPlatterContent && _platterView.content == _weatherPlatterContent) {
+        GLTPlatterContent *previous = _weatherPlatterContent;
+        GLTPlatterContent *content = GLTMakeWeatherPlatter();
+        content.closeHandler = previous.closeHandler;
+        content.resizeHandler = previous.resizeHandler;
+        _weatherPlatterContent = content;
+        _platterView.content = content;
+        [self fitPlatterToContent];
+    }
     [self update];
 }
 
@@ -192,12 +183,6 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
         [self update];
         return;
     }
-    _ticks++;
-
-    [self sampleNetwork];
-    if (prefs.deviceConnections || [self currentPill] == GLTPillBattery) {
-        [self checkDevices];
-    }
 
     if ([self wantsWeather]) {
         [[GLTWeather sharedWeather] refreshForcing:NO];
@@ -212,66 +197,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 - (BOOL)wantsWeather {
     GLTPrefs *prefs = [GLTPrefs sharedPrefs];
     if (!prefs.enabled) return NO;
-    return prefs.pill == GLTPillWeather || prefs.pill == GLTPillSun;
-}
-
-#pragma mark - Device connections
-
-// Compare the current accessory list against the previous poll; announce a
-// connection or a disconnect with a pill takeover.
-- (void)checkDevices {
-    NSArray<GLTDevice *> *devices = GLTConnectedDevices();
-    NSMutableDictionary *current = [NSMutableDictionary dictionary];
-
-    for (GLTDevice *device in devices) {
-        if (!device.identifier) continue;
-        current[device.identifier] = @(device.percent);
-    }
-
-    if ([GLTPrefs sharedPrefs].enabled && [GLTPrefs sharedPrefs].deviceConnections) {
-        if (_knownDevices) {
-            for (GLTDevice *device in devices) {
-                if (device.internal) continue;
-                id previous = _knownDevices[device.identifier];
-                if (!previous) {
-                    [self showConnection:device connected:YES];
-                } else if ([previous longLongValue] != device.percent) {
-                    [self showConnection:device connected:YES];
-                }
-            }
-            for (NSString *identifier in _knownDevices) {
-                BOOL present = NO;
-                for (GLTDevice *device in devices) {
-                    if ([device.identifier isEqualToString:identifier]) { present = YES; break; }
-                }
-                if (!present) {
-                    GLTDevice *gone = [GLTDevice new];
-                    gone.identifier = identifier;
-                    gone.name = identifier;
-                    [self showConnection:gone connected:NO];
-                }
-            }
-        }
-    }
-
-    _knownDevices = current;
-}
-
-- (void)showConnection:(GLTDevice *)device connected:(BOOL)connected {
-    _connectionDevice = device;
-    _connectionConnected = connected;
-    _connectionUntil = [NSDate dateWithTimeIntervalSinceNow:[GLTPrefs sharedPrefs].notificationDuration];
-
-    UIImpactFeedbackGenerator *haptic =
-        [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight];
-    [haptic impactOccurred];
-
-    [self update];
-    [self updateAfter:[GLTPrefs sharedPrefs].notificationDuration];
-}
-
-- (BOOL)showsConnection {
-    return _connectionUntil && [_connectionUntil timeIntervalSinceNow] > 0;
+    return prefs.pill == GLTPillWeather;
 }
 
 #pragma mark - Transient states
@@ -386,7 +312,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 }
 
 - (BOOL)showsPlainTime {
-    if ([self showsVolume] || [self showsNotification] || [self showsConnection]) return NO;
+    if ([self showsVolume] || [self showsNotification]) return NO;
     return [self currentPill] == GLTPillTime;
 }
 
@@ -453,10 +379,6 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 // Identity of the current pill state; a change is what drives the cross-fade.
 - (NSString *)shownKind {
     if ([self showsVolume]) return @"volume";
-    if ([self showsConnection]) {
-        return [NSString stringWithFormat:@"connection %@ %d",
-                _connectionDevice.identifier ?: @"", _connectionConnected];
-    }
     if ([self showsNotification]) {
         return [NSString stringWithFormat:@"notification %p", _notification];
     }
@@ -473,7 +395,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 
         if (percent <= 0) {
             symbol = @"speaker.slash.fill";
-            text = @"Off";
+            text = GLTLocalizedString(@"Off");
         } else {
             symbol = percent < 34 ? @"speaker.wave.1.fill"
                    : percent < 67 ? @"speaker.wave.2.fill"
@@ -481,19 +403,6 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
             text = [NSString stringWithFormat:@"%lld%%", percent];
         }
         return [GLTPillContent contentWithSymbol:symbol text:text];
-    }
-
-    if ([self showsConnection]) {
-        GLTPillContent *content = [GLTPillContent new];
-        content.image = _connectionConnected
-            ? _connectionDevice.glyph
-            : GLTSymbol(@"headphones", 12, UIFontWeightSemibold);
-        content.imageTint = _connectionConnected ? nil : [UIColor systemRedColor];
-        content.text = _connectionConnected
-            ? GLTPercentText(_connectionDevice.percent)
-            : @"Off";
-        content.progress = _connectionConnected ? _connectionDevice.percent / 100.0 : 0;
-        return content;
     }
 
     if ([self showsNotification]) {
@@ -513,93 +422,25 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
             NSString *text = [_timeFormatter stringFromDate:[NSDate date]];
             return [GLTPillContent contentWithSymbol:nil text:text];
         }
-        case GLTPillDate: {
-            NSString *text = [_dateFormatter stringFromDate:[NSDate date]];
-            return [GLTPillContent contentWithSymbol:@"calendar" text:text];
-        }
-        case GLTPillBattery:
-            return [self batteryContent];
-        case GLTPillNetwork: {
-            NSString *text = _networkText.length ? _networkText : @"↓0K ↑0K";
-            return [GLTPillContent contentWithSymbol:nil text:text];
-        }
         case GLTPillNowPlaying:
             return [self mediaContent];
-        case GLTPillCalendar:
-            return [self countContent:[self eventsLeftToday]
-                             singular:@"event"
-                               plural:@"events"
-                                 none:@"No events"
-                               symbol:@"calendar"];
-        case GLTPillReminders:
-            return [self countContent:(NSInteger)[GLTEvents sharedEvents].reminders.count
-                             singular:@"reminder"
-                               plural:@"reminders"
-                                 none:@"All done"
-                               symbol:@"checklist"];
         case GLTPillWeather:
             return [self weatherContent];
         case GLTPillAlarm:
             return [self alarmContent];
-        case GLTPillNextEvent:
-            return [self nextEventContent];
-        case GLTPillSun:
-            return [self sunContent];
         case GLTPillStorage:
             return [self storageContent];
-        case GLTPillCountdown:
-            return [self countdownContent];
-        case GLTPillUnlocks: {
-            long long today = [GLTUnlocks sharedUnlocks].today;
-            NSString *text = [NSString stringWithFormat:(today == 1 ? @"%ld unlock" : @"%ld unlocks"),
-                              (long)today];
-            return [GLTPillContent contentWithSymbol:@"lock.open" text:text];
-        }
         case GLTPillQuickMessage:
-            return [GLTPillContent contentWithSymbol:@"square.and.pencil" text:@"Message"];
+            return [GLTPillContent contentWithSymbol:@"square.and.pencil" text:GLTLocalizedString(@"Message")];
         default:
             return [GLTPillContent new];
     }
 }
 
-- (GLTPillContent *)batteryContent {
-    GLTDevice *device = GLTConnectedDevices().firstObject;
-    long long percent = device ? device.percent : -1;
-    BOOL charging = device.charging;
-
-    NSString *symbol;
-    if (percent < 0) {
-        symbol = @"battery.0";
-    } else if (charging) {
-        symbol = @"battery.100.bolt";
-    } else if (percent <= 0) {
-        symbol = @"battery.0";
-    } else if (percent < 25) {
-        symbol = @"battery.0";
-    } else if (percent < 50) {
-        symbol = @"battery.25";
-    } else if (percent < 75) {
-        symbol = @"battery.50";
-    } else if (percent < 100) {
-        symbol = @"battery.75";
-    } else {
-        symbol = @"battery.100";
-    }
-
-    GLTPillContent *content = [GLTPillContent contentWithSymbol:symbol text:GLTPercentText(percent)];
-    if (percent >= 0 && percent <= 20 && !charging) {
-        content.imageTint = [UIColor systemRedColor];
-    } else if (charging) {
-        content.imageTint = [UIColor systemGreenColor];
-    }
-    content.progress = percent >= 0 ? percent / 100.0 : 0;
-    return content;
-}
-
 - (GLTPillContent *)mediaContent {
     GLTMedia *media = [GLTMedia sharedMedia];
     if (![media hasMedia]) {
-        return [GLTPillContent contentWithSymbol:@"music.note" text:@"Not Playing"];
+        return [GLTPillContent contentWithSymbol:@"music.note" text:GLTLocalizedString(@"Not Playing")];
     }
 
     UIWindow *host = _window;
@@ -608,7 +449,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     (void)font;
 
     GLTPillContent *content = [GLTPillContent contentWithSymbol:@"music.note"
-                                                            text:[media title] ?: @"Not Playing"];
+                                                            text:[media title] ?: GLTLocalizedString(@"Not Playing")];
     double duration = [media duration];
     if (duration > 0) {
         content.progress = [media elapsed] / duration;
@@ -662,47 +503,11 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 
     GLTAlarm *alarm = items.alarms.firstObject;
     if (!alarm) {
-        return [GLTPillContent contentWithSymbol:@"alarm" text:@"No alarms"];
+        return [GLTPillContent contentWithSymbol:@"alarm" text:GLTLocalizedString(@"No alarms")];
     }
 
     return [GLTPillContent contentWithSymbol:@"alarm.fill"
                                         text:[self stringForUpcomingDate:alarm.fireDate]];
-}
-
-- (GLTPillContent *)nextEventContent {
-    NSArray<EKEvent *> *events = [GLTEvents sharedEvents].upcomingEvents;
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-
-    for (EKEvent *event in events) {
-        if ([event.endDate timeIntervalSinceNow] <= 0) continue;
-        if (event.isAllDay) continue;
-
-        BOOL today = [calendar isDateInToday:event.startDate];
-        double minutes = [event.startDate timeIntervalSinceNow] / 60.0;
-
-        NSString *when;
-        if (minutes <= 0) {
-            when = @"now";
-        } else if (minutes < 60) {
-            when = [NSString stringWithFormat:@"in %ld min", (long)minutes];
-        } else if (today) {
-            when = @"today";
-        } else {
-            when = @"tomorrow";
-        }
-
-        NSString *title = event.title.length > 18
-            ? [[event.title substringToIndex:17] stringByAppendingString:@"…"]
-            : (event.title ?: @"Event");
-
-        GLTPillContent *content = [GLTPillContent contentWithSymbol:@"calendar"
-                                                                text:[title stringByAppendingString:@" "]];
-        content.text = [NSString stringWithFormat:@"%@ · %@", title, when];
-        content.imageTint = [UIColor colorWithCGColor:event.calendar.CGColor];
-        return content;
-    }
-
-    return [GLTPillContent contentWithSymbol:@"calendar" text:@"No events"];
 }
 
 - (GLTPillContent *)storageContent {
@@ -716,129 +521,6 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     NSString *text = [NSByteCountFormatter stringFromByteCount:free
                                                  countStyle:NSByteCountFormatterCountStyleFile];
     return [GLTPillContent contentWithSymbol:@"internaldrive" text:text];
-}
-
-- (GLTPillContent *)countdownContent {
-    GLTPrefs *prefs = [GLTPrefs sharedPrefs];
-    NSDate *target = prefs.countdownDate;
-    if (!target) {
-        return [GLTPillContent contentWithSymbol:@"hourglass" text:@"Set a date"];
-    }
-
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDate *from = [calendar startOfDayForDate:[NSDate date]];
-    NSDate *to = [calendar startOfDayForDate:target];
-    NSInteger days = [[calendar components:NSCalendarUnitDay fromDate:from toDate:to options:0] day];
-
-    NSString *text;
-    if (days == 0) {
-        text = @"today";
-    } else if (days == 1) {
-        text = @"1 day";
-    } else if (days > 1) {
-        text = [NSString stringWithFormat:@"%ld days", (long)days];
-    } else if (days == -1) {
-        text = @"1 day ago";
-    } else {
-        text = [NSString stringWithFormat:@"%ld days ago", (long)-days];
-    }
-
-    NSString *title = prefs.countdownTitle;
-    if (title.length) {
-        text = [NSString stringWithFormat:@"%@ · %@", title, text];
-    }
-    return [GLTPillContent contentWithSymbol:@"hourglass" text:text];
-}
-
-- (GLTPillContent *)sunContent {
-    BOOL sunset = NO;
-    NSDate *date = [[GLTWeather sharedWeather] nextSunEvent:&sunset];
-    if (!date) {
-        return [GLTPillContent contentWithSymbol:@"sunrise" text:@"--:--"];
-    }
-
-    // Original 0x8a44 shares the clock formatter (including showSeconds).
-    // Keep the current provider's isSunset flag contract at this boundary.
-    GLTPillContent *content = [GLTPillContent contentWithSymbol:(sunset ? @"sunset.fill" : @"sunrise.fill")
-                                                            text:[_timeFormatter stringFromDate:date]];
-    content.imageTint = [UIColor systemOrangeColor];
-    return content;
-}
-
-- (NSInteger)eventsLeftToday {
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSInteger count = 0;
-
-    for (EKEvent *event in [GLTEvents sharedEvents].upcomingEvents) {
-        if (![calendar isDateInToday:event.startDate]) continue;
-        if ([event.endDate timeIntervalSinceNow] <= 0) continue;
-        count++;
-    }
-    return count;
-}
-
-- (GLTPillContent *)countContent:(NSInteger)count
-                        singular:(NSString *)singular
-                          plural:(NSString *)plural
-                            none:(NSString *)none
-                          symbol:(NSString *)symbol
-{
-    if (count <= 0) {
-        return [GLTPillContent contentWithSymbol:symbol text:none];
-    }
-    // Original 0x8cb8 renders the count as a badge, not twice in the text.
-    GLTPillContent *content = [GLTPillContent contentWithSymbol:nil
-                                                            text:(count == 1 ? singular : plural)];
-    content.badge = count;
-    return content;
-}
-
-#pragma mark - Network sampling
-
-// Sum the byte counters on the Wi-Fi and cellular interfaces and turn the
-// delta into a rate. getifaddrs is the only way to get this without private
-// frameworks.
-- (void)sampleNetwork {
-    unsigned long long received = 0;
-    unsigned long long sent = 0;
-
-    struct ifaddrs *interfaces = NULL;
-    if (getifaddrs(&interfaces) == 0) {
-        for (struct ifaddrs *entry = interfaces; entry != NULL; entry = entry->ifa_next) {
-            if (!entry->ifa_addr || entry->ifa_addr->sa_family != AF_LINK) continue;
-
-            NSString *name = [NSString stringWithUTF8String:entry->ifa_name];
-            if (![name hasPrefix:@"en"] && ![name hasPrefix:@"pdp_ip"]) continue;
-
-            struct if_data *data = (struct if_data *)entry->ifa_data;
-            if (!data) continue;
-            received += data->ifi_ibytes;
-            sent     += data->ifi_obytes;
-        }
-        freeifaddrs(interfaces);
-    }
-
-    NSDate *now = [NSDate date];
-    if (_lastNetworkDate && received >= _lastReceived && sent >= _lastSent) {
-        double seconds = [now timeIntervalSinceDate:_lastNetworkDate];
-        if (seconds > 0.2) {
-            double down = (received - _lastReceived) / seconds;
-            double up   = (sent - _lastSent) / seconds;
-            _networkText = [NSString stringWithFormat:@"↓%@ ↑%@",
-                            [self speed:down], [self speed:up]];
-        }
-    }
-
-    _lastReceived = received;
-    _lastSent = sent;
-    _lastNetworkDate = now;
-}
-
-- (NSString *)speed:(double)bytesPerSecond {
-    if (bytesPerSecond >= 1024.0 * 1024.0) {
-        return [NSString stringWithFormat:@"%.1fM", bytesPerSecond / (1024.0 * 1024.0)];
-    }
-    return [NSString stringWithFormat:@"%.0fK", bytesPerSecond / 1024.0];
 }
 
 - (NSInteger)cutout {
@@ -877,33 +559,22 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 
 }
 
-
 #pragma mark - Cards
 
 - (GLTPlatterContent *)platterContent {
     if ([self showsVolume]) return nil;
-    if ([self showsConnection]) return GLTMakeDevicePlatter([self pillContent]);
     if ([self showsNotification]) return GLTMakeNotificationPlatter(_notification);
 
     switch ([self currentPill]) {
-        case GLTPillBattery:
-            return GLTMakeDevicePlatter([self pillContent]);
-
-        case GLTPillDate:
-        case GLTPillCalendar:
-        case GLTPillNextEvent:
-            return GLTMakeEventsPlatter();
-
         case GLTPillNowPlaying:
             return GLTMakeMediaPlatter();
 
-        case GLTPillReminders:
-            return GLTMakeRemindersPlatter();
-
-        case GLTPillWeather:
-        case GLTPillSun:
+        case GLTPillWeather: {
             [[GLTWeather sharedWeather] refreshForcing:NO];
-            return GLTMakeWeatherPlatter();
+            GLTPlatterContent *content = GLTMakeWeatherPlatter();
+            _weatherPlatterContent = content;
+            return content;
+        }
 
         case GLTPillAlarm:
             [[GLTClockItems sharedItems] refresh];
@@ -911,13 +582,6 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 
         case GLTPillStorage:
             return GLTMakeStoragePlatter();
-
-        case GLTPillCountdown:
-            if (![GLTPrefs sharedPrefs].countdownDate) return nil;
-            return GLTMakeCountdownPlatter();
-
-        case GLTPillUnlocks:
-            return GLTMakeUnlocksPlatter();
 
         case GLTPillQuickMessage:
             return GLTMakeComposePlatter();

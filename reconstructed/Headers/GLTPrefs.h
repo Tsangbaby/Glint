@@ -17,14 +17,11 @@
     BOOL                           _showSeconds; // 0x0a
     BOOL                           _showMediaWhilePlaying; // 0x0b
     BOOL                           _replaceBanners; // 0x0c
-    BOOL                           _deviceConnections; // 0x0d
     BOOL                           _replaceVolumeHUD; // 0x0e
     UIColor *                      _backgroundColor; // 0x10
     UIColor *                      _textColor; // 0x18
     double                         _notificationDuration; // 0x20
     NSString *                     _weatherCity; // 0x28
-    NSString *                     _countdownTitle; // 0x30
-    NSDate *                       _countdownDate; // 0x38
     double                         _volumeDuration; // 0x40
     long long                      _pill; // 0x48
 }
@@ -38,10 +35,7 @@
 @property (nonatomic, assign, readonly) BOOL showMediaWhilePlaying;
 @property (nonatomic, assign, readonly) BOOL replaceBanners;
 @property (nonatomic, assign, readonly) double notificationDuration;
-@property (nonatomic, assign, readonly) BOOL deviceConnections;
 @property (nonatomic, strong, readonly) NSString * weatherCity;
-@property (nonatomic, strong, readonly) NSString * countdownTitle;
-@property (nonatomic, strong, readonly) NSDate * countdownDate;
 @property (nonatomic, assign, readonly) BOOL replaceVolumeHUD;
 @property (nonatomic, assign, readonly) double volumeDuration;
 

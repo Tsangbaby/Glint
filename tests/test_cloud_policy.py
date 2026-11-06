@@ -34,11 +34,14 @@ class CloudBuildPolicyTests(unittest.TestCase):
         self.assertNotIn("gh release", runs)
         self.assertNotIn("simctl", runs)
 
-    def test_counter_replay_compiles_actual_production_implementation(self):
+    def test_removed_counter_is_not_reintroduced_by_host_compile(self):
         workflow = json.loads((ROOT / ".github/workflows/roothide.yml").read_text())
         runs = "\n".join(step.get("run", "") for step in workflow["jobs"]["build"]["steps"])
-        self.assertIn("reconstructed/Sources/GLTUnlocks.m", runs)
-        self.assertIn("GLINT_UNLOCKS_HOST_PASS", runs)
+        self.assertNotIn("reconstructed/Sources/GLTUnlocks.m", runs)
+        self.assertNotIn("GLINT_UNLOCKS_HOST_PASS", runs)
+        self.assertIn("reconstructed/Sources/GLTRuntime.m tests/runtime_host.m", runs)
+        self.assertIn("GLINT_RUNTIME_HOST_PASS", runs)
+        self.assertNotIn("GLTUnlocks", (ROOT / "tests/runtime_host.m").read_text())
 
     def test_package_build_collects_independent_errors_without_hiding_failure(self):
         workflow = json.loads((ROOT / ".github/workflows/roothide.yml").read_text())

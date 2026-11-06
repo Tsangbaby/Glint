@@ -59,7 +59,7 @@ static NSString *GLTClockString(double interval) {
         [_artworkView.heightAnchor constraintEqualToConstant:52],
     ]];
 
-    _titleLabel = GLTMakeLabel(@"Not Playing", 16, UIFontWeightSemibold, [UIColor whiteColor]);
+    _titleLabel = GLTMakeLabel(GLTLocalizedString(@"Not Playing"), 16, UIFontWeightSemibold, [UIColor whiteColor]);
     _titleLabel.numberOfLines = 1;
     _artistLabel = GLTMakeLabel(@"", 14, UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.6]);
     _artistLabel.numberOfLines = 1;
@@ -169,7 +169,7 @@ static NSString *GLTClockString(double interval) {
 - (void)refresh {
     GLTMedia *media = [GLTMedia sharedMedia];
 
-    _titleLabel.text = [media hasMedia] ? ([media title] ?: @"Not Playing") : @"Not Playing";
+    _titleLabel.text = [media hasMedia] ? ([media title] ?: GLTLocalizedString(@"Not Playing")) : GLTLocalizedString(@"Not Playing");
     _artistLabel.text = [media artist] ?: @"";
     _artistLabel.hidden = _artistLabel.text.length == 0;
     _artworkView.image = [media artwork] ?: [UIImage systemImageNamed:@"music.note"];
@@ -270,7 +270,7 @@ GLTPlatterContent *GLTMakeMediaPlatter(void) {
 
     // Original 0x11b50 also shows a paused timer, without a fire date.
     if (items.timerFireDate || items.pausedTimerRemaining > 0) {
-        UILabel *caption = GLTMakeLabel(items.timerFireDate ? @"Timer" : @"Timer · Paused",
+        UILabel *caption = GLTMakeLabel(items.timerFireDate ? GLTLocalizedString(@"Timer") : GLTLocalizedString(@"Timer · Paused"),
                                         13, UIFontWeightSemibold,
                                         [UIColor colorWithWhite:1 alpha:0.55]);
         _countdown = GLTMakeLabel(@"", 40, UIFontWeightLight, [UIColor whiteColor]);
@@ -294,11 +294,11 @@ GLTPlatterContent *GLTMakeMediaPlatter(void) {
 
     // Alarms block.
     NSArray<GLTAlarm *> *alarms = items.alarms;
-    [_stack addArrangedSubview:GLTMakeLabel(@"Alarms", 13, UIFontWeightSemibold,
+    [_stack addArrangedSubview:GLTMakeLabel(GLTLocalizedString(@"Alarms"), 13, UIFontWeightSemibold,
                                             [UIColor colorWithWhite:1 alpha:0.55])];
 
     if (alarms.count == 0) {
-        [_stack addArrangedSubview:GLTMakeLabel(@"No alarms are on.", 15, UIFontWeightRegular,
+        [_stack addArrangedSubview:GLTMakeLabel(GLTLocalizedString(@"No alarms are on."), 15, UIFontWeightRegular,
                                                 [UIColor colorWithWhite:1 alpha:0.7])];
     } else {
         NSDateFormatter *formatter = [NSDateFormatter new];
@@ -314,8 +314,8 @@ GLTPlatterContent *GLTMakeMediaPlatter(void) {
                                  NSMakeRange(0, MIN((NSUInteger)4, alarms.count))]) {
             UILabel *when = GLTMakeLabel([formatter stringFromDate:alarm.fireDate], 22,
                                          UIFontWeightMedium, [UIColor whiteColor]);
-            NSString *day = [calendar isDateInToday:alarm.fireDate] ? @"Today" :
-                            [calendar isDateInTomorrow:alarm.fireDate] ? @"Tomorrow" :
+            NSString *day = [calendar isDateInToday:alarm.fireDate] ? GLTLocalizedString(@"Today") :
+                            [calendar isDateInTomorrow:alarm.fireDate] ? GLTLocalizedString(@"Tomorrow") :
                             [weekday stringFromDate:alarm.fireDate];
             NSString *detail = alarm.title.length ?
                                [NSString stringWithFormat:@"%@ · %@", day, alarm.title] : day;
@@ -393,7 +393,7 @@ static UITextField *GLTComposeField(NSString *placeholder) {
     self = [super initWithFrame:frame];
     if (!self) return nil;
 
-    _toField = GLTComposeField(@"Name or number");
+    _toField = GLTComposeField(GLTLocalizedString(@"Name or number"));
     _toField.autocorrectionType = UITextAutocorrectionTypeNo;
     _toField.returnKeyType = UIReturnKeyNext;
     _toField.delegate = self;
@@ -412,7 +412,7 @@ static UITextField *GLTComposeField(NSString *placeholder) {
     _suggestions.axis = UILayoutConstraintAxisVertical;
     _suggestions.spacing = 4;
 
-    _messageField = GLTComposeField(@"Message");
+    _messageField = GLTComposeField(GLTLocalizedString(@"Message"));
     _messageField.returnKeyType = UIReturnKeySend;
     _messageField.delegate = self;
     [_messageField addTarget:self action:@selector(updateSendButton)
@@ -436,7 +436,7 @@ static UITextField *GLTComposeField(NSString *placeholder) {
     input.spacing = 8;
     input.alignment = UIStackViewAlignmentCenter;
 
-    UILabel *heading = GLTMakeLabel(@"New Message", 13, UIFontWeightSemibold,
+    UILabel *heading = GLTMakeLabel(GLTLocalizedString(@"New Message"), 13, UIFontWeightSemibold,
                                      [UIColor colorWithWhite:1 alpha:0.55]);
     UIStackView *body = [[UIStackView alloc] initWithArrangedSubviews:
                          @[heading, _toField, _recipientChip, _suggestions, input, _statusLabel]];
@@ -522,7 +522,7 @@ static UITextField *GLTComposeField(NSString *placeholder) {
     if (recipient.name.length && ![recipient.name isEqualToString:recipient.address]) {
         title = [NSString stringWithFormat:@"%@  ·  %@", recipient.name, recipient.address];
     }
-    [_recipientChip setTitle:[@"To: " stringByAppendingString:title] forState:UIControlStateNormal];
+    [_recipientChip setTitle:[GLTLocalizedString(@"To: ") stringByAppendingString:title] forState:UIControlStateNormal];
     _recipientChip.hidden = NO;
 
     [self showSuggestions:@[]];
@@ -568,7 +568,7 @@ static UITextField *GLTComposeField(NSString *placeholder) {
 
 - (void)send {
 #if GLINT_VERIFICATION_BUILD
-    [self showStatus:@"Messaging is disabled in this verification build."];
+    [self showStatus:GLTLocalizedString(@"Messaging is disabled in this verification build.")];
     return;
 #endif
     if (GLTDeviceIsLocked() || !self.window || _sending) return;
@@ -577,7 +577,7 @@ static UITextField *GLTComposeField(NSString *placeholder) {
     if (!_recipient || !text.length) return;
 
     [self updateSendButton];
-    [self showStatus:@"Sending…"];
+    [self showStatus:GLTLocalizedString(@"Sending…")];
 
     BOOL sent = GLTSendMessage(_recipient, text);
 
@@ -586,7 +586,7 @@ static UITextField *GLTComposeField(NSString *placeholder) {
         if (sent) {
             UINotificationFeedbackGenerator *haptic = [UINotificationFeedbackGenerator new];
             [haptic notificationOccurred:UINotificationFeedbackTypeSuccess];
-            [self showStatus:@"Sent"];
+            [self showStatus:GLTLocalizedString(@"Sent")];
             self->_messageField.text = @"";
             [self updateSendButton];
 

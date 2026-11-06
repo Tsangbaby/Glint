@@ -97,39 +97,42 @@ class CompileReadinessTests(unittest.TestCase):
         hooks = read("Tweak.xm")
         self.assertGreaterEqual(hooks.count("canPresentOverlay]"), 2)
 
-    def test_first_device_build_cannot_send_messages_or_modify_reminders(self):
+    def test_verification_build_cannot_send_messages_and_reminders_provider_is_deleted(self):
         self.assertIn("-DGLINT_VERIFICATION_BUILD=1", read("Makefile"))
         models = read("Sources/GLTModels.m").split("BOOL GLTSendMessage", 1)[1]
         self.assertIn("#if GLINT_VERIFICATION_BUILD", models)
         self.assertLess(models.index("return NO;"), models.index("IMDaemonController"))
         sending = read("Sources/GLTInteractivePlatters.m").split("- (void)send {", 1)[1]
         self.assertIn("Messaging is disabled in this verification build.", sending)
-        reminder = read("Sources/GLTEvents.m").split("- (void)completeReminder:", 1)[1]
-        self.assertIn("#if GLINT_VERIFICATION_BUILD", reminder)
+        self.assertFalse((SOURCE / "Sources/GLTEvents.m").exists())
+        self.assertNotIn("completeReminder:", read("Sources/GLTInfoPlatters.m"))
 
     def test_weather_never_rewrites_host_location_authorization(self):
         text = read("Sources/GLTWeather.m")
         self.assertNotIn("setAuthorizationStatusByType", text)
         self.assertNotIn("requestAlwaysAuthorization", text)
-        self.assertIn("#if GLINT_VERIFICATION_BUILD", text)
+        self.assertNotIn("requestWhenInUseAuthorization", text)
+        self.assertIn("kCLAuthorizationStatusAuthorized", text)
 
     def test_fresh_install_defaults_are_conservative_and_consistent(self):
         text = read("Sources/GLTPrefs.m")
         items = plistlib.loads((SOURCE / "prefs/Resources/Root.plist").read_bytes())["items"]
         defaults = {item.get("key"): item.get("default") for item in items if isinstance(item, dict)}
-        for key in ("enabled", "replaceBanners", "replaceVolumeHUD", "deviceConnections", "showMediaWhilePlaying"):
+        for key in ("enabled", "replaceBanners", "replaceVolumeHUD", "showMediaWhilePlaying"):
             self.assertIn('boolForKey:@"' + key + '" fallback:NO', text)
             self.assertIs(defaults[key], False)
 
     def test_disabled_or_locked_ticks_skip_sampling(self):
         text = read("Sources/GLTController.m").split("- (void)tick {", 1)[1].split("- (BOOL)wantsWeather", 1)[0]
         self.assertIn("!prefs.enabled || GLTDeviceIsLocked()", text)
-        self.assertLess(text.index("return;"), text.index("[self sampleNetwork]"))
+        self.assertLess(text.index("return;"), text.index("[self wantsWeather]"))
+        self.assertNotIn("sampleNetwork", read("Sources/GLTController.m"))
 
-    def test_optional_device_and_clock_providers_are_lazy(self):
+    def test_clock_provider_stays_lazy_and_device_provider_is_gone(self):
         text = read("Sources/GLTController.m")
         tick = text.split("- (void)tick {", 1)[1].split("- (BOOL)wantsWeather", 1)[0]
-        self.assertIn("prefs.deviceConnections || [self currentPill] == GLTPillBattery", tick)
+        self.assertNotIn("deviceConnections", text)
+        self.assertNotIn("GLTPillBattery", text)
         self.assertIn("[self currentPill] == GLTPillAlarm", tick)
         start = text.split("- (void)start {", 1)[1].split("- (void)dealloc", 1)[0]
         self.assertIn("[GLTPrefs sharedPrefs].enabled && [self currentPill] == GLTPillAlarm", start)
@@ -139,12 +142,14 @@ class CompileReadinessTests(unittest.TestCase):
         self.assertLess(text.index("%orig;"), text.index("[request sectionIdentifier]"))
         self.assertIn("GLTMethodMatches([request class]", text)
 
-    def test_repeated_device_and_media_reads_do_not_reopen_frameworks(self):
+    def test_media_handle_is_shared_and_accessory_framework_is_removed(self):
         media = read("Sources/GLTMedia.m")
         self.assertEqual(media.count("dlopen("), 1)
         self.assertIn("GLTMediaRemoteHandle", media)
-        devices = read("Sources/GLTModels.m").split("NSArray<GLTDevice *> *GLTConnectedDevices", 1)[1].split("@implementation GLTDevice", 1)[0]
-        self.assertIn("dispatch_once", devices)
+        models = read("Sources/GLTModels.m")
+        self.assertNotIn("BatteryCenter", models)
+        self.assertNotIn("GLTConnectedDevices", models)
+        self.assertFalse((SOURCE / "Headers/GLTDevice.h").exists())
 
     def test_preferences_uses_the_explicit_cloud_link_stub_directory(self):
         self.assertIn("GlintPrefs_LDFLAGS += -F$(THEOS)/lib/iphone", read("prefs/Makefile"))
@@ -156,7 +161,7 @@ class CompileReadinessTests(unittest.TestCase):
         compiled = "\n".join(path.read_text() for path in (SOURCE / "Sources").glob("*.m"))
         implemented = set(re.findall(r"@implementation\s+(GLT\w+)\b", compiled))
         self.assertEqual(sorted(declared - implemented), [], "missing own class provider")
-        self.assertIn("lockStateChanged:(BOOL)", read("Headers/GLTUnlocks.h"))
+        self.assertFalse((SOURCE / "Headers/GLTUnlocks.h").exists())
 
     def test_timer_formats_match_long_long_components(self):
         expected = [
@@ -179,21 +184,11 @@ class CompileReadinessTests(unittest.TestCase):
     def test_controller_has_no_orphan_platter_inset_constant(self):
         self.assertNotIn("kGLTPlatterTopInset", read("Sources/GLTController.m"))
 
-    def test_eventkit_full_access_is_guarded_for_older_ios(self):
-        text = read("Sources/GLTEvents.m")
-        for method in ("hasCalendarAccess", "hasRemindersAccess"):
-            with self.subTest(method=method):
-                match = re.search(r'- \(BOOL\)' + method + r' \{(.*?)\n\}', text, re.S)
-                self.assertIsNotNone(match)
-                assert match is not None
-                body = match[1]
-                self.assertEqual(body.count("EKAuthorizationStatusFullAccess"), 1)
-                self.assertRegex(
-                    body,
-                    r'if \(@available\(iOS 17\.0, \*\)\) \{[^}]*'
-                    r'EKAuthorizationStatusFullAccess[^}]*\}\s*'
-                    r'return status == EKAuthorizationStatusAuthorized;',
-                )
+    def test_eventkit_providers_and_dependency_are_deleted(self):
+        for path in ("Sources/GLTEvents.m", "Headers/GLTEvents.h", "Headers/GLTRemindersPlatterView.h"):
+            self.assertFalse((SOURCE / path).exists(), path)
+        for path in ("Makefile", "Glint.h", "Sources/GLTInfoPlatters.m", "Sources/GLTController.m"):
+            self.assertNotRegex(read(path), r"EventKit|EKEventStore|EKReminder|GLTEvents", path)
 
     def test_pill_inherits_init_without_unimplemented_redeclaration(self):
         self.assertNotIn("- (instancetype)init;", read("Headers/GLTPillContent.h"))
@@ -228,15 +223,12 @@ class CompileReadinessTests(unittest.TestCase):
         self.assertIn("[[[NSURLSession sharedSession] dataTaskWithURL:", source)
         self.assertIn("}] resume];", source)
 
-    def test_sun_event_lookup_has_no_unused_snapshot_variable(self):
+    def test_sun_pill_lookup_is_removed_but_weather_details_keep_sun_times(self):
         source = read("Sources/GLTWeather.m")
-        match = re.search(r'- \(NSDate \*\)nextSunEvent:\(BOOL \*\)isSunset \{(.*?)\n\}', source, re.S)
-        self.assertIsNotNone(match)
-        assert match is not None
-        body = match[1]
-        self.assertNotIn("NSDate *now = [NSDate date];", body)
-        self.assertEqual(body.count("[date timeIntervalSinceNow] <= 0"), 2)
-        self.assertIn("if (isSunset) *isSunset = bestIsSunset;", body)
+        self.assertNotIn("nextSunEvent:", source)
+        self.assertNotIn("nextSunEvent:", read("Headers/GLTWeather.h"))
+        self.assertIn("sunrises", source)
+        self.assertIn("sunsets", source)
 
     def test_native_replacement_needs_an_attached_overlay_scene(self):
         text = read("Sources/GLTController.m")

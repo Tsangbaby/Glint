@@ -16,7 +16,7 @@
 #import <objc/message.h>
 #import "GLTRuntime.h"
 
-@class GLTPillContent, GLTPlatterContent, GLTPlatterView, GLTDevice, GLTNotification, GLTRecipient;
+@class GLTPillContent, GLTPlatterContent, GLTPlatterView, GLTNotification, GLTRecipient;
 
 #pragma mark - Domains and notifications
 
@@ -30,8 +30,6 @@ static NSString *const kGLTReloadNotification = @"com.antonym.glint/reload";
 static NSString *const GLTSourcesDidChangeNotification = @"GLTSourcesDidChangeNotification";
 static NSString *const GLTPrefsDidChangeNotification   = @"GLTPrefsDidChangeNotification";
 
-// Unlock counter persistence (see GLTUnlocks).
-static NSString *const kGLTUnlocksDomain = @"com.antonym.glint.unlocks";
 // Recent recipients for the Quick Message card (see GLTRecipient).
 static NSString *const kGLTRecentsDomain = @"com.antonym.glint.recents";
 
@@ -42,19 +40,10 @@ static NSString *const kGLTRecentsDomain = @"com.antonym.glint.recents";
 
 typedef NS_ENUM(NSInteger, GLTPill) {
     GLTPillTime            = 0,
-    GLTPillDate            = 1,
-    GLTPillBattery         = 2,
-    GLTPillNetwork         = 3,
     GLTPillNowPlaying      = 4,
-    GLTPillCalendar        = 5,
-    GLTPillReminders       = 6,
     GLTPillWeather         = 7,
     GLTPillAlarm           = 8,
-    GLTPillNextEvent       = 9,
-    GLTPillSun             = 10,
     GLTPillStorage         = 11,
-    GLTPillCountdown       = 12,
-    GLTPillUnlocks         = 13,
     GLTPillQuickMessage    = 14,
 };
 
@@ -66,22 +55,13 @@ typedef NS_ENUM(NSInteger, GLTPill) {
 // them through a switch instead of a jump table.
 
 GLTPlatterContent *GLTMakeMediaPlatter(void);
-GLTPlatterContent *GLTMakeEventsPlatter(void);
-GLTPlatterContent *GLTMakeRemindersPlatter(void);
 GLTPlatterContent *GLTMakeWeatherPlatter(void);
 GLTPlatterContent *GLTMakeClockPlatter(void);
 GLTPlatterContent *GLTMakeStoragePlatter(void);
-GLTPlatterContent *GLTMakeCountdownPlatter(void);
-GLTPlatterContent *GLTMakeUnlocksPlatter(void);
 GLTPlatterContent *GLTMakeComposePlatter(void);
 GLTPlatterContent *GLTMakeNotificationPlatter(GLTNotification *notification);
-GLTPlatterContent *GLTMakeDevicePlatter(GLTPillContent *summary);
 
 #pragma mark - Data providers
-
-// BCBatteryDeviceController snapshot, sorted with the phone first and
-// accessories after it.
-NSArray<GLTDevice *> *GLTConnectedDevices(void);
 
 // Contacts lookup used by the composer.
 NSArray<GLTRecipient *> *GLTSearchRecipients(NSString *query);
@@ -93,12 +73,6 @@ BOOL GLTSendMessage(GLTRecipient *recipient, NSString *text);
 
 // Symbol image at a given point size, multicolour where the symbol supports it.
 UIImage *GLTSymbol(NSString *name, CGFloat pointSize, UIImageSymbolWeight weight);
-
-// "%.0f%%"-style battery text with the "--%" placeholder for unknown levels.
-NSString *GLTPercentText(long long percent);
-
-// "12.3 GB free of 118 GB" for the storage pill and card.
-NSString *GLTStorageSummary(void);
 
 #define GLTLog(fmt, ...) NSLog((@"[Glint] " fmt), ##__VA_ARGS__)
 

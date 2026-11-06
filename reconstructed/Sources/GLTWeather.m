@@ -9,6 +9,8 @@
 //
 
 #import "Glint.h"
+#import "GLTLocalization.h"
+#import <math.h>
 
 // The endpoint is fixed; only the coordinates change. `forecast_days=2` covers
 // "today + tomorrow", which is as far ahead as the card looks.
@@ -21,6 +23,21 @@ static NSString *const kGLTForecastURL =
 
 // Refreshes are cheap but not free; the original throttles unforced calls.
 static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
+// A failed request is not fresh weather. Back off ticks without hiding retries
+// for the full successful-forecast cache interval.
+static const NSTimeInterval kGLTRetryInterval = 60;
+
+static BOOL GLTWeatherNumber(id value) {
+    return [value isKindOfClass:[NSNumber class]] && isfinite([value doubleValue]);
+}
+
+static NSArray *GLTWeatherArray(id value) {
+    return [value isKindOfClass:[NSArray class]] ? value : @[];
+}
+
+static NSDictionary *GLTWeatherDictionary(id value) {
+    return [value isKindOfClass:[NSDictionary class]] ? value : @{};
+}
 
 @interface GLTWeather () <CLLocationManagerDelegate>
 @property (nonatomic, readwrite) BOOL hasData;
@@ -36,6 +53,7 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
 @property (nonatomic, readwrite) NSArray *hours;
 @property (nonatomic, readwrite) NSArray *sunrises;
 @property (nonatomic, readwrite) NSArray *sunsets;
+- (BOOL)finishObsoleteRequest;
 @end
 
 @implementation GLTWeather
@@ -65,21 +83,31 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
 #pragma mark - Refresh
 
 - (void)refreshForcing:(BOOL)force {
-    GLTPrefs *prefs = [GLTPrefs sharedPrefs];
-
-    if (!force && _updated && -[_updated timeIntervalSinceNow] < kGLTRefreshInterval) {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{ [self refreshForcing:force]; });
         return;
     }
+    GLTPrefs *prefs = [GLTPrefs sharedPrefs];
+    NSString *city = prefs.weatherCity ?: @"";
+    BOOL sameCity = [(_lastCity ?: @"") isEqualToString:city];
     if (_loading) return;
+    if (!force && sameCity) {
+        if (_hasData && _updated && -[_updated timeIntervalSinceNow] < kGLTRefreshInterval) return;
+        if (_attempted && -[_attempted timeIntervalSinceNow] < kGLTRetryInterval) return;
+    }
     _loading = YES;
+    _lastCity = [city copy];
+    _attempted = [NSDate date];
+    _problem = nil;
+    if (!sameCity) _hasData = NO;
 
-    NSString *city = prefs.weatherCity;
     if (city.length) {
         [_geocoder geocodeAddressString:city completionHandler:^(NSArray<CLPlacemark *> *placemarks,
                                                                  NSError *error) {
+            if ([self finishObsoleteRequest]) return;
             CLPlacemark *mark = placemarks.firstObject;
-            if (!mark.location) {
-                [self failWithProblem:[NSString stringWithFormat:@"Glint can't find \"%@\".", city]];
+            if (error || !mark.location) {
+                [self failWithProblem:[NSString stringWithFormat:GLTLocalizedString(@"Glint can't find \"%@\"."), city]];
                 return;
             }
             [self fetchForLocation:mark.location place:mark.locality ?: city];
@@ -87,29 +115,36 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
         return;
     }
 
-#if GLINT_VERIFICATION_BUILD
-    [self failWithProblem:@"Set a city in Glint's settings for this verification build."];
-    return;
-#else
+    // Read existing host authorization only; never prompt or change host permissions.
     CLAuthorizationStatus status = _locationManager.authorizationStatus;
     if (status != kCLAuthorizationStatusAuthorizedAlways &&
         status != kCLAuthorizationStatusAuthorizedWhenInUse) {
-        [self failWithProblem:@"Location is not authorized. Type a city in Glint's settings."];
+        [self failWithProblem:GLTLocalizedString(@"Location is not authorized. Type a city in Glint's settings.")];
         return;
     }
     [_locationManager requestLocation];
-#endif
 }
 
 - (void)failWithProblem:(NSString *)problem {
-    _loading = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self finishObsoleteRequest]) return;
+        self->_loading = NO;
+        self->_attempted = [NSDate date];
         self.problem = problem;
         self.hasData = NO;
-        self->_updated = [NSDate date];
         [[NSNotificationCenter defaultCenter] postNotificationName:GLTSourcesDidChangeNotification
-                                                            object:nil];
+                                                            object:self];
     });
+}
+
+// Preferences may change while geocoding, locating or fetching. Never publish
+// the old city's result as the new city's cached forecast.
+- (BOOL)finishObsoleteRequest {
+    NSString *city = [GLTPrefs sharedPrefs].weatherCity ?: @"";
+    if ([(_lastCity ?: @"") isEqualToString:city]) return NO;
+    _loading = NO;
+    [self refreshForcing:YES];
+    return YES;
 }
 
 #pragma mark - CLLocationManagerDelegate
@@ -123,37 +158,50 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
+    if ([self finishObsoleteRequest] || !_loading) return;
+    if ([GLTPrefs sharedPrefs].weatherCity.length) return;
     CLLocation *location = locations.lastObject;
-    if (!location) return;
+    if (!location || location.horizontalAccuracy < 0) {
+        [self failWithProblem:GLTLocalizedString(@"Glint can't find where you are. Type a city in Glint's settings.")];
+        return;
+    }
 
     [_geocoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> *placemarks,
                                                                   NSError *error) {
+        if ([self finishObsoleteRequest]) return;
         CLPlacemark *mark = placemarks.firstObject;
         [self fetchForLocation:location place:mark.locality];
     }];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-    [self failWithProblem:@"Glint can't find where you are. Type a city in Glint's settings."];
+    if ([self finishObsoleteRequest] || !_loading || [GLTPrefs sharedPrefs].weatherCity.length) return;
+    [self failWithProblem:GLTLocalizedString(@"Glint can't find where you are. Type a city in Glint's settings.")];
 }
 
 #pragma mark - Networking
 
 - (void)fetchForLocation:(CLLocation *)location place:(NSString *)place {
+    if (!location || !CLLocationCoordinate2DIsValid(location.coordinate)) {
+        [self failWithProblem:GLTLocalizedString(@"Glint can't find where you are. Type a city in Glint's settings.")];
+        return;
+    }
     NSString *url = [NSString stringWithFormat:kGLTForecastURL,
                      location.coordinate.latitude, location.coordinate.longitude];
 
     [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:url]
                                  completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error || !data) {
-            [self failWithProblem:@"The weather isn't available right now."];
+        NSInteger statusCode = [response isKindOfClass:[NSHTTPURLResponse class]]
+            ? [(NSHTTPURLResponse *)response statusCode] : 0;
+        if (error || !data.length || statusCode < 200 || statusCode >= 300) {
+            [self failWithProblem:GLTLocalizedString(@"The weather isn't available right now.")];
             return;
         }
 
         NSError *jsonError = nil;
         id payload = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-        if (![payload isKindOfClass:[NSDictionary class]] || ![payload objectForKeyedSubscript:@"current"]) {
-            [self failWithProblem:@"The weather isn't available right now."];
+        if (jsonError || ![payload isKindOfClass:[NSDictionary class]]) {
+            [self failWithProblem:GLTLocalizedString(@"The weather isn't available right now.")];
             return;
         }
 
@@ -166,6 +214,27 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
 #pragma mark - Parsing
 
 - (void)applyForecast:(NSDictionary *)payload place:(NSString *)place {
+    if ([self finishObsoleteRequest]) return;
+    if (![payload isKindOfClass:[NSDictionary class]] || payload[@"error"]) {
+        [self failWithProblem:GLTLocalizedString(@"The weather isn't available right now.")];
+        return;
+    }
+    NSDictionary *current = GLTWeatherDictionary(payload[@"current"]);
+    NSDictionary *daily = GLTWeatherDictionary(payload[@"daily"]);
+    NSDictionary *hourly = GLTWeatherDictionary(payload[@"hourly"]);
+    NSArray *highs = GLTWeatherArray(daily[@"temperature_2m_max"]);
+    NSArray *lows = GLTWeatherArray(daily[@"temperature_2m_min"]);
+    NSArray *rain = GLTWeatherArray(daily[@"precipitation_probability_max"]);
+    if (!GLTWeatherNumber(payload[@"utc_offset_seconds"]) ||
+        !GLTWeatherNumber(current[@"temperature_2m"]) ||
+        !GLTWeatherNumber(current[@"apparent_temperature"]) ||
+        !GLTWeatherNumber(current[@"weather_code"]) ||
+        !GLTWeatherNumber(current[@"is_day"]) ||
+        !GLTWeatherNumber(highs.firstObject) || !GLTWeatherNumber(lows.firstObject) ||
+        !GLTWeatherNumber(rain.firstObject)) {
+        [self failWithProblem:GLTLocalizedString(@"The weather isn't available right now.")];
+        return;
+    }
     NSDateFormatter *formatter = [NSDateFormatter new];
     formatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
     formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm";
@@ -173,99 +242,62 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
     NSInteger offset = [payload[@"utc_offset_seconds"] integerValue];
     formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:offset];
 
-    NSDictionary *current = payload[@"current"];
-    NSDictionary *daily   = payload[@"daily"];
-    NSDictionary *hourly  = payload[@"hourly"];
-
-    if (![current isKindOfClass:[NSDictionary class]]) {
-        [self failWithProblem:@"The weather isn't available right now."];
-        return;
-    }
-
     _temperature = [current[@"temperature_2m"] doubleValue];
     _feelsLike   = [current[@"apparent_temperature"] doubleValue];
     _code        = [current[@"weather_code"] integerValue];
     _isDay       = [current[@"is_day"] boolValue];
 
-    if ([daily isKindOfClass:[NSDictionary class]]) {
-        _high       = [daily[@"temperature_2m_max"] firstObject] ? [daily[@"temperature_2m_max"][0] doubleValue] : 0;
-        _low        = [daily[@"temperature_2m_min"] firstObject] ? [daily[@"temperature_2m_min"][0] doubleValue] : 0;
-        _rainChance = [daily[@"precipitation_probability_max"] firstObject]
-            ? [daily[@"precipitation_probability_max"][0] integerValue] : 0;
+    _high = [highs.firstObject doubleValue];
+    _low = [lows.firstObject doubleValue];
+    _rainChance = [rain.firstObject integerValue];
 
-        NSMutableArray<NSDate *> *sunrises = [NSMutableArray array];
-        NSMutableArray<NSDate *> *sunsets  = [NSMutableArray array];
-        for (NSString *text in daily[@"sunrise"]) {
-            NSDate *date = [formatter dateFromString:text];
-            if (date) [sunrises addObject:date];
-        }
-        for (NSString *text in daily[@"sunset"]) {
-            NSDate *date = [formatter dateFromString:text];
-            if (date) [sunsets addObject:date];
-        }
-        _sunrises = sunrises;
-        _sunsets  = sunsets;
+    NSMutableArray<NSDate *> *sunrises = [NSMutableArray array];
+    NSMutableArray<NSDate *> *sunsets = [NSMutableArray array];
+    for (id text in GLTWeatherArray(daily[@"sunrise"])) {
+        if (![text isKindOfClass:[NSString class]]) continue;
+        NSDate *date = [formatter dateFromString:text];
+        if (date) [sunrises addObject:date];
     }
-
-    if ([hourly isKindOfClass:[NSDictionary class]]) {
-        NSArray *times        = hourly[@"time"];
-        NSArray *temperatures = hourly[@"temperature_2m"];
-        NSArray *codes        = hourly[@"weather_code"];
-        NSArray *dayFlags     = hourly[@"is_day"];
-
-        NSDate *now = [NSDate date];
-        NSMutableArray<GLTWeatherHour *> *hours = [NSMutableArray array];
-
-        for (NSUInteger i = 0; i < times.count && i < temperatures.count; i++) {
-            NSDate *date = [formatter dateFromString:times[i]];
-            if (!date || [date compare:now] == NSOrderedAscending) continue;
-
-            GLTWeatherHour *hour = [GLTWeatherHour new];
-            hour.date = date;
-            hour.temperature = [temperatures[i] doubleValue];
-            hour.code = i < codes.count ? [codes[i] integerValue] : 0;
-            hour.isDay = i < dayFlags.count ? [dayFlags[i] boolValue] : YES;
-            [hours addObject:hour];
-            if (hours.count >= 24) break;
-        }
-        _hours = hours;
+    for (id text in GLTWeatherArray(daily[@"sunset"])) {
+        if (![text isKindOfClass:[NSString class]]) continue;
+        NSDate *date = [formatter dateFromString:text];
+        if (date) [sunsets addObject:date];
     }
+    _sunrises = sunrises;
+    _sunsets = sunsets;
+
+    NSArray *times = GLTWeatherArray(hourly[@"time"]);
+    NSArray *temperatures = GLTWeatherArray(hourly[@"temperature_2m"]);
+    NSArray *codes = GLTWeatherArray(hourly[@"weather_code"]);
+    NSArray *dayFlags = GLTWeatherArray(hourly[@"is_day"]);
+    // Original 0x1aab8 / 0x1aaec: include the current hour; seven columns.
+    NSDate *earliest = [NSDate dateWithTimeIntervalSinceNow:-3600];
+    NSMutableArray<GLTWeatherHour *> *hours = [NSMutableArray array];
+    NSUInteger count = MIN(MIN(times.count, temperatures.count), MIN(codes.count, dayFlags.count));
+    for (NSUInteger i = 0; i < count; i++) {
+        if (![times[i] isKindOfClass:[NSString class]] || !GLTWeatherNumber(temperatures[i]) ||
+            !GLTWeatherNumber(codes[i]) || !GLTWeatherNumber(dayFlags[i])) continue;
+        NSDate *date = [formatter dateFromString:times[i]];
+        if (!date || [date compare:earliest] == NSOrderedAscending) continue;
+        GLTWeatherHour *hour = [GLTWeatherHour new];
+        hour.date = date;
+        hour.temperature = [temperatures[i] doubleValue];
+        hour.code = [codes[i] integerValue];
+        hour.isDay = [dayFlags[i] boolValue];
+        [hours addObject:hour];
+        if (hours.count >= 7) break;
+    }
+    _hours = hours;
 
     _place    = place;
     _problem  = nil;
     _hasData  = YES;
     _loading  = NO;
     _updated  = [NSDate date];
-    _lastCity = place;
+
 
     [[NSNotificationCenter defaultCenter] postNotificationName:GLTSourcesDidChangeNotification
-                                                        object:nil];
-}
-
-#pragma mark - Sun
-
-// Earliest sunrise/sunset still ahead of now, across the two forecast days.
-- (NSDate *)nextSunEvent:(BOOL *)isSunset {
-    NSDate *best = nil;
-    BOOL bestIsSunset = NO;
-
-    for (NSDate *date in _sunrises) {
-        if ([date timeIntervalSinceNow] <= 0) continue;
-        if (!best || [date compare:best] == NSOrderedAscending) {
-            best = date;
-            bestIsSunset = NO;
-        }
-    }
-    for (NSDate *date in _sunsets) {
-        if ([date timeIntervalSinceNow] <= 0) continue;
-        if (!best || [date compare:best] == NSOrderedAscending) {
-            best = date;
-            bestIsSunset = YES;
-        }
-    }
-
-    if (isSunset) *isSunset = bestIsSunset;
-    return best;
+                                                        object:self];
 }
 
 #pragma mark - WMO code mapping
@@ -292,21 +324,21 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
 }
 
 + (NSString *)descriptionForCode:(NSInteger)code {
-    if (code == 0) return @"Clear";
-    if (code == 1) return @"Mostly Clear";
-    if (code == 2) return @"Partly Cloudy";
-    if (code == 3) return @"Cloudy";
-    if (code == 45 || code == 48) return @"Fog";
-    if (code >= 51 && code <= 55) return @"Drizzle";
-    if (code == 56 || code == 57) return @"Freezing Rain";
-    if (code == 61 || code == 63) return @"Rain";
-    if (code == 65) return @"Heavy Rain";
-    if (code == 66 || code == 67) return @"Freezing Rain";
-    if (code >= 71 && code <= 77) return @"Snow";
-    if (code >= 80 && code <= 82) return @"Showers";
-    if (code == 85 || code == 86) return @"Snow";
-    if (code >= 95 && code <= 99) return @"Thunderstorms";
-    return @"Cloudy";
+    if (code == 0) return GLTLocalizedString(@"Clear");
+    if (code == 1) return GLTLocalizedString(@"Mostly Clear");
+    if (code == 2) return GLTLocalizedString(@"Partly Cloudy");
+    if (code == 3) return GLTLocalizedString(@"Cloudy");
+    if (code == 45 || code == 48) return GLTLocalizedString(@"Fog");
+    if (code >= 51 && code <= 55) return GLTLocalizedString(@"Drizzle");
+    if (code == 56 || code == 57) return GLTLocalizedString(@"Freezing Rain");
+    if (code == 61 || code == 63) return GLTLocalizedString(@"Rain");
+    if (code == 65) return GLTLocalizedString(@"Heavy Rain");
+    if (code == 66 || code == 67) return GLTLocalizedString(@"Freezing Rain");
+    if (code >= 71 && code <= 77) return GLTLocalizedString(@"Snow");
+    if (code >= 80 && code <= 82) return GLTLocalizedString(@"Showers");
+    if (code == 85 || code == 86) return GLTLocalizedString(@"Snow");
+    if (code >= 95 && code <= 99) return GLTLocalizedString(@"Thunderstorms");
+    return GLTLocalizedString(@"Cloudy");
 }
 
 // Temperature honours the device's unit preference.

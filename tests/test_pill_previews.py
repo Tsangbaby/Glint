@@ -1,12 +1,10 @@
-"""Original-backed source contracts, NOT UIKit execution or device acceptance.
+"""Retained preview contracts and beta1 absence checks; not device execution.
 
-Glint 1.6.3 arm64 SHA-256:
+Original Glint 1.6.3 arm64 SHA256:
 a4f0aabf448ebc50ddfaf8a2e08dcd2262ae494e01ff0756e9ab64bfa0ddc3bb.
-Catalogue: +pillOrder 0x1b81c -> NSConstantArray 0x2f1d8,
-15 boxed integer objects at 0x2f028; integer payload is object + 16.
-Preview methods: contentForPill 0x7638, weather 0x7cbc, storage 0x8740,
-sun 0x89c8, countContent 0x8cb8. Constants are decoded with CFString
-encoding flags (including UTF-16), not C-string truncation or screenshot data.
+Original +pillOrder 0x1b81c -> 0x2f1d8; content 0x7638, weather 0x7cbc,
+storage 0x8740. The retained order is the original list with the requested nine
+entries removed; persisted integer identities are not renumbered.
 """
 import re
 import unittest
@@ -36,21 +34,14 @@ def method(filename, name):
 
 
 class PillPreviewContracts(unittest.TestCase):
-    def test_catalogue_original_order_without_renumbering(self):
-        text = method("GLTPrefs.m", "pillOrder")
-        self.assertEqual(re.findall(r"@\((GLTPill\w+)\)", text), [
-            "GLTPillTime", "GLTPillDate", "GLTPillBattery", "GLTPillNetwork",
-            "GLTPillStorage", "GLTPillNowPlaying", "GLTPillNextEvent",
-            "GLTPillCalendar", "GLTPillReminders", "GLTPillAlarm",
-            "GLTPillCountdown", "GLTPillWeather", "GLTPillSun",
-            "GLTPillUnlocks", "GLTPillQuickMessage",
+    def test_catalogue_retains_original_relative_order_and_only_kept_names(self):
+        self.assertEqual(re.findall(r"@\((GLTPill\w+)\)", method("GLTPrefs.m", "pillOrder")), [
+            "GLTPillTime", "GLTPillStorage", "GLTPillNowPlaying", "GLTPillAlarm",
+            "GLTPillWeather", "GLTPillQuickMessage",
         ])
         names = method("GLTPrefs.m", "nameForPill:")
-        self.assertEqual(re.findall(r'@"([^"]*)"', names), [
-            "Time", "Date", "Battery", "Network Speed", "Now Playing",
-            "Calendar", "Reminders", "Weather", "Alarm & Timer", "Next Event",
-            "Sunrise & Sunset", "Storage & Memory", "Countdown", "Unlocks",
-            "Quick Message",
+        self.assertCountEqual(re.findall(r'GLTLocalizedString\(@"([^"]*)"\)', names), [
+            "Time", "Now Playing", "Weather", "Alarm & Timer", "Storage & Memory", "Quick Message",
         ])
 
     def test_weather_missing_data_uses_original_utf16_placeholder(self):
@@ -73,39 +64,26 @@ class PillPreviewContracts(unittest.TestCase):
         for token in ('GLTStorageSummary()', 'NSFileSystemSize', 'free of', '@"38 GB"'):
             self.assertNotIn(token, text)
 
-    def test_positive_counts_use_badge_plus_noun_not_repeated_count_or_icon(self):
-        text = method("GLTController.m", "countContent:")
-        self.assertIn('contentWithSymbol:nil', text)
-        self.assertIn('text:(count == 1 ? singular : plural)', text)
-        self.assertIn('if (count <= 0)', text)
-        self.assertIn('contentWithSymbol:symbol text:none', text)
-        self.assertIn('content.badge = count', text)
-        self.assertNotIn('stringWithFormat:', text)
+    def test_removed_preview_methods_and_provider_lookups_are_absent(self):
+        controller = source("GLTController.m")
+        weather = source("GLTWeather.m")
+        for token in ("countContent:", "sunContent", "networkContent", "nextEventContent", "eventsLeftToday",
+                      "_dateFormatter", "GLTPillDate", "GLTPillBattery", "GLTPillNetwork", "GLTPillNextEvent",
+                      "GLTPillCalendar", "GLTPillReminders", "GLTPillCountdown", "GLTPillSun", "GLTPillUnlocks",
+                      "GLTEvents", "GLTUnlocks", "GLTConnectedDevices"):
+            self.assertNotIn(token, controller)
+        self.assertNotIn("nextSunEvent:", weather)
+        # Native time/date-view replacement ownership is not the deleted Date pill.
+        self.assertIn("_dateViews", controller)
+        self.assertIn("_timeFormatter", controller)
 
-    def test_sun_reuses_original_formatter_with_current_provider_flag_contract(self):
-        text = method("GLTController.m", "sunContent")
-        self.assertIn('[_timeFormatter stringFromDate:date]', text)
-        # Original 0x8a30/0x8a40 uses a sunrise flag. This reconstructed
-        # provider explicitly returns isSunset; do NOT invert its consumer.
-        self.assertIn('sunset ? @"sunset.fill" : @"sunrise.fill"', text)
-        self.assertIn('nextSunEvent:&sunset', text)
-        provider = method("GLTWeather.m", "nextSunEvent:")
-        self.assertIn('if (isSunset) *isSunset = bestIsSunset', provider)
-        self.assertIn('bestIsSunset = YES', provider)
-        self.assertIn('contentWithSymbol:@"sunrise" text:@"--:--"', text)
-        self.assertIn('content.imageTint = [UIColor systemOrangeColor]', text)
-        self.assertNotIn('NSDateFormatter new', text)
-
-    def test_preserves_live_date_calendar_icon_and_empty_counts(self):
+    def test_remaining_previews_use_live_sources_not_old_screenshot_values(self):
         text = method("GLTController.m", "contentForPill:")
-        date = text.split('case GLTPillDate:', 1)[1].split('case GLTPillBattery:', 1)[0]
-        self.assertIn('[_dateFormatter stringFromDate:[NSDate date]]', date)
-        self.assertIn('contentWithSymbol:@"calendar" text:text', date)
-        for token in ('[self eventsLeftToday]', 'none:@"No events"',
-                      '[GLTEvents sharedEvents].reminders.count', 'none:@"All done"'):
+        for token in ("GLTPillTime", "GLTPillNowPlaying", "GLTPillAlarm", "GLTPillWeather",
+                      "GLTPillStorage", "GLTPillQuickMessage", "[_timeFormatter stringFromDate:[NSDate date]]"):
             self.assertIn(token, text)
-        for screenshot_value in ('@"21:40"', '@"117 unlocks"', '@"70%"'):
-            self.assertNotIn(screenshot_value, text)
+        for token in ('@"21:40"', '@"117 unlocks"', '@"70%"', '@"38 GB"'):
+            self.assertNotIn(token, text)
 
 
 if __name__ == "__main__":

@@ -14,14 +14,11 @@
 @property (nonatomic, readwrite) BOOL showSeconds;
 @property (nonatomic, readwrite) BOOL showMediaWhilePlaying;
 @property (nonatomic, readwrite) BOOL replaceBanners;
-@property (nonatomic, readwrite) BOOL deviceConnections;
 @property (nonatomic, readwrite) BOOL replaceVolumeHUD;
 @property (nonatomic, readwrite) UIColor *backgroundColor;
 @property (nonatomic, readwrite) UIColor *textColor;
 @property (nonatomic, readwrite) double notificationDuration;
 @property (nonatomic, readwrite) NSString *weatherCity;
-@property (nonatomic, readwrite) NSString *countdownTitle;
-@property (nonatomic, readwrite) NSDate *countdownDate;
 @property (nonatomic, readwrite) double volumeDuration;
 @end
 
@@ -87,45 +84,50 @@ static void GLTPrefsReloadCallback(CFNotificationCenterRef center,
 
 #pragma mark - Pill catalogue
 
-// Picker and "Tap to Cycle" order: +pillOrder at 0x1b81c returns the
-// NSConstantArray at 0x2f1d8: 0,1,2,3,11,4,9,5,6,8,12,7,10,13,14.
-// Display order is independent of the persisted pill IDs and name table.
+// Retained entries keep their original relative order and persisted IDs.
 + (NSArray *)pillOrder {
-    return @[@(GLTPillTime), @(GLTPillDate), @(GLTPillBattery), @(GLTPillNetwork),
-             @(GLTPillStorage), @(GLTPillNowPlaying), @(GLTPillNextEvent),
-             @(GLTPillCalendar), @(GLTPillReminders), @(GLTPillAlarm),
-             @(GLTPillCountdown), @(GLTPillWeather), @(GLTPillSun),
-             @(GLTPillUnlocks), @(GLTPillQuickMessage)];
+    return @[@(GLTPillTime), @(GLTPillStorage), @(GLTPillNowPlaying), @(GLTPillAlarm), @(GLTPillWeather), @(GLTPillQuickMessage)];
 }
 
-// Backed by the __const tables at 0x2c7a0 (names) and 0x2c818 (symbols).
+static BOOL GLTIsSupportedPill(long long pill) {
+    switch (pill) {
+        case GLTPillTime:
+        case GLTPillStorage:
+        case GLTPillNowPlaying:
+        case GLTPillAlarm:
+        case GLTPillWeather:
+        case GLTPillQuickMessage:
+            return YES;
+        default: return NO;
+    }
+}
+
 + (NSString *)nameForPill:(NSInteger)pill {
-    static NSArray *names;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        names = @[@"Time", @"Date", @"Battery", @"Network Speed", @"Now Playing",
-                  @"Calendar", @"Reminders", @"Weather", @"Alarm & Timer",
-                  @"Next Event", @"Sunrise & Sunset", @"Storage & Memory",
-                  @"Countdown", @"Unlocks", @"Quick Message"];
-    });
-    if (pill < 0 || pill >= (NSInteger)names.count) return nil;
-    return names[pill];
+    switch (pill) {
+        case GLTPillTime: return GLTLocalizedString(@"Time");
+        case GLTPillStorage: return GLTLocalizedString(@"Storage & Memory");
+        case GLTPillNowPlaying: return GLTLocalizedString(@"Now Playing");
+        case GLTPillAlarm: return GLTLocalizedString(@"Alarm & Timer");
+        case GLTPillWeather: return GLTLocalizedString(@"Weather");
+        case GLTPillQuickMessage: return GLTLocalizedString(@"Quick Message");
+        default: return nil;
+    }
 }
 
 + (NSString *)symbolForPill:(NSInteger)pill {
-    static NSArray *symbols;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        symbols = @[@"clock", @"calendar", @"battery.100", @"arrow.up.arrow.down",
-                    @"music.note", @"calendar.badge.clock", @"checklist", @"cloud.sun",
-                    @"alarm", @"calendar.badge.clock", @"sunrise", @"internaldrive",
-                    @"hourglass", @"lock.open", @"square.and.pencil"];
-    });
-    if (pill < 0 || pill >= (NSInteger)symbols.count) return nil;
-    return symbols[pill];
+    switch (pill) {
+        case GLTPillTime: return @"clock";
+        case GLTPillStorage: return @"internaldrive";
+        case GLTPillNowPlaying: return @"music.note";
+        case GLTPillAlarm: return @"alarm";
+        case GLTPillWeather: return @"cloud.sun";
+        case GLTPillQuickMessage: return @"square.and.pencil";
+        default: return nil;
+    }
 }
 
 - (void)setPill:(long long)pill {
+    if (!GLTIsSupportedPill(pill)) return;
     _pill = pill;
     CFPreferencesSetAppValue(CFSTR("pill"), (__bridge CFPropertyListRef)@(pill),
                              (__bridge CFStringRef)kGLTPrefsDomain);
@@ -161,7 +163,6 @@ static UIColor *GLTColorFromString(NSString *string) {
     _showSeconds          = [self boolForKey:@"showSeconds" fallback:NO];
     _showMediaWhilePlaying = [self boolForKey:@"showMediaWhilePlaying" fallback:NO];
     _replaceBanners       = [self boolForKey:@"replaceBanners" fallback:NO];
-    _deviceConnections    = [self boolForKey:@"deviceConnections" fallback:NO];
     _replaceVolumeHUD     = [self boolForKey:@"replaceVolumeHUD" fallback:NO];
 
     _notificationDuration = [self doubleForKey:@"notificationDuration" fallback:3 min:1 max:8];
@@ -186,19 +187,11 @@ static UIColor *GLTColorFromString(NSString *string) {
         _weatherCity = nil;
     }
 
-    id title = [self objectForKey:@"countdownTitle"];
-    if ([title isKindOfClass:[NSString class]]) {
-        NSString *trimmed = [title stringByTrimmingCharactersInSet:
-                             [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        _countdownTitle = trimmed.length ? trimmed : nil;
-    } else {
-        _countdownTitle = nil;
-    }
-
-    id date = [self objectForKey:@"countdownDate"];
-    _countdownDate = [date isKindOfClass:[NSDate class]] ? date : nil;
-
-    _pill = (long long)[self doubleForKey:@"pill" fallback:0 min:0 max:14];
+    // Retired or unknown selections read as Time without rewriting stored preferences.
+    id pill = [self objectForKey:@"pill"];
+    long long candidate = [pill respondsToSelector:@selector(longLongValue)]
+        ? [pill longLongValue] : GLTPillTime;
+    _pill = GLTIsSupportedPill(candidate) ? candidate : GLTPillTime;
 }
 
 @end

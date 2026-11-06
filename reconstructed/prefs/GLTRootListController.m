@@ -103,8 +103,9 @@ static NSDictionary *GLTLocalizedTitles(NSBundle *bundle, NSDictionary *titles) 
     title.font = [UIFont systemFontOfSize:34 weight:UIFontWeightBold];
     title.textColor = [UIColor whiteColor];
 
-    NSString *version = [[NSBundle bundleForClass:[self class]]
-                         objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSString *version = [bundle objectForInfoDictionaryKey:@"GLTPackageVersion"]
+                       ?: [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     UILabel *subtitle = [UILabel new];
     subtitle.text = [NSString stringWithFormat:
                      GLTLocalizedSetting([NSBundle bundleForClass:[GLTRootListController class]],

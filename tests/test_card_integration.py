@@ -25,17 +25,20 @@ def compact(text):
 
 
 class CardIntegrationTests(unittest.TestCase):
-    def test_original_routes_include_battery_but_no_invented_time_or_network_card(self):
+    def test_authorized_routes_only_keep_original_retained_cards(self):
         routes = compact(method((SOURCES / "GLTController.m").read_text(), "platterContent"))
         for fragment in (
-            "caseGLTPillBattery:returnGLTMakeDevicePlatter([selfpillContent]);",
-            "caseGLTPillDate:caseGLTPillCalendar:caseGLTPillNextEvent:returnGLTMakeEventsPlatter();",
-            "caseGLTPillWeather:caseGLTPillSun:[[GLTWeathersharedWeather]refreshForcing:NO];",
-            "caseGLTPillCountdown:if(![GLTPrefssharedPrefs].countdownDate)returnnil;returnGLTMakeCountdownPlatter();",
+            "caseGLTPillWeather:", "[[GLTWeathersharedWeather]refreshForcing:NO];",
+            "GLTMakeWeatherPlatter()", "caseGLTPillAlarm:[[GLTClockItemssharedItems]refresh];returnGLTMakeClockPlatter();",
+            "caseGLTPillNowPlaying:returnGLTMakeMediaPlatter();",
+            "caseGLTPillStorage:returnGLTMakeStoragePlatter();",
+            "caseGLTPillQuickMessage:returnGLTMakeComposePlatter();",
         ):
             self.assertIn(fragment, routes)
         self.assertNotIn("caseGLTPillTime:", routes)
-        self.assertNotIn("caseGLTPillNetwork:", routes)
+        for obsolete in ("GLTPillDate", "GLTPillBattery", "GLTPillNetwork", "GLTPillNextEvent",
+                         "GLTPillCalendar", "GLTPillReminders", "GLTPillCountdown", "GLTPillSun", "GLTPillUnlocks"):
+            self.assertNotIn(obsolete, routes)
         self.assertIn("if([selfshowsVolume])returnnil;", routes)
         self.assertIn("if([selfshowsNotification])returnGLTMakeNotificationPlatter(_notification);", routes)
 

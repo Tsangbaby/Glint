@@ -11,12 +11,12 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <CoreGraphics/CoreGraphics.h>
-#import <EventKit/EventKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import <Contacts/Contacts.h>
 #import <MessageUI/MessageUI.h>
 
 #import "GlintPrivate.h"
+#import "GLTLocalization.h"
 
 #import "GLTWindow.h"
 #import "GLTPickerList.h"
@@ -28,17 +28,13 @@
 #import "GLTPlatterContent.h"
 #import "GLTPlatterView.h"
 #import "GLTMediaPlatterView.h"
-#import "GLTRemindersPlatterView.h"
 #import "GLTNotificationPlatterView.h"
 #import "GLTClockPlatterView.h"
 #import "GLTComposePlatterView.h"
 
 #import "GLTMedia.h"
-#import "GLTEvents.h"
-#import "GLTDevice.h"
 #import "GLTAlarm.h"
 #import "GLTClockItems.h"
-#import "GLTUnlocks.h"
 #import "GLTRecipient.h"
 #import "GLTNotification.h"
 #import "GLTWeatherHour.h"

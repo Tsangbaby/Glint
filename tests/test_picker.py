@@ -59,29 +59,27 @@ class PickerPreviewContracts(unittest.TestCase):
         ):
             self.assertIn(token, cell)
 
-    def test_all_fifteen_options_keep_stable_identity_and_nil_preview_labels(self):
+    def test_retained_six_options_keep_original_identity_order_and_nil_preview_labels(self):
         prefs = (ROOT / "reconstructed/Sources/GLTPrefs.m").read_text()
         order_match = re.search(r"\+ \(NSArray \*\)pillOrder \{(.*?)\n\}", prefs, re.S)
         assert order_match is not None
         order = order_match.group(1)
         private_header = (ROOT / "reconstructed/GlintPrivate.h").read_text()
         identities = re.findall(r"\b(GLTPill\w+)\s*=\s*(\d+)", private_header)
-        self.assertEqual([int(value) for _, value in identities], list(range(15)))
+        self.assertEqual(dict((name, int(value)) for name, value in identities), {
+            "GLTPillTime": 0, "GLTPillNowPlaying": 4, "GLTPillWeather": 7,
+            "GLTPillAlarm": 8, "GLTPillStorage": 11, "GLTPillQuickMessage": 14,
+        })
         self.assertCountEqual([name for name, _ in identities], re.findall(r"@\((GLTPill\w+)\)", order))
-        # Original +pillOrder points to boxed integers, not an enum-ordered list.
-        # 0x2f028 -> values 0,1,2,3,11,4,9,5,6,8,12,7,10,13,14.
+        # Original relative presentation order after the nine authorized removals.
         self.assertEqual(re.findall(r"@\((GLTPill\w+)\)", order), [
-            "GLTPillTime", "GLTPillDate", "GLTPillBattery", "GLTPillNetwork",
-            "GLTPillStorage", "GLTPillNowPlaying", "GLTPillNextEvent", "GLTPillCalendar",
-            "GLTPillReminders", "GLTPillAlarm", "GLTPillCountdown", "GLTPillWeather",
-            "GLTPillSun", "GLTPillUnlocks", "GLTPillQuickMessage"])
-        names_match = re.search(r"names = @\[(.*?)\];", prefs, re.S)
+            "GLTPillTime", "GLTPillStorage", "GLTPillNowPlaying", "GLTPillAlarm",
+            "GLTPillWeather", "GLTPillQuickMessage"])
+        names_match = re.search(r"\+ \(NSString \*\)nameForPill:.*?\n\}", prefs, re.S)
         assert names_match is not None
-        names = names_match.group(1)
-        self.assertEqual(re.findall(r'@"([^"]+)"', names), [
-            "Time", "Date", "Battery", "Network Speed", "Now Playing", "Calendar",
-            "Reminders", "Weather", "Alarm & Timer", "Next Event", "Sunrise & Sunset",
-            "Storage & Memory", "Countdown", "Unlocks", "Quick Message"])
+        names = names_match.group(0)
+        self.assertCountEqual(re.findall(r'GLTLocalizedString\(@"([^"]+)"\)', names), [
+            "Time", "Now Playing", "Weather", "Alarm & Timer", "Storage & Memory", "Quick Message"])
         for name in ("pickerRowForPill", "pickerCellForPill"):
             text = compact(method(name))
             self.assertIn("[selfcontentForPill:pill]", text)
@@ -90,7 +88,8 @@ class PickerPreviewContracts(unittest.TestCase):
             self.assertNotIn("if(!content)", text)
             self.assertNotIn("label.text=", text)
         self.assertIn('CFPreferencesSetAppValue(CFSTR("pill")', prefs)
-        self.assertIn('doubleForKey:@"pill" fallback:0 min:0 max:14', prefs)
+        self.assertIn('_pill = GLTIsSupportedPill(candidate) ? candidate : GLTPillTime;', prefs)
+        self.assertIn('if (!GLTIsSupportedPill(pill)) return;', prefs)
 
 
 class PickerLayoutContracts(unittest.TestCase):

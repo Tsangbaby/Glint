@@ -81,8 +81,10 @@ typedef NS_ENUM(NSInteger, MTTimerState) {
     dispatch_async(_queue, ^{
         NSMutableArray<GLTAlarm *> *alarms = [NSMutableArray array];
 
-        for (MTAlarm *alarm in [self->_alarmManager alarmsSync]) {
-            if ([alarm respondsToSelector:@selector(isEnabled)] && ![alarm isEnabled]) continue;
+        NSArray *rawAlarms = [self->_alarmManager respondsToSelector:@selector(alarmsSync)]
+            ? [self->_alarmManager alarmsSync] : nil;
+        for (MTAlarm *alarm in rawAlarms) {
+            if (![alarm respondsToSelector:@selector(isEnabled)] || ![alarm isEnabled]) continue;
             if (![alarm respondsToSelector:@selector(nextFireDate)]) continue;
 
             NSDate *fireDate = [alarm nextFireDate];

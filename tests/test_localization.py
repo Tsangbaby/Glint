@@ -58,10 +58,9 @@ class LocalizationTests(unittest.TestCase):
                                      "printf arguments must retain type/order/precision")
 
 
-    def test_root_schema_is_byte_identical_to_frozen_baseline(self):
-        import hashlib
-        self.assertEqual(hashlib.sha256((RESOURCES / "Root.plist").read_bytes()).hexdigest(),
-                         "d32c79188e17285d67acf94d9ac93efb6cdad0d5dd5f3bd56a9939bd652d4b66")
+    def test_root_schema_only_changes_the_authorized_feature_selection_and_groups(self):
+        from test_beta1_settings import expected_root
+        self.assertEqual(plistlib.loads((RESOURCES / "Root.plist").read_bytes()), expected_root())
 
     def test_bundle_declares_system_languages_and_english_fallback(self):
         info = plistlib.loads((RESOURCES / "Info.plist").read_bytes())
@@ -103,7 +102,8 @@ class LocalizationTests(unittest.TestCase):
         self.assertIn('_format = GLTLocalizedCellString([GLTSliderCell class], properties[@"format"] ?: @"%.1f")', source)
         self.assertNotIn('mainBundle', source)
         self.assertNotRegex(source, r'AppleLanguages|NSUserDefaults|setLocale:|\.locale\s*=')
-        self.assertIn('_picker.datePickerMode = UIDatePickerModeDate;', source)
+        self.assertNotIn('UIDatePicker', source)
+        self.assertNotIn('GLTDateCell', source)
         self.assertIn('_colorWell.supportsAlpha = NO;', source)
 
     def test_custom_cell_persistence_and_controls_remain_byte_bound(self):
@@ -114,7 +114,17 @@ class LocalizationTests(unittest.TestCase):
         source = source.replace(
             '_format = GLTLocalizedCellString([GLTSliderCell class], properties[@"format"] ?: @"%.1f");',
             '_format = properties[@"format"] ?: @"%.1f";')
-        self.assertEqual(hashlib.sha256(source.encode()).hexdigest(), "5541eca6e490a2926053dfd8c703a503ada027de58b5853a5f0f0e32550d6ccc")
+        # The removed countdown-only date cell is not a retained control.
+        import subprocess
+        baseline = subprocess.check_output([
+            'git', 'show', 'c4c7817f66a13b8e76677d2e000112cd8bbe7ae5:reconstructed/prefs/GLTCells.m'
+        ], cwd=ROOT).decode().split('#pragma mark - Date', 1)[0]
+        baseline = re.sub(r"^#pragma mark - Settings localization\n.*?(?=^#pragma mark - Shared persistence)",
+                          "", baseline, flags=re.M | re.S).replace(
+            '_format = GLTLocalizedCellString([GLTSliderCell class], properties[@"format"] ?: @"%.1f");',
+            '_format = properties[@"format"] ?: @"%.1f";')
+        self.assertEqual(source.split('#import <Preferences/PSTableCell.h>', 1)[1].rstrip(),
+                         baseline.split('#import <Preferences/PSTableCell.h>', 1)[1].rstrip())
 
 
 if __name__ == "__main__":

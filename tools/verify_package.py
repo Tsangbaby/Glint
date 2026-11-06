@@ -86,7 +86,7 @@ def verify_package(package):
     fields = {}
     for key in ("Package", "Version", "Architecture"):
         fields[key] = subprocess.check_output(["dpkg-deb", "-f", str(package), key], text=True).strip()
-    assert fields == {"Package": "com.antonym.glint", "Version": "1.6.3", "Architecture": "iphoneos-arm64e"}, fields
+    assert fields == {"Package": "com.antonym.glint", "Version": "1.6.3-beta1", "Architecture": "iphoneos-arm64e"}, fields
     payload = subprocess.check_output(["dpkg-deb", "--fsys-tarfile", str(package)])
     files = payload_files(payload)
     assert not any(name.startswith("var/jb/") for name in files), "rootless payload in RootHide package"
@@ -103,10 +103,15 @@ def verify_package(package):
     info = plistlib.loads(files[bundle + "Info.plist"])
     assert info["CFBundleExecutable"] == "GlintPrefs"
     assert info["CFBundleShortVersionString"] == "1.6.3"
+    assert info["GLTPackageVersion"] == fields["Version"]
     assert info["NSPrincipalClass"] == "GLTRootListController"
     rows = plistlib.loads(files[bundle + "Root.plist"])["items"]
     defaults = {item.get("key"): item.get("default") for item in rows}
-    for key in ("enabled", "showMediaWhilePlaying", "deviceConnections", "replaceBanners", "replaceVolumeHUD"):
+    assert not {"countdownDate", "countdownTitle", "deviceConnections"} & set(defaults)
+    selection = [item for item in rows if item.get("key") == "pill"]
+    assert len(selection) == 1 and selection[0]["validValues"] == [0, 11, 4, 8, 7, 14]
+    assert selection[0]["validTitles"] == ["Time", "Storage & Memory", "Now Playing", "Alarm & Timer", "Weather", "Quick Message"]
+    for key in ("enabled", "showMediaWhilePlaying", "replaceBanners", "replaceVolumeHUD"):
         assert defaults[key] is False, ("unsafe first-install default", key)
     magics = (b"\xcf\xfa\xed\xfe", b"\xfe\xed\xfa\xcf", b"\xca\xfe\xba\xbe", b"\xca\xfe\xba\xbf")
     machos = sorted(name for name, raw in files.items() if raw.startswith(magics))
