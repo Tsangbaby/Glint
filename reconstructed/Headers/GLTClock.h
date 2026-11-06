@@ -17,6 +17,9 @@
 #pragma mark - class methods
 + (BOOL)isStyled:(UIView *)arg1;
 + (BOOL)isRendering;
++ (UIColor *)systemTextColorForLabel:(UILabel *)label;
++ (UIColor *)foregroundColorForLabel:(UILabel *)label;
++ (void)setSystemTextColor:(UIColor *)color forLabel:(UILabel *)label;
 + (UIEdgeInsets)padding;
 + (double)outsetForLabel:(UIView *)arg1;
 + (UIView *)backgroundForLabel:(UIView *)arg1 create:(BOOL)arg2;

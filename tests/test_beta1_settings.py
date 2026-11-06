@@ -6,6 +6,7 @@ import plistlib
 import re
 import subprocess
 import unittest
+from opacity_contract import with_opacity_row
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = "c4c7817f66a13b8e76677d2e000112cd8bbe7ae5"
@@ -41,7 +42,7 @@ def expected_root():
 class BetaSettingsTests(unittest.TestCase):
     def test_remove_only_authorized_settings_preserving_remaining_schema(self):
         path = ROOT / "reconstructed/prefs/Resources/Root.plist"
-        self.assertEqual(plistlib.loads(path.read_bytes()), expected_root())
+        self.assertEqual(plistlib.loads(path.read_bytes()), with_opacity_row(expected_root()))
         rows = plistlib.loads(path.read_bytes())["items"]
         self.assertFalse({"countdownTitle", "countdownDate", "deviceConnections"} & {r.get("key") for r in rows})
         selection = [r for r in rows if r.get("key") == "pill"]

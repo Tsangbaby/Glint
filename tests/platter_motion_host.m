@@ -22,9 +22,15 @@ static BOOL synchronousCompletion;
 // GLINT_PRODUCTION_CONSTANTS
 
 @interface GLTLayer : NSObject
-@property CGFloat cornerRadius;
+@property(nonatomic) CGFloat cornerRadius;
+@property(nonatomic) NSInteger lastRadiusAnimation;
 @end
 @implementation GLTLayer
+@synthesize cornerRadius = _cornerRadius;
+- (void)setCornerRadius:(CGFloat)radius {
+    _cornerRadius = radius;
+    self.lastRadiusAnimation = activeAnimation;
+}
 @end
 @interface UIColor : NSObject
 + (instancetype)colorWithWhite:(CGFloat)white alpha:(CGFloat)alpha;
@@ -225,6 +231,18 @@ int main(int argc, const char **argv) {
                 Require(animations.count == 2 && [animations[0][0] doubleValue] == 0.6 &&
                         [animations[0][2] doubleValue] == 0.72 && [animations[0][3] doubleValue] == 0.4,
                         "accepted opening spring");
+            }
+        } else if (!strcmp(mode, "compact-radius")) {
+            for (NSUInteger i = 0; i < 3; i++) for (NSUInteger j = 0; j < 5; j++) {
+                GLTController *c = Controller(((CGFloat[]){59,47,20})[i]);
+                CGFloat height = ((CGFloat[]){16,22,26,34,38})[j];
+                c->_anchorFrame.size.height = height;
+                [c openPlatter:Content()]; GLTPlatterView *p = c->_platterView;
+                [c closePlatterAnimated:YES];
+                Require(p.layer.cornerRadius == height * 0.5, "compact radius follows pill height");
+                Require(p.layer.lastRadiusAnimation == 2 && p.lastLayoutAnimation == 2,
+                        "compact radius frame and blur share closing transaction");
+                Drain(YES);
             }
         } else if (!strcmp(mode, "close")) {
             GLTController *c = Controller(59); [c openPlatter:Content()];

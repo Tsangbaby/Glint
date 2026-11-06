@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import unittest
+from opacity_contract import inverse_opacity
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFS = ROOT / "reconstructed/Sources/GLTPrefs.m"
@@ -119,7 +120,7 @@ class PillContrastTests(unittest.TestCase):
         self.assertEqual(library.test_luminance_choice(0.05, 0.4 + 1e-9), 0)
 
     def test_reload_adapts_only_effective_color_and_preserves_raw_preferences(self):
-        source = PREFS.read_text()
+        source = inverse_opacity(PREFS.read_text(), "Sources/GLTPrefs.m")
         effective_line = '    _textColor = GLTEffectiveTextColor(GLTColorFromString([self objectForKey:@"textColor"]) ?: [UIColor whiteColor], _backgroundColor);'
         self.assertIn(effective_line, source)
         adapter = production_function(source, "GLTEffectiveTextColor")

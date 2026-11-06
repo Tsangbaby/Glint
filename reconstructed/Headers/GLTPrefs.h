@@ -31,6 +31,7 @@
 @property (nonatomic, assign, readonly) BOOL tapToCycle;
 @property (nonatomic, strong, readonly) UIColor * backgroundColor;
 @property (nonatomic, strong, readonly) UIColor * textColor;
+@property (nonatomic, assign, readonly) double backgroundOpacity;
 @property (nonatomic, assign, readonly) BOOL showSeconds;
 @property (nonatomic, assign, readonly) BOOL showMediaWhilePlaying;
 @property (nonatomic, assign, readonly) BOOL replaceBanners;

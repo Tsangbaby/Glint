@@ -8,6 +8,8 @@
 	<string>外观</string>
 	<key>Background</key>
 	<string>背景</string>
+	<key>Background Transparency</key>
+	<string>背景透明度</string>
 	<key>By default the pill is dark and slightly see-through. The background color is used with the Color style.</key>
 	<string>默认情况下，胶囊采用略微透明的深色背景。选择“自定义颜色”样式后，将使用所设置的背景颜色。</string>
 	<key>City</key>

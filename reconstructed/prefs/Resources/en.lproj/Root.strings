@@ -8,6 +8,8 @@
 	<string>Appearance</string>
 	<key>Background</key>
 	<string>Background</string>
+	<key>Background Transparency</key>
+	<string>Background Transparency</string>
 	<key>By default the pill is dark and slightly see-through. The background color is used with the Color style.</key>
 	<string>By default the pill is dark and slightly see-through. The background color is used with the Color style.</string>
 	<key>City</key>

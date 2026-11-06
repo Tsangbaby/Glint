@@ -330,6 +330,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.6;
     if (!background) {
         background = [UIColor colorWithWhite:0.06 alpha:0.72];
     }
+    background = [background colorWithAlphaComponent:CGColorGetAlpha(background.CGColor) * prefs.backgroundOpacity];
 
     NSString *kind = [self shownKind];
     BOOL animated = (_shownKind != nil) && ![kind isEqualToString:_shownKind];
@@ -733,6 +734,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.6;
                         options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
         platter.frame = anchor;
+        platter.layer.cornerRadius = CGRectGetHeight(anchor) * 0.5;
         [platter layoutIfNeeded];
         platter.content.alpha = 0;
         platter.content.transform = CGAffineTransformScale(
@@ -811,6 +813,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.6;
     UIView *row = [UIView new];
     UIView *preview = [UIView new];
     preview.backgroundColor = prefs.backgroundColor ?: [UIColor colorWithWhite:0.06 alpha:0.85];
+    preview.backgroundColor = [preview.backgroundColor colorWithAlphaComponent:CGColorGetAlpha(preview.backgroundColor.CGColor) * prefs.backgroundOpacity];
     preview.layer.cornerCurve = kCACornerCurveContinuous;
     preview.layer.cornerRadius = 17;
     if (prefs.pill == pill) {
@@ -852,6 +855,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.6;
     UIView *cell = [UIView new];
     UIView *preview = [UIView new];
     preview.backgroundColor = prefs.backgroundColor ?: [UIColor colorWithWhite:0.06 alpha:0.85];
+    preview.backgroundColor = [preview.backgroundColor colorWithAlphaComponent:CGColorGetAlpha(preview.backgroundColor.CGColor) * prefs.backgroundOpacity];
     preview.layer.cornerCurve = kCACornerCurveContinuous;
     preview.layer.cornerRadius = 17;
     if (prefs.pill == pill) {

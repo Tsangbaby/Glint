@@ -16,6 +16,7 @@
 static char kGLTStyledKey;
 static char kGLTBackgroundKey;
 static char kGLTSystemTextKey;
+static char kGLTSystemTextColorKey;
 
 // Weak set of every label Glint is currently drawing into, and a weak-to-weak
 // map from a label to its companion (the date label under the time).
@@ -49,6 +50,32 @@ static BOOL _rendering;
 }
 
 #pragma mark - Metrics
+
++ (UIColor *)systemTextColorForLabel:(UILabel *)label {
+    return objc_getAssociatedObject(label, &kGLTSystemTextColorKey);
+}
+
++ (UIColor *)foregroundColorForLabel:(UILabel *)label {
+    GLTPrefs *prefs = [GLTPrefs sharedPrefs];
+    if (prefs.backgroundOpacity == 0.0) {
+        return [self systemTextColorForLabel:label] ?: label.textColor ?: prefs.textColor;
+    }
+    return prefs.textColor;
+}
+
++ (void)setSystemTextColor:(UIColor *)color forLabel:(UILabel *)label {
+    if (!color) return;
+    objc_setAssociatedObject(label, &kGLTSystemTextColorKey, color, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    if (!_rendering && [self isStyled:label] && [GLTPrefs sharedPrefs].backgroundOpacity == 0.0) {
+        NSMutableAttributedString *string = [label.attributedText mutableCopy];
+        if (string.length) {
+            [string addAttribute:NSForegroundColorAttributeName value:color range:NSMakeRange(0, string.length)];
+            _rendering = YES;
+            label.attributedText = string;
+            _rendering = NO;
+        }
+    }
+}
 
 // Horizontal breathing room on both sides of the pill.
 + (UIEdgeInsets)padding {
@@ -194,10 +221,12 @@ static BOOL _rendering;
         _rendering = YES;
         if (!styled) {
             [self setSystemText:label.text forLabel:label];
+            [self setSystemTextColor:label.textColor forLabel:label];
         }
         [GLTStyledLabels() addObject:label];
         objc_setAssociatedObject(label, &kGLTStyledKey, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
+        textColor = [self foregroundColorForLabel:label];
         NSAttributedString *string = [content attributedStringWithFont:label.font color:textColor];
         if (![label.attributedText isEqualToAttributedString:string]) {
             label.attributedText = string;
@@ -229,6 +258,9 @@ static BOOL _rendering;
     objc_setAssociatedObject(label, &kGLTBackgroundKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
     label.text = objc_getAssociatedObject(label, &kGLTSystemTextKey);
+    UIColor *systemColor = [self systemTextColorForLabel:label];
+    if (systemColor) label.textColor = systemColor;
+    objc_setAssociatedObject(label, &kGLTSystemTextColorKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
     _rendering = NO;
 

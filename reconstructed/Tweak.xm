@@ -202,7 +202,8 @@ static void glt_setAttributedText(id self, SEL _cmd, NSAttributedString *text) {
 // the configured pill text colour.
 static void glt_setTextColor(id self, SEL _cmd, UIColor *color) {
     if ([GLTClock isStyled:self] && ![GLTClock isRendering]) {
-        return;
+        [GLTClock setSystemTextColor:color forLabel:self];
+        color = [GLTClock foregroundColorForLabel:self];
     }
     ((GLTSetObjectIMP)glt_orig_setTextColor)(self, _cmd, color);
 }
@@ -231,6 +232,10 @@ static CGSize glt_sizeThatFits(id self, SEL _cmd, CGSize proposed) {
 
 static void glt_drawTextInRect(id self, SEL _cmd, CGRect rect) {
     if ([GLTClock isStyled:self]) {
+        UIColor *color = [GLTClock foregroundColorForLabel:self];
+        if (![[(UILabel *)self textColor] isEqual:color]) {
+            ((GLTSetObjectIMP)glt_orig_setTextColor)(self, @selector(setTextColor:), color);
+        }
         UIEdgeInsets padding = [GLTClock paddingForLabel:self];
         rect.origin.x    += padding.left;
         rect.origin.y    += padding.top;

@@ -18,6 +18,8 @@ import tempfile
 import unittest
 
 from test_platter_motion import normalize_beta2_controller
+from test_statusbar_readability import normalize_statusbar_readability
+from opacity_contract import inverse_opacity
 
 ROOT = Path(os.environ.get("GLINT_SOURCE_ROOT", Path(__file__).resolve().parents[1]))
 SOURCE = ROOT / "reconstructed"
@@ -79,7 +81,7 @@ def spring_animations(body, source):
 
 def protected_controller(text, *, beta2=False):
     if beta2:
-        text = normalize_beta2_controller(text)
+        text = normalize_beta2_controller(text, refinement=True)
     names = re.findall(r"^[+-] \([^\n)]+\)(\w+)(?=\s|:)", text, re.M)
     if len(names) != len(set(names)):
         raise AssertionError("duplicate Controller method")
@@ -107,6 +109,7 @@ def normalize_beta2_preferences(text):
 
 def protected_preferences(text, *, beta2=False):
     if beta2:
+        text = inverse_opacity(text, "Sources/GLTPrefs.m")
         text = normalize_beta2_preferences(text)
     names = re.findall(r"^[+-] \([^\n)]+\)(\w+)(?=\s|:)", text, re.M)
     if len(names) != len(set(names)):
@@ -356,7 +359,11 @@ int main(void) {
             ("Tweak.xm", "6c2c17de816b55b43b5e7e780ebf5cca54dd5bd97c9d5dece7e777a6df198a33"),
             ("Sources/GLTClock.m", "fe9cbe44f54eadf1baad271f03fbad2d91969bc0ea7c2239b2717b653928c13f"),
         ):
-            self.assertEqual(hashlib.sha256((SOURCE / path).read_bytes()).hexdigest(), digest, path)
+            raw = (SOURCE / path).read_bytes()
+            raw = inverse_opacity(raw.decode().replace('\r\n', '\n'), path).replace('\n', '\r\n').encode()
+            if path == "Tweak.xm":
+                raw = normalize_statusbar_readability(raw)
+            self.assertEqual(hashlib.sha256(raw).hexdigest(), digest, path)
         prefs = (SOURCE / "Sources/GLTPrefs.m").read_text()
         prefs_digest = protected_preferences(accepted('Sources/GLTPrefs.m'))
         self.assertEqual(protected_preferences(prefs, beta2=True), prefs_digest)

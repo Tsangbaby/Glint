@@ -13,6 +13,9 @@ import subprocess
 import tempfile
 import unittest
 
+from test_platter_refinement import normalize_platter_refinement
+from opacity_contract import inverse_opacity
+
 ROOT = Path(os.environ.get("GLINT_SOURCE_ROOT", Path(__file__).resolve().parents[1]))
 CONTROLLER = ROOT / "reconstructed/Sources/GLTController.m"
 BASELINE = "2fad941aa78c15b306a8cf8f3494d13a5ee137ac"
@@ -29,12 +32,15 @@ def method(source, name):
     return matches[0]
 
 
-def normalize_beta2_controller(source):
+def normalize_beta2_controller(source, *, refinement=False):
     """Restore only frozen, explicitly authorized beta2 methods for old byte guards.
 
     This is never used by behavioral replay. Any additional edit inside these
     methods rejects the inverse; every byte outside them remains visible.
     """
+    if refinement:
+        source = inverse_opacity(source, "Sources/GLTController.m")
+        source = normalize_platter_refinement(source)
     baseline = subprocess.check_output(
         ["git", "show", BASELINE + ":reconstructed/Sources/GLTController.m"],
         cwd=ROOT, text=True,
@@ -96,11 +102,11 @@ class PlatterMotionTests(unittest.TestCase):
             ["git", "show", BASELINE + ":reconstructed/Sources/GLTController.m"],
             cwd=ROOT, text=True,
         )
-        self.assertEqual(normalize_beta2_controller(source), baseline)
+        self.assertEqual(normalize_beta2_controller(source, refinement=True), baseline)
         with self.assertRaisesRegex(AssertionError, "beta2 changed surface mismatch: openPlatter"):
-            normalize_beta2_controller(source.replace("x = MAX(x, 6.0);", "x = MAX(x, 7.0);", 1))
+            normalize_beta2_controller(source.replace("x = MAX(x, 6.0);", "x = MAX(x, 7.0);", 1), refinement=True)
         mutant = source.replace("- (void)layoutTouchView {", "- (void)layoutTouchView {\n    (void)self;", 1)
-        self.assertNotEqual(normalize_beta2_controller(mutant), baseline)
+        self.assertNotEqual(normalize_beta2_controller(mutant, refinement=True), baseline)
 
     def test_shell_rounding_and_blur_layout_share_existing_open_spring(self):
         source = CONTROLLER.read_text()
@@ -135,7 +141,7 @@ class PlatterMotionTests(unittest.TestCase):
         self.assertIn("CGRect anchor = _anchorFrame;", body)
         self.assertLess(body.index("CGRect anchor = _anchorFrame;"),
                         body.index("_platterView = nil;"))
-        self.assertIn("platter.frame = anchor;\n        [platter layoutIfNeeded];", body)
+        self.assertIn("platter.frame = anchor;\n        platter.layer.cornerRadius = CGRectGetHeight(anchor) * 0.5;\n        [platter layoutIfNeeded];", body)
         self.assertIn("usingSpringWithDamping:1.0", body)
         self.assertIn("initialSpringVelocity:0", body)
         self.assertIn("delay:0", body)
@@ -221,6 +227,17 @@ class PlatterMotionTests(unittest.TestCase):
                 self.assertEqual(bad.returncode, 1, bad.stdout + bad.stderr)
                 self.assertIn("GLINT_MOTION_HOST_FAIL: " + failure, bad.stderr)
                 print("GLINT_MOTION_NATIVE_PASS: " + mode + " + executable predecessor negative control", flush=True)
+            previous_beta2 = subprocess.check_output(
+                ["git", "show", "fadd14c6f9ca27ea4363c323e9dd398a07100fa9:reconstructed/Sources/GLTController.m"],
+                cwd=ROOT, text=True,
+            )
+            old_radius = build("previous-beta2", previous_beta2)
+            good = subprocess.run([str(candidate), "compact-radius"], capture_output=True, text=True, timeout=10)
+            self.assertEqual(good.returncode, 0, good.stdout + good.stderr)
+            bad = subprocess.run([str(old_radius), "compact-radius"], capture_output=True, text=True, timeout=10)
+            self.assertEqual(bad.returncode, 1, bad.stdout + bad.stderr)
+            self.assertIn("GLINT_MOTION_HOST_FAIL: compact radius follows pill height", bad.stderr)
+            print("GLINT_MOTION_NATIVE_PASS: compact-radius + executable beta2 negative control", flush=True)
             guard = "if (!strongSelf || !currentPlatter || strongSelf->_platterView != currentPlatter) return;"
             self.assertEqual(source.count(guard), 2)
             mutant = build("missing-identity-guard", source.replace(guard, ""))

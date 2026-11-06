@@ -8,6 +8,7 @@ from pathlib import Path
 import plistlib
 import re
 import unittest
+from opacity_contract import with_opacity_row
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFS = ROOT / "reconstructed/prefs"
@@ -52,7 +53,10 @@ class LocalizationTests(unittest.TestCase):
             for key in expected:
                 with self.subTest(table=table, key=key):
                     self.assertEqual(english[key], key, "English wording must be preserved")
-                    self.assertRegex(chinese[key], r"[\u3400-\u9fff]", "missing Chinese text")
+                    if key == "%.0f%%":
+                        self.assertEqual(chinese[key], key)
+                    else:
+                        self.assertRegex(chinese[key], r"[\u3400-\u9fff]", "missing Chinese text")
                     self.assertEqual(re.findall(r"%(?:\d+\$)?[.\d]*[@dfiu]", english[key]),
                                      re.findall(r"%(?:\d+\$)?[.\d]*[@dfiu]", chinese[key]),
                                      "printf arguments must retain type/order/precision")
@@ -60,7 +64,7 @@ class LocalizationTests(unittest.TestCase):
 
     def test_root_schema_only_changes_the_authorized_feature_selection_and_groups(self):
         from test_beta1_settings import expected_root
-        self.assertEqual(plistlib.loads((RESOURCES / "Root.plist").read_bytes()), expected_root())
+        self.assertEqual(plistlib.loads((RESOURCES / "Root.plist").read_bytes()), with_opacity_row(expected_root()))
 
     def test_bundle_declares_system_languages_and_english_fallback(self):
         info = plistlib.loads((RESOURCES / "Info.plist").read_bytes())

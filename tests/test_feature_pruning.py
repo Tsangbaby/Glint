@@ -27,7 +27,7 @@ def source(path, *, beta2=False):
     if beta2:
         if path != "Sources/GLTController.m":
             raise AssertionError("beta2 controller inverse applied to unrelated source")
-        text = normalize_beta2_controller(text)
+        text = normalize_beta2_controller(text, refinement=True)
     # Strip comments without destroying strings (URLs/quoted braces are legal).
     token = r'@?"(?:\\.|[^"\\])*"|//[^\n]*|/\*.*?\*/'
     return re.sub(token, lambda m: "" if m[0].startswith(("//", "/*")) else m[0],

@@ -18,10 +18,16 @@
 @property (nonatomic, readwrite) BOOL replaceVolumeHUD;
 @property (nonatomic, readwrite) UIColor *backgroundColor;
 @property (nonatomic, readwrite) UIColor *textColor;
+@property (nonatomic, readwrite) double backgroundOpacity;
 @property (nonatomic, readwrite) double notificationDuration;
 @property (nonatomic, readwrite) NSString *weatherCity;
 @property (nonatomic, readwrite) double volumeDuration;
 @end
+
+static double GLTBackgroundOpacity(double transparency) {
+    if (!isfinite(transparency)) return 1.0;
+    return 1.0 - fmax(0.0, fmin(100.0, transparency)) / 100.0;
+}
 
 @implementation GLTPrefs
 
@@ -227,6 +233,7 @@ static UIColor *GLTEffectiveTextColor(UIColor *preferred, UIColor *background) {
     }
 
     _textColor = GLTEffectiveTextColor(GLTColorFromString([self objectForKey:@"textColor"]) ?: [UIColor whiteColor], _backgroundColor);
+    _backgroundOpacity = GLTBackgroundOpacity([self doubleForKey:@"backgroundTransparency" fallback:0 min:0 max:100]);
 
     id city = [self objectForKey:@"weatherCity"];
     if ([city isKindOfClass:[NSString class]]) {
