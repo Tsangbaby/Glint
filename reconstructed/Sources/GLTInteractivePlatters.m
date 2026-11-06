@@ -23,8 +23,8 @@ static NSString *GLTClockString(double interval) {
     long long hours = total / 3600;
     long long minutes = (total % 3600) / 60;
     long long seconds = total % 60;
-    if (hours > 0) return [NSString stringWithFormat:@"%ld:%02ld:%02ld", hours, minutes, seconds];
-    return [NSString stringWithFormat:@"%ld:%02ld", minutes, seconds];
+    if (hours > 0) return [NSString stringWithFormat:@"%lld:%02lld:%02lld", hours, minutes, seconds];
+    return [NSString stringWithFormat:@"%lld:%02lld", minutes, seconds];
 }
 
 #pragma mark - Media

@@ -158,6 +158,24 @@ class CompileReadinessTests(unittest.TestCase):
         self.assertEqual(sorted(declared - implemented), [], "missing own class provider")
         self.assertIn("lockStateChanged:(BOOL)", read("Headers/GLTUnlocks.h"))
 
+    def test_timer_formats_match_long_long_components(self):
+        expected = [
+            ("%lld:%02lld:%02lld", "hours, minutes, seconds"),
+            ("%lld:%02lld", "minutes, seconds"),
+        ]
+        for relative in ("Sources/GLTController.m", "Sources/GLTInteractivePlatters.m"):
+            with self.subTest(source=relative):
+                text = read(relative)
+                self.assertEqual(
+                    re.findall(r'long long (hours|minutes|seconds) =', text),
+                    ["hours", "minutes", "seconds"],
+                )
+                formats = re.findall(
+                    r'stringWithFormat:@"([^"]+)"\s*,\s*'
+                    r'(hours, minutes, seconds|minutes, seconds)\]', text,
+                )
+                self.assertEqual(formats, expected, "timer format must match long long without losing zero padding")
+
     def test_native_replacement_needs_an_attached_overlay_scene(self):
         text = read("Sources/GLTController.m")
         guard = text.split("- (BOOL)canPresentOverlay {", 1)[1].split("- (UIView *)visibleClock", 1)[0]

@@ -652,8 +652,8 @@ static const CGFloat kGLTPlatterMinHeight = 44;
         long long seconds = total % 60;
 
         NSString *text = hours > 0
-            ? [NSString stringWithFormat:@"%ld:%02ld:%02ld", hours, minutes, seconds]
-            : [NSString stringWithFormat:@"%ld:%02ld", minutes, seconds];
+            ? [NSString stringWithFormat:@"%lld:%02lld:%02lld", hours, minutes, seconds]
+            : [NSString stringWithFormat:@"%lld:%02lld", minutes, seconds];
 
         GLTPillContent *content = [GLTPillContent contentWithSymbol:@"timer" text:text];
         if (items.timerDuration > 0) {
