@@ -224,6 +224,16 @@ class CompileReadinessTests(unittest.TestCase):
         self.assertIn("[[[NSURLSession sharedSession] dataTaskWithURL:", source)
         self.assertIn("}] resume];", source)
 
+    def test_sun_event_lookup_has_no_unused_snapshot_variable(self):
+        source = read("Sources/GLTWeather.m")
+        match = re.search(r'- \(NSDate \*\)nextSunEvent:\(BOOL \*\)isSunset \{(.*?)\n\}', source, re.S)
+        self.assertIsNotNone(match)
+        assert match is not None
+        body = match[1]
+        self.assertNotIn("NSDate *now = [NSDate date];", body)
+        self.assertEqual(body.count("[date timeIntervalSinceNow] <= 0"), 2)
+        self.assertIn("if (isSunset) *isSunset = bestIsSunset;", body)
+
     def test_native_replacement_needs_an_attached_overlay_scene(self):
         text = read("Sources/GLTController.m")
         guard = text.split("- (BOOL)canPresentOverlay {", 1)[1].split("- (UIView *)visibleClock", 1)[0]

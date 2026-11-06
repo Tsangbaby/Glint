@@ -246,7 +246,6 @@ static const NSTimeInterval kGLTRefreshInterval = 15 * 60;
 
 // Earliest sunrise/sunset still ahead of now, across the two forecast days.
 - (NSDate *)nextSunEvent:(BOOL *)isSunset {
-    NSDate *now = [NSDate date];
     NSDate *best = nil;
     BOOL bestIsSunset = NO;
 
