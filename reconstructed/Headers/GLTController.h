@@ -86,7 +86,7 @@
 - (GLTPillContent *)countContent:(NSInteger)arg1 singular:(NSString *)arg2 plural:(NSString *)arg3 none:(NSString *)arg4 symbol:(NSString *)arg5;
 - (void)sampleNetwork;
 - (NSString *)speed:(double)arg1;
-- (double)cutout;
+- (NSInteger)cutout;
 - (GLTPlatterContent *)platterContent;
 - (void)openPlatter:(GLTPlatterContent *)arg1;
 - (void)closePlatter;

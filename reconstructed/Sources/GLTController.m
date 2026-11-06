@@ -17,13 +17,12 @@
 
 // Haptic + timer tuning, all read out of the original.
 static const NSTimeInterval kGLTTickInterval = 1.0;
-static const NSTimeInterval kGLTPlatterSpringDamping = 0.78;
-static const CGFloat kGLTPlatterOpenDuration = 0.42;
+static const NSTimeInterval kGLTPlatterSpringDamping = 0.72;
+static const CGFloat kGLTPlatterOpenDuration = 0.6;
 static const CGFloat kGLTPlatterCloseDuration = 0.24;
 
 // The status-bar time slot is ~9pt wide per character; the touch target is
 // padded beyond the pill so it stays comfortable.
-static const CGFloat kGLTPlatterMinHeight = 44;
 
 @implementation GLTController
 
@@ -838,8 +837,11 @@ static const CGFloat kGLTPlatterMinHeight = 44;
     return [NSString stringWithFormat:@"%.0fK", bytesPerSecond / 1024.0];
 }
 
-- (double)cutout {
-    return _window.safeAreaInsets.top;
+- (NSInteger)cutout {
+    CGFloat top = _window.safeAreaInsets.top;
+    if (top < 44.0) return 2;
+    if (top < 51.0) return 1;
+    return 0;
 }
 
 #pragma mark - Touch target
@@ -921,21 +923,32 @@ static const CGFloat kGLTPlatterMinHeight = 44;
     if (!content || _platterView || ![self canPresentOverlay]) return;
 
     UIView *host = _window.rootViewController.view;
-    CGRect anchor = [self frameOfClock:[self visibleClock]];
-    CGFloat screenWidth = CGRectGetWidth([UIScreen mainScreen].bounds);
+    // clockTapped snapshots the anchor before popLabel can change its geometry.
+    CGRect anchor = _anchorFrame;
+    NSInteger cutout = [self cutout];
+    CGFloat top = 6.0;
+    CGFloat contentTop = 62.0;
+    CGFloat cornerRadius = 44.0;
+    if (cutout == 1) {
+        contentTop = _window.safeAreaInsets.top + top;
+        cornerRadius = 36.0;
+    } else if (cutout == 2) {
+        top = MAX(_window.safeAreaInsets.top, 20.0) + 4.0;
+        contentTop = top + 18.0;
+        cornerRadius = 22.0;
+    }
+    CGFloat topInset = contentTop - top;
 
     // Tap-outside dismissal layer.
     _dismissView = [[UIControl alloc] initWithFrame:host.bounds];
-    _dismissView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.001];
+    _dismissView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.02];
     [_dismissView addTarget:self action:@selector(closePlatter) forControlEvents:UIControlEventTouchUpInside];
     [host addSubview:_dismissView];
 
-    CGFloat width = MIN(screenWidth - 24, 380);
-    CGFloat top = [self cutout] + 6;
-
-    GLTPlatterView *platter = [[GLTPlatterView alloc] initWithFrame:CGRectMake(0, top, width, 44)];
+    CGFloat width = MIN(CGRectGetWidth(host.bounds) - 12.0, 400.0);
+    GLTPlatterView *platter = [[GLTPlatterView alloc] initWithFrame:anchor];
     platter.openWidth = width;
-    platter.topInset = top;
+    platter.topInset = topInset;
 
     // Install the content first: the handlers live on it.
     platter.content = content;
@@ -950,16 +963,19 @@ static const CGFloat kGLTPlatterMinHeight = 44;
 
     CGFloat height = [platter heightForWidth:width];
     CGFloat centerX = CGRectGetMidX(anchor);
-    platter.frame = CGRectMake(centerX - width / 2, top, width, MAX(height, 44));
-    platter.layer.cornerRadius = 22;
+    // Preserve the original left-then-right clamp order in host coordinates.
+    CGFloat x = centerX - width * 0.5;
+    x = MAX(x, 6.0);
+    CGFloat rightLimit = CGRectGetWidth(host.bounds) - 6.0 - width;
+    x = MIN(x, rightLimit);
+    CGRect openFrame = CGRectMake(x, top, width, height);
+    platter.layer.cornerRadius = CGRectGetHeight(anchor) * 0.5;
     [host addSubview:platter];
     _platterView = platter;
 
-    // The card grows out of the pill: start small, slightly above, and spring in.
-    platter.content.alpha = 0;
-    platter.content.transform = CGAffineTransformConcat(
-        CGAffineTransformMakeScale(0.92, 0.92),
-        CGAffineTransformMakeTranslation(0, -14));
+    content.alpha = 0;
+    content.transform = CGAffineTransformScale(
+        CGAffineTransformMakeTranslation(0, -14), 0.94, 0.94);
 
     [self layoutTouchView];
 
@@ -976,11 +992,21 @@ static const CGFloat kGLTPlatterMinHeight = 44;
     [UIView animateWithDuration:kGLTPlatterOpenDuration
                           delay:0
          usingSpringWithDamping:kGLTPlatterSpringDamping
-          initialSpringVelocity:0.6
-                        options:UIViewAnimationOptionBeginFromCurrentState
+          initialSpringVelocity:0.4
+                        options:UIViewAnimationOptionAllowUserInteraction
                      animations:^{
-        platter.content.alpha = 1;
-        platter.content.transform = CGAffineTransformIdentity;
+        platter.frame = openFrame;
+        platter.layer.cornerRadius = cornerRadius;
+    } completion:nil];
+
+    [UIView animateWithDuration:0.55
+                          delay:0.1
+         usingSpringWithDamping:0.8
+          initialSpringVelocity:0
+                        options:UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+        content.alpha = 1;
+        content.transform = CGAffineTransformIdentity;
     } completion:nil];
 }
 
@@ -1029,17 +1055,18 @@ static const CGFloat kGLTPlatterMinHeight = 44;
     GLTPlatterView *platter = _platterView;
     if (!platter) return;
 
-    CGFloat width = platter.openWidth ?: CGRectGetWidth(platter.frame);
-    CGFloat height = MAX([platter heightForWidth:width], kGLTPlatterMinHeight);
+    CGFloat width = platter.openWidth;
+    // Ignore content callbacks until the shell has reached its expanded width.
+    if (CGRectGetWidth(platter.frame) < width - 1.0) return;
 
-    [UIView animateWithDuration:0.32
+    CGRect frame = platter.frame;
+    frame.size.height = [platter heightForWidth:width];
+    [UIView animateWithDuration:0.35
                           delay:0
          usingSpringWithDamping:0.85
-          initialSpringVelocity:0.4
-                        options:UIViewAnimationOptionBeginFromCurrentState
+          initialSpringVelocity:0
+                        options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
-        CGRect frame = platter.frame;
-        frame.size.height = height;
         platter.frame = frame;
         [platter layoutIfNeeded];
     } completion:nil];
@@ -1052,6 +1079,7 @@ static const CGFloat kGLTPlatterMinHeight = 44;
     UIView *clock = [self visibleClock];
     if (!clock) return;
 
+    _anchorFrame = [self frameOfClock:clock];
     [GLTClock popLabel:clock];
 
     GLTPlatterContent *content = [self platterContent];
