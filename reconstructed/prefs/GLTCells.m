@@ -11,6 +11,13 @@
 
 static NSString *const kGlintReload = @"com.antonym.glint/reload";
 
+#pragma mark - Settings localization
+
+static NSString *GLTLocalizedCellString(Class cellClass, NSString *english) {
+    NSBundle *bundle = [NSBundle bundleForClass:cellClass];
+    return [bundle localizedStringForKey:english value:english table:@"Localizable"];
+}
+
 #pragma mark - Shared persistence
 
 static id GLTReadValue(NSString *domain, NSString *key) {
@@ -106,7 +113,7 @@ static NSString *GLTHexFromColor(UIColor *color) {
 
     NSDictionary *properties = specifier.properties;
     _step = [properties[@"step"] floatValue] ?: 0.1f;
-    _format = properties[@"format"] ?: @"%.1f";
+    _format = GLTLocalizedCellString([GLTSliderCell class], properties[@"format"] ?: @"%.1f");
 
     _slider.minimumValue = [properties[@"min"] floatValue];
     _slider.maximumValue = [properties[@"max"] floatValue];

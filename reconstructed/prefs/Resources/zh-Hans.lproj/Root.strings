@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Alarm &amp; Timer</key>
+	<string>闹钟与计时器</string>
+	<key>Appearance</key>
+	<string>外观</string>
+	<key>Background</key>
+	<string>背景</string>
+	<key>Battery</key>
+	<string>电量</string>
+	<key>By default the pill is dark and slightly see-through. The background color is used with the Color style.</key>
+	<string>默认情况下，胶囊采用略微透明的深色背景。选择“自定义颜色”样式后，将使用所设置的背景颜色。</string>
+	<key>Calendar</key>
+	<string>日历</string>
+	<key>City</key>
+	<string>城市</string>
+	<key>Color</key>
+	<string>自定义颜色</string>
+	<key>Countdown</key>
+	<string>倒计时</string>
+	<key>Current Location</key>
+	<string>当前位置</string>
+	<key>Date</key>
+	<string>日期</string>
+	<key>Default</key>
+	<string>默认</string>
+	<key>Device Connections</key>
+	<string>设备连接</string>
+	<key>Devices</key>
+	<string>设备</string>
+	<key>Enabled</key>
+	<string>启用</string>
+	<key>Glint turns the status bar clock into its pill. Long press it to pick what it shows. Tap it to open its card; pills without a card go to the next pill when Tap to Cycle is on.</key>
+	<string>Glint 将状态栏时钟变为胶囊。长按可选择显示内容，轻点可打开对应卡片；对于没有卡片的胶囊，启用“轻点切换”后，轻点可切换到下一个胶囊。</string>
+	<key>Holidays</key>
+	<string>假期</string>
+	<key>Leave empty to use your location. The weather comes from Open-Meteo, which receives your approximate location (about 1 km) or the city.</key>
+	<string>留空则使用当前位置。天气数据由 Open-Meteo 提供，该服务会接收您的大致位置（约 1 公里精度）或所填写的城市。</string>
+	<key>Network Speed</key>
+	<string>网速</string>
+	<key>Next Event</key>
+	<string>下一个日程</string>
+	<key>Notification Display Time</key>
+	<string>通知显示时长</string>
+	<key>Notifications</key>
+	<string>通知</string>
+	<key>Now Playing</key>
+	<string>正在播放</string>
+	<key>Pill</key>
+	<string>胶囊</string>
+	<key>Quick Message</key>
+	<string>快捷信息</string>
+	<key>Reminders</key>
+	<string>提醒事项</string>
+	<key>Replace Banners</key>
+	<string>替换通知横幅</string>
+	<key>Replace Volume Indicator</key>
+	<string>替换音量指示器</string>
+	<key>Show Music While Playing</key>
+	<string>播放时显示音乐</string>
+	<key>Show Seconds</key>
+	<string>显示秒数</string>
+	<key>Shows</key>
+	<string>显示内容</string>
+	<key>Shows a compact volume pill instead of the system volume indicator.</key>
+	<string>以紧凑的音量胶囊替代系统音量指示器。</string>
+	<key>Shows a pill with the battery when AirPods or another accessory connects, and when it disconnects.</key>
+	<string>AirPods 或其他配件连接及断开时，显示带有电量信息的胶囊。</string>
+	<key>Shows the app of a new notification in the pill instead of a banner. Tap the pill to read it, tap the card to open the app. Notifications still go to Notification Center.</key>
+	<string>收到新通知时，在胶囊中显示来源应用，而不显示横幅。轻点胶囊可阅读通知，轻点卡片可打开应用。通知仍会保留在通知中心。</string>
+	<key>Storage &amp; Memory</key>
+	<string>存储与内存</string>
+	<key>Style</key>
+	<string>样式</string>
+	<key>Sunrise &amp; Sunset</key>
+	<string>日出与日落</string>
+	<key>Tap to Cycle</key>
+	<string>轻点切换</string>
+	<key>Text</key>
+	<string>文字</string>
+	<key>The Countdown pill shows the days left until this date.</key>
+	<string>倒计时胶囊会显示距离所选日期的剩余天数。</string>
+	<key>Time</key>
+	<string>时间</string>
+	<key>Title</key>
+	<string>标题</string>
+	<key>Unlocks</key>
+	<string>解锁次数</string>
+	<key>Volume</key>
+	<string>音量</string>
+	<key>Volume Display Time</key>
+	<string>音量显示时长</string>
+	<key>Weather</key>
+	<string>天气</string>
+</dict>
+</plist>

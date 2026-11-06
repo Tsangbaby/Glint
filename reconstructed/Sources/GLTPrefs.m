@@ -87,14 +87,15 @@ static void GLTPrefsReloadCallback(CFNotificationCenterRef center,
 
 #pragma mark - Pill catalogue
 
-// Order used by the picker and by "Tap to Cycle". Recovered from the
-// NSConstantArray returned by +pillOrder (0x2f1d8), which holds 0…14.
+// Picker and "Tap to Cycle" order: +pillOrder at 0x1b81c returns the
+// NSConstantArray at 0x2f1d8: 0,1,2,3,11,4,9,5,6,8,12,7,10,13,14.
+// Display order is independent of the persisted pill IDs and name table.
 + (NSArray *)pillOrder {
     return @[@(GLTPillTime), @(GLTPillDate), @(GLTPillBattery), @(GLTPillNetwork),
-             @(GLTPillNowPlaying), @(GLTPillCalendar), @(GLTPillReminders),
-             @(GLTPillWeather), @(GLTPillAlarm), @(GLTPillNextEvent), @(GLTPillSun),
-             @(GLTPillStorage), @(GLTPillCountdown), @(GLTPillUnlocks),
-             @(GLTPillQuickMessage)];
+             @(GLTPillStorage), @(GLTPillNowPlaying), @(GLTPillNextEvent),
+             @(GLTPillCalendar), @(GLTPillReminders), @(GLTPillAlarm),
+             @(GLTPillCountdown), @(GLTPillWeather), @(GLTPillSun),
+             @(GLTPillUnlocks), @(GLTPillQuickMessage)];
 }
 
 // Backed by the __const tables at 0x2c7a0 (names) and 0x2c818 (symbols).

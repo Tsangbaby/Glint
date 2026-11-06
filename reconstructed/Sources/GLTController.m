@@ -619,7 +619,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 - (GLTPillContent *)weatherContent {
     GLTWeather *weather = [GLTWeather sharedWeather];
     if (!weather.hasData) {
-        return [GLTPillContent contentWithSymbol:@"cloud.sun" text:@"-"];
+        return [GLTPillContent contentWithSymbol:@"cloud.sun" text:@"--°"];
     }
 
     GLTPillContent *content = [GLTPillContent contentWithSymbol:nil
@@ -706,7 +706,16 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 }
 
 - (GLTPillContent *)storageContent {
-    return [GLTPillContent contentWithSymbol:@"internaldrive" text:GLTStorageSummary()];
+    // Original 0x8740 uses only free storage, rounding above 10 decimal GB.
+    NSDictionary *attributes = [[NSFileManager defaultManager]
+                                attributesOfFileSystemForPath:@"/private/var" error:nil];
+    long long free = [attributes[NSFileSystemFreeSize] longLongValue];
+    if (free > 10000000000LL) {
+        free = __builtin_llround((double)(unsigned long long)free / 1000000000.0) * 1000000000LL;
+    }
+    NSString *text = [NSByteCountFormatter stringFromByteCount:free
+                                                 countStyle:NSByteCountFormatterCountStyleFile];
+    return [GLTPillContent contentWithSymbol:@"internaldrive" text:text];
 }
 
 - (GLTPillContent *)countdownContent {
@@ -748,13 +757,10 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
         return [GLTPillContent contentWithSymbol:@"sunrise" text:@"--:--"];
     }
 
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    formatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"jmm"
-                                                           options:0
-                                                            locale:[NSLocale currentLocale]];
-
+    // Original 0x8a44 shares the clock formatter (including showSeconds).
+    // Keep the current provider's isSunset flag contract at this boundary.
     GLTPillContent *content = [GLTPillContent contentWithSymbol:(sunset ? @"sunset.fill" : @"sunrise.fill")
-                                                            text:[formatter stringFromDate:date]];
+                                                            text:[_timeFormatter stringFromDate:date]];
     content.imageTint = [UIColor systemOrangeColor];
     return content;
 }
@@ -777,14 +783,12 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
                             none:(NSString *)none
                           symbol:(NSString *)symbol
 {
-    NSString *text;
     if (count <= 0) {
-        text = none;
-        return [GLTPillContent contentWithSymbol:symbol text:text];
+        return [GLTPillContent contentWithSymbol:symbol text:none];
     }
-    text = [NSString stringWithFormat:@"%ld %@", (long)count, count == 1 ? singular : plural];
-
-    GLTPillContent *content = [GLTPillContent contentWithSymbol:symbol text:text];
+    // Original 0x8cb8 renders the count as a badge, not twice in the text.
+    GLTPillContent *content = [GLTPillContent contentWithSymbol:nil
+                                                            text:(count == 1 ? singular : plural)];
     content.badge = count;
     return content;
 }
@@ -882,6 +886,9 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     if ([self showsNotification]) return GLTMakeNotificationPlatter(_notification);
 
     switch ([self currentPill]) {
+        case GLTPillBattery:
+            return GLTMakeDevicePlatter([self pillContent]);
+
         case GLTPillDate:
         case GLTPillCalendar:
         case GLTPillNextEvent:
@@ -895,7 +902,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 
         case GLTPillWeather:
         case GLTPillSun:
-            [[GLTWeather sharedWeather] refreshForcing:YES];
+            [[GLTWeather sharedWeather] refreshForcing:NO];
             return GLTMakeWeatherPlatter();
 
         case GLTPillAlarm:
@@ -906,6 +913,7 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
             return GLTMakeStoragePlatter();
 
         case GLTPillCountdown:
+            if (![GLTPrefs sharedPrefs].countdownDate) return nil;
             return GLTMakeCountdownPlatter();
 
         case GLTPillUnlocks:
@@ -1115,194 +1123,175 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
 
 // Single-row pill preview (the original keeps this variant for narrow layouts).
 - (UIView *)pickerRowForPill:(NSInteger)pill font:(UIFont *)font {
+    // Original arm64 0x9f7c: 34-point preview and an inline catalogue title.
     GLTPrefs *prefs = [GLTPrefs sharedPrefs];
-
     UIView *row = [UIView new];
-    row.backgroundColor = prefs.backgroundColor ?: [UIColor colorWithWhite:0.12 alpha:0.9];
-    row.layer.cornerCurve = kCACornerCurveContinuous;
-    row.layer.cornerRadius = 17;
+    UIView *preview = [UIView new];
+    preview.backgroundColor = prefs.backgroundColor ?: [UIColor colorWithWhite:0.06 alpha:0.85];
+    preview.layer.cornerCurve = kCACornerCurveContinuous;
+    preview.layer.cornerRadius = 17;
+    if (prefs.pill == pill) {
+        preview.layer.borderWidth = 2;
+        preview.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.9].CGColor;
+    }
 
     GLTPillContent *content = [self contentForPill:pill];
-    NSAttributedString *string = [content attributedStringWithFont:font color:prefs.textColor];
-
     UILabel *label = [UILabel new];
-    label.attributedText = string;
-    label.textColor = prefs.textColor;
+    label.attributedText = [content attributedStringWithFont:font color:prefs.textColor];
     [label sizeToFit];
-
-    CGRect bounds = label.bounds;
-    bounds.size.width  += 34;
-    bounds.size.height  = MAX(bounds.size.height, 34);
-    label.frame = CGRectMake(17, (bounds.size.height - CGRectGetHeight(label.bounds)) / 2,
-                             CGRectGetWidth(label.bounds), CGRectGetHeight(label.bounds));
-
-    UIView *container = [[UIView alloc] initWithFrame:bounds];
-    container.backgroundColor = row.backgroundColor;
-    container.layer.cornerRadius = 17;
-    container.layer.cornerCurve = kCACornerCurveContinuous;
-    [container addSubview:label];
-    label.frame = CGRectMake(17, (CGRectGetHeight(bounds) - CGRectGetHeight(label.bounds)) / 2,
-                             CGRectGetWidth(label.bounds), CGRectGetHeight(label.bounds));
+    CGFloat previewWidth = ceil(CGRectGetWidth(label.bounds)) + 28;
+    preview.frame = CGRectMake(0, 0, previewWidth, 34);
+    label.center = CGPointMake(CGRectGetMidX(preview.bounds), CGRectGetMidY(preview.bounds));
+    [preview addSubview:label];
+    [row addSubview:preview];
 
     UILabel *name = [UILabel new];
     name.text = [GLTPrefs nameForPill:pill];
     name.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-    name.textColor = [UIColor colorWithWhite:1 alpha:0.75];
+    name.textColor = [UIColor colorWithWhite:1 alpha:0.85];
+    name.layer.shadowColor = [UIColor blackColor].CGColor;
+    name.layer.shadowOpacity = 0.4;
+    name.layer.shadowRadius = 3;
+    name.layer.shadowOffset = CGSizeZero;
     [name sizeToFit];
-    name.frame = CGRectMake(0, CGRectGetMaxY(bounds) + 6, CGRectGetWidth(name.bounds), CGRectGetHeight(name.bounds));
-    name.center = CGPointMake(CGRectGetMidX(bounds), name.center.y);
-
-    UIView *wrapper = [[UIView alloc] initWithFrame:CGRectMake(0, 0,
-        MAX(CGRectGetWidth(bounds), CGRectGetWidth(name.bounds)),
-        CGRectGetMaxY(name.frame))];
-    [wrapper addSubview:container];
-    [wrapper addSubview:name];
-
-    wrapper.tag = pill;
-    UITapGestureRecognizer *tap =
-        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickerRowTapped:)];
-    [wrapper addGestureRecognizer:tap];
-    return wrapper;
+    name.center = CGPointMake(CGRectGetMaxX(preview.frame) + 10 + CGRectGetWidth(name.bounds) * 0.5, 17);
+    [row addSubview:name];
+    row.frame = CGRectMake(0, 0, CGRectGetMaxX(name.frame), 34);
+    row.tag = pill;
+    [row addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickerRowTapped:)]];
+    return row;
 }
 
 // Grid cell used by showPicker. Width is supplied by the grid layout.
 - (UIView *)pickerCellForPill:(NSInteger)pill font:(UIFont *)font width:(CGFloat)width {
+    // Original arm64 0xa4bc: only the preview is filled/outlined; the title is below it.
     GLTPrefs *prefs = [GLTPrefs sharedPrefs];
-    BOOL selected = prefs.pill == pill;
-
     UIView *cell = [UIView new];
-    cell.backgroundColor = prefs.backgroundColor ?: [UIColor colorWithWhite:0.12 alpha:0.9];
-    cell.layer.cornerCurve = kCACornerCurveContinuous;
-    cell.layer.cornerRadius = 17;
-    if (selected) {
-        cell.layer.borderWidth = 2;
-        cell.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.9].CGColor;
+    UIView *preview = [UIView new];
+    preview.backgroundColor = prefs.backgroundColor ?: [UIColor colorWithWhite:0.06 alpha:0.85];
+    preview.layer.cornerCurve = kCACornerCurveContinuous;
+    preview.layer.cornerRadius = 17;
+    if (prefs.pill == pill) {
+        preview.layer.borderWidth = 2;
+        preview.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.9].CGColor;
     }
 
     GLTPillContent *content = [self contentForPill:pill];
     UILabel *label = [UILabel new];
     label.attributedText = [content attributedStringWithFont:font color:prefs.textColor];
     label.adjustsFontSizeToFitWidth = YES;
-    label.minimumScaleFactor = 0.6;
+    label.minimumScaleFactor = 0.7;
     label.lineBreakMode = NSLineBreakByTruncatingTail;
     label.textAlignment = NSTextAlignmentCenter;
     [label sizeToFit];
-
-    CGFloat inner = width - 24;
-    label.frame = CGRectMake(12, (44 - CGRectGetHeight(label.bounds)) / 2,
-                             MIN(CGRectGetWidth(label.bounds), inner), CGRectGetHeight(label.bounds));
-    if (CGRectGetWidth(label.bounds) > inner) {
-        label.frame = CGRectMake(12, label.frame.origin.y, inner, CGRectGetHeight(label.bounds));
-    }
-    [cell addSubview:label];
+    CGFloat previewWidth = MIN(ceil(CGRectGetWidth(label.bounds)), width - 24);
+    preview.frame = CGRectMake((width - previewWidth - 24) * 0.5, 0, previewWidth + 24, 34);
+    label.frame = CGRectMake(12, 0, previewWidth, 34);
+    [preview addSubview:label];
+    [cell addSubview:preview];
 
     UILabel *name = [UILabel new];
     name.text = [GLTPrefs nameForPill:pill];
     name.font = [UIFont systemFontOfSize:11 weight:UIFontWeightSemibold];
-    name.textColor = [UIColor colorWithWhite:1 alpha:0.6];
+    name.textColor = [UIColor colorWithWhite:1 alpha:0.85];
     name.textAlignment = NSTextAlignmentCenter;
-    name.frame = CGRectMake(4, 46, width - 8, 14);
+    name.adjustsFontSizeToFitWidth = YES;
+    name.minimumScaleFactor = 0.8;
+    name.layer.shadowColor = [UIColor blackColor].CGColor;
+    name.layer.shadowOpacity = 0.4;
+    name.layer.shadowRadius = 3;
+    name.layer.shadowOffset = CGSizeZero;
+    name.frame = CGRectMake(0, 38, width, 14);
     [cell addSubview:name];
-
+    cell.frame = CGRectMake(0, 0, width, 52);
     cell.tag = pill;
-    UITapGestureRecognizer *tap =
-        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickerRowTapped:)];
-    [cell addGestureRecognizer:tap];
+    [cell addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickerRowTapped:)]];
     return cell;
 }
 
 - (void)showPicker {
-    if (![self canPresentOverlay] || _pickerView) return;
+    if (![self canPresentOverlay] || _pickerView || _platterView) return;
 
     UIView *clock = [self visibleClock];
     if (!clock) return;
 
     UIImpactFeedbackGenerator *haptic =
-        [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight];
+        [[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium];
     [haptic impactOccurred];
 
-    CGRect screen = [UIScreen mainScreen].bounds;
     UIView *host = _window.rootViewController.view;
+    CGRect anchor = [self frameOfClock:clock];
 
     _pickerView = [[UIView alloc] initWithFrame:host.bounds];
     _pickerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [host addSubview:_pickerView];
 
-    // Dim + blur behind the grid.
-    UIControl *backdrop = [[UIControl alloc] initWithFrame:_pickerView.bounds];
-    backdrop.backgroundColor = [UIColor colorWithWhite:0 alpha:0.35];
-    [backdrop addTarget:self action:@selector(hidePicker) forControlEvents:UIControlEventTouchUpInside];
-    [_pickerView addSubview:backdrop];
-
-    UIVisualEffectView *blur =
-        [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemUltraThinMaterialDark]];
+    UIVisualEffectView *blur = [[UIVisualEffectView alloc] initWithEffect:nil];
     blur.frame = _pickerView.bounds;
-    blur.userInteractionEnabled = NO;
+    blur.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [blur addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hidePicker)]];
     [_pickerView addSubview:blur];
 
     GLTPickerList *list = [[GLTPickerList alloc] initWithFrame:CGRectZero];
     list.showsVerticalScrollIndicator = NO;
     list.clipsToBounds = NO;
-    list.alwaysBounceVertical = YES;
     [_pickerView addSubview:list];
 
     UIFont *font = [UIFont systemFontOfSize:15 weight:UIFontWeightSemibold];
 
-    CGFloat margin = 16;
-    CGFloat spacing = 10;
-    CGFloat columns = 3;
-    CGFloat cellWidth = floor((screen.size.width - margin * 2 - spacing * (columns - 1)) / columns);
-    CGFloat cellHeight = 66;
+    CGFloat listTop = CGRectGetMaxY(anchor) + 14;
+    CGFloat listHeight = CGRectGetHeight(host.bounds) - listTop - MAX(host.safeAreaInsets.bottom, 12);
+    list.frame = CGRectMake(0, listTop, CGRectGetWidth(host.bounds), listHeight);
+    list.alwaysBounceVertical = NO;
+    [[GLTClockItems sharedItems] refresh];
 
     NSArray *order = [GLTPrefs pillOrder];
     NSMutableArray<UIView *> *cells = [NSMutableArray array];
-
-    for (NSUInteger i = 0; i < order.count; i++) {
-        NSInteger pill = [order[i] integerValue];
-        UIView *cell = [self pickerCellForPill:pill font:font width:cellWidth];
-
-        NSUInteger column = i % (NSUInteger)columns;
-        NSUInteger row = i / (NSUInteger)columns;
-        cell.frame = CGRectMake(margin + column * (cellWidth + spacing),
-                                22 + row * (cellHeight + spacing),
-                                cellWidth, cellHeight);
-        [list addSubview:cell];
-        [cells addObject:cell];
+    CGFloat contentHeight = order.count * 42 - 8;
+    if (contentHeight <= MIN(CGRectGetHeight(list.bounds), CGRectGetHeight(host.bounds) * 0.8)) {
+        for (NSUInteger i = 0; i < order.count; i++) {
+            NSInteger pill = [order[i] integerValue];
+            UIView *row = [self pickerRowForPill:pill font:font];
+            CGFloat rowX = MIN(MAX(CGRectGetMinX(anchor), 12), CGRectGetWidth(host.bounds) - CGRectGetWidth(row.bounds) - 12);
+            row.frame = CGRectMake(rowX, i * 42, CGRectGetWidth(row.bounds), CGRectGetHeight(row.bounds));
+            [list addSubview:row];
+            [cells addObject:row];
+        }
+    } else {
+        CGFloat cellWidth = MIN((CGRectGetWidth(host.bounds) - 32 - 10) * 0.5, 190);
+        CGFloat startX = (CGRectGetWidth(host.bounds) - cellWidth * 2 - 10) * 0.5;
+        for (NSUInteger i = 0; i < order.count; i++) {
+            NSInteger pill = [order[i] integerValue];
+            UIView *cell = [self pickerCellForPill:pill font:font width:cellWidth];
+            cell.frame = CGRectMake(startX + (i % 2) * (cellWidth + 10), (i / 2) * 64,
+                                    CGRectGetWidth(cell.bounds), CGRectGetHeight(cell.bounds));
+            [list addSubview:cell];
+            [cells addObject:cell];
+        }
+        contentHeight = ((order.count + 1) / 2) * 64 - 12;
     }
+    list.contentSize = CGSizeMake(CGRectGetWidth(list.bounds), contentHeight);
 
-    NSUInteger rows = (order.count + (NSUInteger)columns - 1) / (NSUInteger)columns;
-    CGFloat contentHeight = 22 + rows * (cellHeight + spacing);
-    list.contentSize = CGSizeMake(screen.size.width, contentHeight);
-
-    // Anchor the sheet under the pill.
-    CGRect anchor = [self frameOfClock:clock];
-    CGFloat top = CGRectGetMaxY(anchor) + 8;
-    CGFloat available = screen.size.height - top - 40;
-    list.frame = CGRectMake(0, top, screen.size.width, MIN(contentHeight, available));
-
-    list.alpha = 0;
-    for (UIView *cell in cells) {
+    CGPoint origin = [list convertPoint:CGPointMake(CGRectGetMidX(anchor), CGRectGetMidY(anchor)) fromView:host];
+    for (NSUInteger current = 0; current < cells.count; current++) {
+        UIView *cell = cells[current];
         cell.alpha = 0;
-        cell.transform = CGAffineTransformMakeScale(0.9, 0.9);
-    }
-
-    [UIView animateWithDuration:0.18 animations:^{
-        list.alpha = 1;
-    }];
-
-    __block NSUInteger index = 0;
-    for (UIView *cell in cells) {
-        NSUInteger current = index++;
-        [UIView animateWithDuration:0.42
-                              delay:0.02 * current
-             usingSpringWithDamping:0.72
-              initialSpringVelocity:0.5
-                            options:UIViewAnimationOptionBeginFromCurrentState
+        CGAffineTransform scale = CGAffineTransformMakeScale(0.5, 0.5);
+        CGAffineTransform translation = CGAffineTransformMakeTranslation(origin.x - cell.center.x, origin.y - cell.center.y);
+        cell.transform = CGAffineTransformConcat(scale, translation);
+        [UIView animateWithDuration:0.5
+                              delay:0.025 * current
+             usingSpringWithDamping:0.78
+              initialSpringVelocity:0
+                            options:UIViewAnimationOptionAllowUserInteraction
                          animations:^{
             cell.alpha = 1;
             cell.transform = CGAffineTransformIdentity;
         } completion:nil];
     }
+    [UIView animateWithDuration:0.3 animations:^{
+        blur.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemUltraThinMaterialDark];
+    }];
 
     [self layoutTouchView];
 }
@@ -1313,10 +1302,12 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     UISelectionFeedbackGenerator *haptic = [UISelectionFeedbackGenerator new];
     [haptic selectionChanged];
 
+    _volumeUntil = nil;
+    _notificationUntil = nil;
     [[GLTPrefs sharedPrefs] setPill:pill];
 
     if ([self wantsWeather]) {
-        [[GLTWeather sharedWeather] refreshForcing:YES];
+        [[GLTWeather sharedWeather] refreshForcing:NO];
     }
 
     [self hidePicker];
@@ -1330,16 +1321,14 @@ static const CGFloat kGLTPlatterCloseDuration = 0.24;
     _pickerView = nil;
     picker.userInteractionEnabled = NO;
 
-    [UIView animateWithDuration:0.16
+    [UIView animateWithDuration:0.22
                      animations:^{
         picker.alpha = 0;
         for (UIView *subview in picker.subviews) {
-            if ([subview isKindOfClass:[GLTPickerList class]]) {
-                for (UIView *cell in subview.subviews) {
-                    cell.transform = CGAffineTransformMakeScale(0.94, 0.94);
-                }
-            } else if ([subview isKindOfClass:[UIVisualEffectView class]]) {
+            if ([subview isKindOfClass:[UIVisualEffectView class]]) {
                 ((UIVisualEffectView *)subview).effect = nil;
+            } else {
+                subview.transform = CGAffineTransformMakeScale(0.9, 0.9);
             }
         }
     } completion:^(BOOL finished) {

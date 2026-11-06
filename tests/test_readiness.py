@@ -211,8 +211,12 @@ class CompileReadinessTests(unittest.TestCase):
     def test_recipient_write_helpers_are_excluded_from_verification_build(self):
         source = read("Sources/GLTModels.m")
         recent = source.split("#pragma mark - Recent recipients", 1)[1].split("#pragma mark - iMessage", 1)[0]
-        self.assertRegex(recent, r"#if !GLINT_VERIFICATION_BUILD\s+static NSArray")
+        self.assertRegex(recent, r"#if !GLINT_VERIFICATION_BUILD\s+static void GLTRememberRecipient")
         self.assertIn("GLTRecentRecipients(void)", recent)
+        read_only = recent.split("#if !GLINT_VERIFICATION_BUILD", 1)[0]
+        self.assertIn("GLTRecentRecipientSuggestions(void)", read_only)
+        self.assertNotIn("CFPreferencesSetAppValue", read_only)
+        self.assertNotIn("CFPreferencesAppSynchronize", read_only.split("GLTRecentRecipientSuggestions(void)", 1)[1])
         self.assertIn("GLTRememberRecipient(GLTRecipient *recipient)", recent)
         self.assertTrue(recent.rstrip().endswith("#endif"))
         sending = source.split("BOOL GLTSendMessage", 1)[1]

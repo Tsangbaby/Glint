@@ -19,11 +19,46 @@ static NSString *const kGlintReloadNotification = @"com.antonym.glint/reload";
 @property (nonatomic, strong) UIView *headerView;
 @end
 
+// Always resolve strings in GlintPrefs, never the hosting Settings bundle.
+// The English key is also the fallback for missing translations.
+static NSString *GLTLocalizedSetting(NSBundle *bundle, NSString *english, NSString *table) {
+    if (!english.length) return english;
+    return [bundle localizedStringForKey:english value:english table:table];
+}
+
+static NSDictionary *GLTLocalizedTitles(NSBundle *bundle, NSDictionary *titles) {
+    NSMutableDictionary *localized = [NSMutableDictionary dictionaryWithCapacity:titles.count];
+    for (id value in titles) {
+        localized[value] = GLTLocalizedSetting(bundle, titles[value], @"Root");
+    }
+    return localized;
+}
+
 @implementation GLTRootListController
 
 - (NSArray *)specifiers {
     if (!_specifiers) {
-        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+        NSBundle *bundle = [NSBundle bundleForClass:[GLTRootListController class]];
+        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self bundle:bundle];
+        for (PSSpecifier *specifier in _specifiers) {
+            specifier.name = GLTLocalizedSetting(bundle, specifier.name, @"Root");
+            for (NSString *key in @[@"footerText", @"placeholder"]) {
+                NSString *english = [specifier propertyForKey:key];
+                if ([english isKindOfClass:[NSString class]]) {
+                    [specifier setProperty:GLTLocalizedSetting(bundle, english, @"Root") forKey:key];
+                }
+            }
+
+            // The loader has already built value->title maps. Localize those
+            // maps (including the link-cell summary), not just validTitles;
+            // PSListItemsController must retain the original stored values.
+            if (specifier.titleDictionary) {
+                specifier.titleDictionary = GLTLocalizedTitles(bundle, specifier.titleDictionary);
+            }
+            if (specifier.shortTitleDictionary) {
+                specifier.shortTitleDictionary = GLTLocalizedTitles(bundle, specifier.shortTitleDictionary);
+            }
+        }
     }
     return _specifiers;
 }
@@ -71,7 +106,9 @@ static NSString *const kGlintReloadNotification = @"com.antonym.glint/reload";
     NSString *version = [[NSBundle bundleForClass:[self class]]
                          objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     UILabel *subtitle = [UILabel new];
-    subtitle.text = [NSString stringWithFormat:@"Version %@", version ?: @"1.6.3"];
+    subtitle.text = [NSString stringWithFormat:
+                     GLTLocalizedSetting([NSBundle bundleForClass:[GLTRootListController class]],
+                                         @"Version %@", @"Localizable"), version ?: @"1.6.3"];
     subtitle.font = [UIFont systemFontOfSize:22 weight:UIFontWeightBold];
     subtitle.textColor = [UIColor colorWithWhite:1 alpha:0.85];
 

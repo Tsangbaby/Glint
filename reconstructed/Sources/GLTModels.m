@@ -266,14 +266,33 @@ NSArray<GLTRecipient *> *GLTSearchRecipients(NSString *query) {
 
 // Kept in the tweak's own defaults domain so the card can suggest the last few
 // people without touching the contacts database.
-#if !GLINT_VERIFICATION_BUILD
 static NSArray<NSDictionary *> *GLTRecentRecipients(void) {
+    CFPreferencesAppSynchronize(CFSTR("com.antonym.glint.recents"));
     CFPropertyListRef stored = CFPreferencesCopyAppValue(CFSTR("recipients"),
                                                          CFSTR("com.antonym.glint.recents"));
     NSArray *list = CFBridgingRelease(stored);
     return [list isKindOfClass:[NSArray class]] ? list : @[];
 }
 
+// Original 0x18f08 returns typed value objects for the card. Reading existing
+// recents is separate from the verification build's disabled write/send path.
+NSArray<GLTRecipient *> *GLTRecentRecipientSuggestions(void) {
+    NSMutableArray<GLTRecipient *> *result = [NSMutableArray array];
+    for (id stored in GLTRecentRecipients()) {
+        if (![stored isKindOfClass:[NSDictionary class]]) continue;
+        NSString *address = stored[@"address"];
+        if (![address isKindOfClass:[NSString class]]) continue;
+        GLTRecipient *recipient = [GLTRecipient new];
+        recipient.address = address;
+        // Invalid optional values degrade to the original address fallback.
+        recipient.name = [stored[@"name"] isKindOfClass:[NSString class]] ? stored[@"name"] : address;
+        recipient.detail = [stored[@"detail"] isKindOfClass:[NSString class]] ? stored[@"detail"] : address;
+        [result addObject:recipient];
+    }
+    return result;
+}
+
+#if !GLINT_VERIFICATION_BUILD
 static void GLTRememberRecipient(GLTRecipient *recipient) {
     if (!recipient.address.length) return;
 

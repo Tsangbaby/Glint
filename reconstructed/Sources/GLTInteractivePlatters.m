@@ -9,6 +9,7 @@
 
 #import "Glint.h"
 #import "GlintPrivate.h"
+#import <math.h>
 
 static UILabel *GLTMakeLabel(NSString *text, CGFloat size, UIFontWeight weight, UIColor *color) {
     UILabel *label = [UILabel new];
@@ -18,8 +19,14 @@ static UILabel *GLTMakeLabel(NSString *text, CGFloat size, UIFontWeight weight, 
     return label;
 }
 
+// Original media 0xedb4/0xee28 rounds to nearest second, in minutes:seconds.
+static NSString *GLTMediaTimeString(double interval) {
+    long long total = llround(MAX(0, interval));
+    return [NSString stringWithFormat:@"%lld:%02lld", total / 60, total % 60];
+}
+
 static NSString *GLTClockString(double interval) {
-    long long total = (long long)MAX(0, interval);
+    long long total = (long long)ceil(MAX(0, interval));
     long long hours = total / 3600;
     long long minutes = (total % 3600) / 60;
     long long seconds = total % 60;
@@ -41,7 +48,8 @@ static NSString *GLTClockString(double interval) {
 
     _artworkView = [UIImageView new];
     _artworkView.contentMode = UIViewContentModeScaleAspectFill;
-    _artworkView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.08];
+    _artworkView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.12];
+    _artworkView.tintColor = [UIColor colorWithWhite:1 alpha:0.6];
     _artworkView.layer.cornerRadius = 10;
     _artworkView.layer.cornerCurve = kCACornerCurveContinuous;
     _artworkView.clipsToBounds = YES;
@@ -51,9 +59,9 @@ static NSString *GLTClockString(double interval) {
         [_artworkView.heightAnchor constraintEqualToConstant:52],
     ]];
 
-    _titleLabel = GLTMakeLabel(@"Not Playing", 15, UIFontWeightSemibold, [UIColor whiteColor]);
+    _titleLabel = GLTMakeLabel(@"Not Playing", 16, UIFontWeightSemibold, [UIColor whiteColor]);
     _titleLabel.numberOfLines = 1;
-    _artistLabel = GLTMakeLabel(@"", 12, UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.55]);
+    _artistLabel = GLTMakeLabel(@"", 14, UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.6]);
     _artistLabel.numberOfLines = 1;
 
     UIStackView *text = [[UIStackView alloc] initWithArrangedSubviews:@[_titleLabel, _artistLabel]];
@@ -66,17 +74,20 @@ static NSString *GLTClockString(double interval) {
     header.alignment = UIStackViewAlignmentCenter;
 
     _track = [UIView new];
-    _track.backgroundColor = [UIColor colorWithWhite:1 alpha:0.16];
+    _track.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
     _track.layer.cornerRadius = 2;
+    _track.clipsToBounds = YES;
     _fill = [UIView new];
     _fill.backgroundColor = [UIColor whiteColor];
     _fill.layer.cornerRadius = 2;
     [_track addSubview:_fill];
 
-    _elapsedLabel = GLTMakeLabel(@"0:00", 10, UIFontWeightMedium,
-                                 [UIColor colorWithWhite:1 alpha:0.45]);
-    _remainingLabel = GLTMakeLabel(@"-0:00", 10, UIFontWeightMedium,
-                                   [UIColor colorWithWhite:1 alpha:0.45]);
+    _elapsedLabel = GLTMakeLabel(@"0:00", 11, UIFontWeightMedium,
+                                 [UIColor colorWithWhite:1 alpha:0.6]);
+    _elapsedLabel.font = [UIFont monospacedDigitSystemFontOfSize:11 weight:UIFontWeightMedium];
+    _remainingLabel = GLTMakeLabel(@"-0:00", 11, UIFontWeightMedium,
+                                   [UIColor colorWithWhite:1 alpha:0.6]);
+    _remainingLabel.font = _elapsedLabel.font;
     _remainingLabel.textAlignment = NSTextAlignmentRight;
 
     UIStackView *times = [[UIStackView alloc] initWithArrangedSubviews:@[_elapsedLabel, _remainingLabel]];
@@ -90,12 +101,21 @@ static NSString *GLTClockString(double interval) {
 
     UIStackView *controls = [[UIStackView alloc] initWithArrangedSubviews:@[previous, play, next]];
     controls.axis = UILayoutConstraintAxisHorizontal;
-    controls.distribution = UIStackViewDistributionEqualSpacing;
+    controls.spacing = 44;
     controls.alignment = UIStackViewAlignmentCenter;
+    controls.translatesAutoresizingMaskIntoConstraints = NO;
+    UIView *controlsHost = [UIView new];
+    [controlsHost addSubview:controls];
+    [NSLayoutConstraint activateConstraints:@[
+        [controls.centerXAnchor constraintEqualToAnchor:controlsHost.centerXAnchor],
+        [controls.topAnchor constraintEqualToAnchor:controlsHost.topAnchor],
+        [controls.bottomAnchor constraintEqualToAnchor:controlsHost.bottomAnchor],
+    ]];
 
-    UIStackView *body = [[UIStackView alloc] initWithArrangedSubviews:@[header, _track, times, controls]];
+    UIStackView *body = [[UIStackView alloc] initWithArrangedSubviews:@[header, _track, times, controlsHost]];
     body.axis = UILayoutConstraintAxisVertical;
     body.spacing = 10;
+    [body setCustomSpacing:6 afterView:_track];
 
     _track.translatesAutoresizingMaskIntoConstraints = NO;
     [_track.heightAnchor constraintEqualToConstant:4].active = YES;
@@ -120,7 +140,7 @@ static NSString *GLTClockString(double interval) {
     UIImage *image = [UIImage systemImageNamed:symbol
                              withConfiguration:[UIImageSymbolConfiguration
                                                   configurationWithPointSize:size
-                                                                      weight:UIFontWeightMedium]];
+                                                                      weight:UIImageSymbolWeightSemibold]];
     [button setImage:image forState:UIControlStateNormal];
     button.tintColor = [UIColor whiteColor];
     [button addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
@@ -149,32 +169,25 @@ static NSString *GLTClockString(double interval) {
 - (void)refresh {
     GLTMedia *media = [GLTMedia sharedMedia];
 
-    if (![media hasMedia]) {
-        _titleLabel.text = @"Not Playing";
-        _artistLabel.text = @"";
-        _artworkView.image = GLTSymbol(@"music.note", 24, UIFontWeightRegular);
-        _elapsedLabel.text = @"0:00";
-        _remainingLabel.text = @"-0:00";
-        _fill.frame = CGRectZero;
-        [_playButton setImage:[UIImage systemImageNamed:@"play.fill"]
-                     forState:UIControlStateNormal];
-        return;
-    }
-
-    _titleLabel.text = [media title] ?: @"Not Playing";
+    _titleLabel.text = [media hasMedia] ? ([media title] ?: @"Not Playing") : @"Not Playing";
     _artistLabel.text = [media artist] ?: @"";
-    _artworkView.image = [media artwork] ?: GLTSymbol(@"music.note", 24, UIFontWeightRegular);
+    _artistLabel.hidden = _artistLabel.text.length == 0;
+    _artworkView.image = [media artwork] ?: [UIImage systemImageNamed:@"music.note"];
     _artworkView.contentMode = [media artwork] ? UIViewContentModeScaleAspectFill
                                                : UIViewContentModeCenter;
 
     double duration = [media duration];
     double elapsed = [media elapsed];
-    _fraction = duration > 0 ? MIN(1.0, elapsed / duration) : 0;
+    _fraction = duration > 0 ? MAX(0.0, MIN(1.0, elapsed / duration)) : 0;
 
-    _elapsedLabel.text = GLTClockString(elapsed);
-    _remainingLabel.text = [NSString stringWithFormat:@"-%@", GLTClockString(duration - elapsed)];
+    _elapsedLabel.text = GLTMediaTimeString(elapsed);
+    _remainingLabel.text = [NSString stringWithFormat:@"-%@", GLTMediaTimeString(duration - elapsed)];
 
-    [_playButton setImage:[UIImage systemImageNamed:([media isPlaying] ? @"pause.fill" : @"play.fill")]
+    UIImageSymbolConfiguration *configuration = [UIImageSymbolConfiguration
+                                                  configurationWithPointSize:30
+                                                  weight:UIImageSymbolWeightSemibold];
+    [_playButton setImage:[UIImage systemImageNamed:([media isPlaying] ? @"pause.fill" : @"play.fill")
+                                 withConfiguration:configuration]
                  forState:UIControlStateNormal];
 
     [self setNeedsLayout];
@@ -215,7 +228,7 @@ GLTPlatterContent *GLTMakeMediaPlatter(void) {
 
     _stack = [UIStackView new];
     _stack.axis = UILayoutConstraintAxisVertical;
-    _stack.spacing = 8;
+    _stack.spacing = 12;
 
     [self fillWith:@[_stack]];
 
@@ -250,17 +263,22 @@ GLTPlatterContent *GLTMakeMediaPlatter(void) {
         [view removeFromSuperview];
     }
 
+    _countdown = nil;
+    _track = nil;
+    _fill = nil;
     GLTClockItems *items = [GLTClockItems sharedItems];
 
-    // Timer block.
-    if (items.timerFireDate) {
-        UILabel *caption = GLTMakeLabel(@"Timer", 13, UIFontWeightSemibold,
+    // Original 0x11b50 also shows a paused timer, without a fire date.
+    if (items.timerFireDate || items.pausedTimerRemaining > 0) {
+        UILabel *caption = GLTMakeLabel(items.timerFireDate ? @"Timer" : @"Timer · Paused",
+                                        13, UIFontWeightSemibold,
                                         [UIColor colorWithWhite:1 alpha:0.55]);
-        _countdown = GLTMakeLabel(GLTClockString([items.timerFireDate timeIntervalSinceNow]),
-                                  34, UIFontWeightLight, [UIColor whiteColor]);
+        _countdown = GLTMakeLabel(@"", 40, UIFontWeightLight, [UIColor whiteColor]);
+        _countdown.font = [UIFont monospacedDigitSystemFontOfSize:40 weight:UIFontWeightLight];
         _track = [UIView new];
-        _track.backgroundColor = [UIColor colorWithWhite:1 alpha:0.16];
+        _track.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
         _track.layer.cornerRadius = 2;
+        _track.clipsToBounds = YES;
         _fill = [UIView new];
         _fill.backgroundColor = [UIColor systemOrangeColor];
         _fill.layer.cornerRadius = 2;
@@ -271,6 +289,7 @@ GLTPlatterContent *GLTMakeMediaPlatter(void) {
         [_stack addArrangedSubview:caption];
         [_stack addArrangedSubview:_countdown];
         [_stack addArrangedSubview:_track];
+        [_stack setCustomSpacing:18 afterView:_track];
     }
 
     // Alarms block.
@@ -283,19 +302,29 @@ GLTPlatterContent *GLTMakeMediaPlatter(void) {
                                                 [UIColor colorWithWhite:1 alpha:0.7])];
     } else {
         NSDateFormatter *formatter = [NSDateFormatter new];
-        formatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"EEEEjmm"
-                                                               options:0
-                                                                locale:[NSLocale currentLocale]];
+        formatter.dateStyle = NSDateFormatterNoStyle;
+        formatter.timeStyle = NSDateFormatterShortStyle;
+        NSDateFormatter *weekday = [NSDateFormatter new];
+        weekday.dateFormat = [NSDateFormatter dateFormatFromTemplate:@"EEEE"
+                                                             options:0
+                                                              locale:[NSLocale currentLocale]];
+        NSCalendar *calendar = [NSCalendar currentCalendar];
 
         for (GLTAlarm *alarm in [alarms subarrayWithRange:
                                  NSMakeRange(0, MIN((NSUInteger)4, alarms.count))]) {
-            UILabel *when = GLTMakeLabel([formatter stringFromDate:alarm.fireDate], 15,
+            UILabel *when = GLTMakeLabel([formatter stringFromDate:alarm.fireDate], 22,
                                          UIFontWeightMedium, [UIColor whiteColor]);
-            UILabel *title = GLTMakeLabel(alarm.title.length ? alarm.title : @"Alarm", 12,
-                                          UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.5]);
+            NSString *day = [calendar isDateInToday:alarm.fireDate] ? @"Today" :
+                            [calendar isDateInTomorrow:alarm.fireDate] ? @"Tomorrow" :
+                            [weekday stringFromDate:alarm.fireDate];
+            NSString *detail = alarm.title.length ?
+                               [NSString stringWithFormat:@"%@ · %@", day, alarm.title] : day;
+            UILabel *title = GLTMakeLabel(detail, 13, UIFontWeightRegular,
+                                          [UIColor colorWithWhite:1 alpha:0.6]);
             UIStackView *column = [[UIStackView alloc] initWithArrangedSubviews:@[when, title]];
-            column.axis = UILayoutConstraintAxisVertical;
-            column.spacing = 1;
+            column.axis = UILayoutConstraintAxisHorizontal;
+            column.spacing = 10;
+            column.alignment = UIStackViewAlignmentFirstBaseline;
             [_stack addArrangedSubview:column];
         }
     }
@@ -307,14 +336,15 @@ GLTPlatterContent *GLTMakeMediaPlatter(void) {
     GLTClockItems *items = [GLTClockItems sharedItems];
     if (!_countdown) return;
 
-    double remaining = [items.timerFireDate timeIntervalSinceNow];
+    double remaining = items.timerFireDate ? [items.timerFireDate timeIntervalSinceNow]
+                                           : items.pausedTimerRemaining;
+    remaining = MAX(0, remaining);
     _countdown.text = GLTClockString(remaining);
 
-    if (items.timerDuration > 0 && CGRectGetWidth(_track.bounds) > 0) {
-        double fraction = 1.0 - MAX(0, MIN(1.0, remaining / items.timerDuration));
-        _fill.frame = CGRectMake(0, 0, CGRectGetWidth(_track.bounds) * fraction,
-                                 CGRectGetHeight(_track.bounds));
-    }
+    double fraction = items.timerDuration > 0 ? 1.0 - remaining / items.timerDuration : 0;
+    fraction = MAX(0.0, MIN(1.0, fraction));
+    [_track layoutIfNeeded];
+    _fill.frame = CGRectMake(0, 0, CGRectGetWidth(_track.bounds) * fraction, 4);
 }
 
 - (void)layoutSubviews {
@@ -330,6 +360,26 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
 
 #pragma mark - Compose
 
+// Recovered shared input presentation at 0x13a00; no submission here.
+static UITextField *GLTComposeField(NSString *placeholder) {
+    UITextField *field = [UITextField new];
+    field.textColor = [UIColor whiteColor];
+    field.font = [UIFont systemFontOfSize:16];
+    field.attributedPlaceholder = [[NSAttributedString alloc]
+                                   initWithString:placeholder
+                                   attributes:@{ NSForegroundColorAttributeName:
+                                                     [UIColor colorWithWhite:1 alpha:0.4] }];
+    field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+    field.layer.cornerRadius = 18;
+    field.layer.cornerCurve = kCACornerCurveContinuous;
+    field.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 14, 0)];
+    field.leftViewMode = UITextFieldViewModeAlways;
+    field.keyboardAppearance = UIKeyboardAppearanceDark;
+    field.translatesAutoresizingMaskIntoConstraints = NO;
+    [field.heightAnchor constraintEqualToConstant:36].active = YES;
+    return field;
+}
+
 @interface GLTComposePlatterView () <UITextFieldDelegate, MFMessageComposeViewControllerDelegate>
 @end
 
@@ -343,13 +393,7 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
     self = [super initWithFrame:frame];
     if (!self) return nil;
 
-    _toField = [UITextField new];
-    _toField.attributedPlaceholder =
-        [[NSAttributedString alloc] initWithString:@"Name or number"
-                                        attributes:@{ NSForegroundColorAttributeName:
-                                                          [UIColor colorWithWhite:1 alpha:0.35] }];
-    _toField.textColor = [UIColor whiteColor];
-    _toField.font = [UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
+    _toField = GLTComposeField(@"Name or number");
     _toField.autocorrectionType = UITextAutocorrectionTypeNo;
     _toField.returnKeyType = UIReturnKeyNext;
     _toField.delegate = self;
@@ -358,24 +402,17 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
 
     _recipientChip = [UIButton buttonWithType:UIButtonTypeSystem];
     _recipientChip.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    _recipientChip.titleLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
+    _recipientChip.titleLabel.font = [UIFont systemFontOfSize:16 weight:UIFontWeightSemibold];
     _recipientChip.tintColor = [UIColor whiteColor];
-    _recipientChip.backgroundColor = [UIColor colorWithWhite:1 alpha:0.12];
-    _recipientChip.layer.cornerRadius = 11;
-    _recipientChip.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
     _recipientChip.hidden = YES;
+    [_recipientChip addTarget:self action:@selector(clearRecipient)
+            forControlEvents:UIControlEventTouchUpInside];
 
     _suggestions = [UIStackView new];
     _suggestions.axis = UILayoutConstraintAxisVertical;
     _suggestions.spacing = 4;
 
-    _messageField = [UITextField new];
-    _messageField.attributedPlaceholder =
-        [[NSAttributedString alloc] initWithString:@"Message"
-                                        attributes:@{ NSForegroundColorAttributeName:
-                                                          [UIColor colorWithWhite:1 alpha:0.35] }];
-    _messageField.textColor = [UIColor whiteColor];
-    _messageField.font = [UIFont systemFontOfSize:15 weight:UIFontWeightRegular];
+    _messageField = GLTComposeField(@"Message");
     _messageField.returnKeyType = UIReturnKeySend;
     _messageField.delegate = self;
     [_messageField addTarget:self action:@selector(updateSendButton)
@@ -391,19 +428,24 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
     [_sendButton setContentHuggingPriority:UILayoutPriorityRequired
                                    forAxis:UILayoutConstraintAxisHorizontal];
 
-    _statusLabel = GLTMakeLabel(@"", 11, UIFontWeightRegular, [UIColor colorWithWhite:1 alpha:0.5]);
+    _statusLabel = GLTMakeLabel(@"", 13, UIFontWeightMedium, [UIColor colorWithWhite:1 alpha:0.6]);
+    _statusLabel.hidden = YES;
 
     UIStackView *input = [[UIStackView alloc] initWithArrangedSubviews:@[_messageField, _sendButton]];
     input.axis = UILayoutConstraintAxisHorizontal;
     input.spacing = 8;
     input.alignment = UIStackViewAlignmentCenter;
 
+    UILabel *heading = GLTMakeLabel(@"New Message", 13, UIFontWeightSemibold,
+                                     [UIColor colorWithWhite:1 alpha:0.55]);
     UIStackView *body = [[UIStackView alloc] initWithArrangedSubviews:
-                         @[_toField, _recipientChip, _suggestions, input, _statusLabel]];
+                         @[heading, _toField, _recipientChip, _suggestions, input, _statusLabel]];
     body.axis = UILayoutConstraintAxisVertical;
-    body.spacing = 8;
+    body.spacing = 10;
+    _suggestions.hidden = YES;
 
     [self fillWith:@[body]];
+    [self showSuggestions:GLTRecentRecipientSuggestions()];
     [self updateSendButton];
     return self;
 }
@@ -429,7 +471,7 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
 
 - (void)searchChanged {
     NSString *text = _toField.text ?: @"";
-    [self showSuggestions:text.length ? GLTSearchRecipients(text) : @[]];
+    [self showSuggestions:text.length ? GLTSearchRecipients(text) : GLTRecentRecipientSuggestions()];
 }
 
 - (void)showSuggestions:(NSArray<GLTRecipient *> *)recipients {
@@ -437,22 +479,22 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
         [view removeFromSuperview];
     }
 
-    NSUInteger limit = MIN((NSUInteger)4, recipients.count);
+    NSUInteger limit = MIN((NSUInteger)3, recipients.count);
     for (NSUInteger i = 0; i < limit; i++) {
         GLTRecipient *recipient = recipients[i];
 
         NSMutableAttributedString *title =
             [[NSMutableAttributedString alloc] initWithString:recipient.name.length ? recipient.name : recipient.address
                                                    attributes:@{ NSFontAttributeName:
-                                                                     [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold],
+                                                                     [UIFont systemFontOfSize:15 weight:UIFontWeightSemibold],
                                                                  NSForegroundColorAttributeName:[UIColor whiteColor] }];
-        if (recipient.name.length && recipient.detail.length) {
+        if (recipient.detail.length && ![recipient.detail isEqualToString:recipient.name]) {
             [title appendAttributedString:[[NSAttributedString alloc] initWithString:
                                            [@"  " stringByAppendingString:recipient.detail]
                                                                         attributes:@{ NSFontAttributeName:
-                                                                                          [UIFont systemFontOfSize:12],
+                                                                                          [UIFont systemFontOfSize:13],
                                                                                       NSForegroundColorAttributeName:
-                                                                                          [UIColor colorWithWhite:1 alpha:0.45] }]];
+                                                                                          [UIColor colorWithWhite:1 alpha:0.6] }]];
         }
 
         UIButton *row = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -477,8 +519,8 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
     _toField.hidden = YES;
 
     NSString *title = recipient.name.length ? recipient.name : recipient.address;
-    if (recipient.name.length && recipient.detail.length) {
-        title = [NSString stringWithFormat:@"%@ · %@", recipient.name, recipient.detail];
+    if (recipient.name.length && ![recipient.name isEqualToString:recipient.address]) {
+        title = [NSString stringWithFormat:@"%@  ·  %@", recipient.name, recipient.address];
     }
     [_recipientChip setTitle:[@"To: " stringByAppendingString:title] forState:UIControlStateNormal];
     _recipientChip.hidden = NO;
@@ -493,7 +535,7 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
     _recipientChip.hidden = YES;
     _toField.hidden = NO;
     _toField.text = @"";
-    [self showSuggestions:@[]];
+    [self showSuggestions:GLTRecentRecipientSuggestions()];
     [_toField becomeFirstResponder];
     [self updateSendButton];
 }
@@ -511,7 +553,7 @@ GLTPlatterContent *GLTMakeClockPlatter(void) {
 - (void)updateSendButton {
     NSString *text = [_messageField.text stringByTrimmingCharactersInSet:
                       [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    BOOL ready = _recipient != nil && text.length > 0;
+    BOOL ready = _recipient != nil && text.length > 0 && !_sending;
     _sendButton.enabled = ready;
     _sendButton.alpha = ready ? 1.0 : 0.4;
 }

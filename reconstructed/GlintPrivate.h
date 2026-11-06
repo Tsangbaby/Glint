@@ -85,6 +85,8 @@ NSArray<GLTDevice *> *GLTConnectedDevices(void);
 
 // Contacts lookup used by the composer.
 NSArray<GLTRecipient *> *GLTSearchRecipients(NSString *query);
+// Read-only suggestions; no contacts request, persistence write or submission.
+NSArray<GLTRecipient *> *GLTRecentRecipientSuggestions(void);
 BOOL GLTSendMessage(GLTRecipient *recipient, NSString *text);
 
 #pragma mark - Small helpers

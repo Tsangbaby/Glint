@@ -20,11 +20,19 @@ import unittest
 ROOT = Path(os.environ.get("GLINT_SOURCE_ROOT", Path(__file__).resolve().parents[1]))
 SOURCE = ROOT / "reconstructed"
 CONTROLLER = SOURCE / "Sources/GLTController.m"
-APPROVED_METHODS = ("cutout", "openPlatter", "fitPlatterToContent", "clockTapped")
+# The new original-card/menu restoration explicitly widens only these bodies.
+# The unchanged-zone digest below is derived from frozen predecessor
+# 1bb2313d9b2e7e5e651f47b654419f26968c87be, NOT from the edited worktree.
+APPROVED_METHODS = (
+    "cutout", "openPlatter", "fitPlatterToContent", "clockTapped",
+    "contentForPill", "storageContent", "weatherContent", "countContent", "sunContent",
+    "platterContent", "pickerRowForPill", "pickerCellForPill", "showPicker",
+    "pickerRowTapped", "hidePicker",
+)
 
 
 def method(text, name):
-    pattern = r"^- \([^\n)]+\)" + re.escape(name) + r"(?=\s|:)[^\n]*\{\n.*?^\}"
+    pattern = r"^[+-] \([^\n)]+\)" + re.escape(name) + r"(?=\s|:)[^{;]*\{\n.*?^\}"
     matches = list(re.finditer(pattern, text, re.M | re.S))
     if len(matches) != 1:
         raise AssertionError("expected exactly one production method: " + name)
@@ -65,7 +73,7 @@ def spring_animations(body, source):
 
 
 def protected_controller(text):
-    # These are the only approved bodies; shared Scene/touch/picker code remains
+    # These are the only approved bodies; shared Scene/touch/lifecycle code remains
     # byte-bound (with the baseline's existing CRLF normalized for this digest).
     for name in APPROVED_METHODS:
         body = method(text, name)
@@ -83,6 +91,18 @@ def protected_controller(text):
             raise AssertionError("missing retained card constant: " + name)
         text = re.sub(pattern, "", text, flags=re.M)
     return hashlib.sha256(text.encode()).hexdigest()
+
+
+def protected_preferences(text):
+    # Only presentation/cycle order and its original-provenance comment may
+    # change. Persisted IDs, names/symbols, defaults and all readers stay frozen.
+    start, end = "#pragma mark - Pill catalogue\n\n", "// Backed by the __const tables"
+    if text.count(start) != 1 or text.count(end) != 1 or text.index(start) >= text.index(end):
+        raise AssertionError("missing/duplicate/out-of-order pill-order boundaries")
+    prefix, rest = text.split(start, 1)
+    order, suffix = rest.split(end, 1)
+    method(start + order, "pillOrder")
+    return hashlib.sha256((prefix + start + "/* AUTHORIZED_PILL_ORDER */\n\n" + end + suffix).encode()).hexdigest()
 
 
 C_PREFIX = r'''
@@ -301,9 +321,9 @@ int main(void) {
         self.assertIn("frame.size.height = [platter heightForWidth:width];", before_animation)
         self.assertIn("[platter layoutIfNeeded];", body)
 
-    def test_accepted_hooks_scene_picker_and_preferences_stay_frozen(self):
+    def test_accepted_hooks_scene_and_unauthorized_preferences_stay_frozen(self):
         text = CONTROLLER.read_text()
-        expected = "2af57b36985f0d467d402fe384ec821cc5ec4801fa65cd6c5e40af4d1936e123"
+        expected = "e3f8b428f71b71e91a99ed9c6ede4ddbf40221b4557fe41e086dd8ecb169e2a0"
         self.assertEqual(protected_controller(text), expected)
         header = (SOURCE / "Headers/GLTController.h").read_bytes()
         old, new = b"- (double)cutout;", b"- (NSInteger)cutout;"
@@ -313,12 +333,19 @@ int main(void) {
         for path, digest in (
             ("Tweak.xm", "6c2c17de816b55b43b5e7e780ebf5cca54dd5bd97c9d5dece7e777a6df198a33"),
             ("Sources/GLTClock.m", "fe9cbe44f54eadf1baad271f03fbad2d91969bc0ea7c2239b2717b653928c13f"),
-            ("Sources/GLTPrefs.m", "024886ba322f17441f556302ee43d9d67d8aeea8c1070abc25ae363aee112fab"),
         ):
             self.assertEqual(hashlib.sha256((SOURCE / path).read_bytes()).hexdigest(), digest, path)
+        prefs = (SOURCE / "Sources/GLTPrefs.m").read_text()
+        prefs_digest = "ce59ebf0e579134fa1c2c7cf736cba41405227724b5f0fe23a89e5725198850a"
+        self.assertEqual(protected_preferences(prefs), prefs_digest)
+        self.assertNotEqual(protected_preferences(prefs.replace('fallback:NO', 'fallback:YES', 1)), prefs_digest)
+        for anchor in ("#pragma mark - Pill catalogue\n\n", "// Backed by the __const tables"):
+            for replacement in ("", anchor + "\n" + anchor):
+                with self.assertRaises(AssertionError):
+                    protected_preferences(prefs.replace(anchor, replacement, 1))
         with self.assertRaises(AssertionError):
             protected_controller(text + "\n- (NSInteger)cutout {\n    return 0;\n}\n")
-        self.assertNotEqual(protected_controller(text.replace("- (void)showPicker {", "- (void)showPicker {\n    (void)self;", 1)), expected)
+        self.assertNotEqual(protected_controller(text.replace("- (void)layoutTouchView {", "- (void)layoutTouchView {\n    (void)self;", 1)), expected)
 
 
 if __name__ == "__main__":

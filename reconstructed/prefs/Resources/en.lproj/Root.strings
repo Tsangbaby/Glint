@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Alarm &amp; Timer</key>
+	<string>Alarm &amp; Timer</string>
+	<key>Appearance</key>
+	<string>Appearance</string>
+	<key>Background</key>
+	<string>Background</string>
+	<key>Battery</key>
+	<string>Battery</string>
+	<key>By default the pill is dark and slightly see-through. The background color is used with the Color style.</key>
+	<string>By default the pill is dark and slightly see-through. The background color is used with the Color style.</string>
+	<key>Calendar</key>
+	<string>Calendar</string>
+	<key>City</key>
+	<string>City</string>
+	<key>Color</key>
+	<string>Color</string>
+	<key>Countdown</key>
+	<string>Countdown</string>
+	<key>Current Location</key>
+	<string>Current Location</string>
+	<key>Date</key>
+	<string>Date</string>
+	<key>Default</key>
+	<string>Default</string>
+	<key>Device Connections</key>
+	<string>Device Connections</string>
+	<key>Devices</key>
+	<string>Devices</string>
+	<key>Enabled</key>
+	<string>Enabled</string>
+	<key>Glint turns the status bar clock into its pill. Long press it to pick what it shows. Tap it to open its card; pills without a card go to the next pill when Tap to Cycle is on.</key>
+	<string>Glint turns the status bar clock into its pill. Long press it to pick what it shows. Tap it to open its card; pills without a card go to the next pill when Tap to Cycle is on.</string>
+	<key>Holidays</key>
+	<string>Holidays</string>
+	<key>Leave empty to use your location. The weather comes from Open-Meteo, which receives your approximate location (about 1 km) or the city.</key>
+	<string>Leave empty to use your location. The weather comes from Open-Meteo, which receives your approximate location (about 1 km) or the city.</string>
+	<key>Network Speed</key>
+	<string>Network Speed</string>
+	<key>Next Event</key>
+	<string>Next Event</string>
+	<key>Notification Display Time</key>
+	<string>Notification Display Time</string>
+	<key>Notifications</key>
+	<string>Notifications</string>
+	<key>Now Playing</key>
+	<string>Now Playing</string>
+	<key>Pill</key>
+	<string>Pill</string>
+	<key>Quick Message</key>
+	<string>Quick Message</string>
+	<key>Reminders</key>
+	<string>Reminders</string>
+	<key>Replace Banners</key>
+	<string>Replace Banners</string>
+	<key>Replace Volume Indicator</key>
+	<string>Replace Volume Indicator</string>
+	<key>Show Music While Playing</key>
+	<string>Show Music While Playing</string>
+	<key>Show Seconds</key>
+	<string>Show Seconds</string>
+	<key>Shows</key>
+	<string>Shows</string>
+	<key>Shows a compact volume pill instead of the system volume indicator.</key>
+	<string>Shows a compact volume pill instead of the system volume indicator.</string>
+	<key>Shows a pill with the battery when AirPods or another accessory connects, and when it disconnects.</key>
+	<string>Shows a pill with the battery when AirPods or another accessory connects, and when it disconnects.</string>
+	<key>Shows the app of a new notification in the pill instead of a banner. Tap the pill to read it, tap the card to open the app. Notifications still go to Notification Center.</key>
+	<string>Shows the app of a new notification in the pill instead of a banner. Tap the pill to read it, tap the card to open the app. Notifications still go to Notification Center.</string>
+	<key>Storage &amp; Memory</key>
+	<string>Storage &amp; Memory</string>
+	<key>Style</key>
+	<string>Style</string>
+	<key>Sunrise &amp; Sunset</key>
+	<string>Sunrise &amp; Sunset</string>
+	<key>Tap to Cycle</key>
+	<string>Tap to Cycle</string>
+	<key>Text</key>
+	<string>Text</string>
+	<key>The Countdown pill shows the days left until this date.</key>
+	<string>The Countdown pill shows the days left until this date.</string>
+	<key>Time</key>
+	<string>Time</string>
+	<key>Title</key>
+	<string>Title</string>
+	<key>Unlocks</key>
+	<string>Unlocks</string>
+	<key>Volume</key>
+	<string>Volume</string>
+	<key>Volume Display Time</key>
+	<string>Volume Display Time</string>
+	<key>Weather</key>
+	<string>Weather</string>
+</dict>
+</plist>

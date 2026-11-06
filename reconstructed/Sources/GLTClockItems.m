@@ -19,14 +19,13 @@
 @end
 
 @interface MTAlarmManager : NSObject
-+ (instancetype)sharedManager;
 - (NSArray *)alarmsSync;
 @end
 
 typedef NS_ENUM(NSInteger, MTTimerState) {
     MTTimerStateStopped = 1,
-    MTTimerStateRunning = 2,
-    MTTimerStatePaused  = 3,
+    MTTimerStatePaused  = 2,
+    MTTimerStateRunning = 3,
 };
 
 @interface MTTimer : NSObject
@@ -37,7 +36,6 @@ typedef NS_ENUM(NSInteger, MTTimerState) {
 @end
 
 @interface MTTimerManager : NSObject
-+ (instancetype)sharedManager;
 - (NSArray *)timersSync;
 - (MTTimer *)getCurrentTimerSync;
 @end
@@ -61,12 +59,9 @@ typedef NS_ENUM(NSInteger, MTTimerState) {
 
     Class alarmClass = NSClassFromString(@"MTAlarmManager");
     Class timerClass = NSClassFromString(@"MTTimerManager");
-    if ([alarmClass respondsToSelector:@selector(sharedManager)]) {
-        _alarmManager = [alarmClass sharedManager];
-    }
-    if ([timerClass respondsToSelector:@selector(sharedManager)]) {
-        _timerManager = [timerClass sharedManager];
-    }
+    // Original 0x17698..0x176c4 owns new manager instances, not singletons.
+    _alarmManager = [alarmClass new];
+    _timerManager = [timerClass new];
 
     // MobileTimer's synchronous accessors block on its own queue, so keep them
     // off the main thread.
@@ -107,24 +102,43 @@ typedef NS_ENUM(NSInteger, MTTimerState) {
         double remaining = 0;
         double duration = 0;
 
-        MTTimer *timer = [self->_timerManager getCurrentTimerSync];
-        if (timer) {
-            duration = [timer respondsToSelector:@selector(duration)] ? [timer duration] : 0;
-            if ([timer respondsToSelector:@selector(state)]) {
-                if (timer.state == MTTimerStateRunning) {
-                    fireDate = [timer fireDate];
-                } else if (timer.state == MTTimerStatePaused) {
-                    remaining = [timer remainingTime];
-                    fireDate = [NSDate dateWithTimeIntervalSinceNow:remaining];
+        // Original 0x17a14..0x17ce4 considers both APIs, chooses the earliest
+        // running timer, then falls back to the first positive paused timer.
+        NSMutableArray<MTTimer *> *timers = [NSMutableArray array];
+        if ([self->_timerManager respondsToSelector:@selector(timersSync)]) {
+            [timers addObjectsFromArray:[self->_timerManager timersSync] ?: @[]];
+        }
+        if ([self->_timerManager respondsToSelector:@selector(getCurrentTimerSync)]) {
+            MTTimer *current = [self->_timerManager getCurrentTimerSync];
+            if (current) [timers addObject:current];
+        }
+        MTTimer *runningTimer = nil;
+        MTTimer *pausedTimer = nil;
+        for (MTTimer *timer in timers) {
+            if (![timer respondsToSelector:@selector(state)]) continue;
+            MTTimerState state = timer.state;
+            if (state == MTTimerStateRunning && [timer respondsToSelector:@selector(fireDate)]) {
+                NSDate *candidateFireDate = timer.fireDate;
+                if (candidateFireDate && [candidateFireDate timeIntervalSinceNow] > 0 &&
+                    (!runningTimer || [candidateFireDate compare:runningTimer.fireDate] == NSOrderedAscending)) {
+                    runningTimer = timer;
                 }
+            } else if (state == MTTimerStatePaused && [timer respondsToSelector:@selector(remainingTime)] &&
+                       timer.remainingTime > 0 && !pausedTimer) {
+                pausedTimer = timer;
             }
         }
+        fireDate = runningTimer.fireDate;
+        remaining = runningTimer ? 0 : pausedTimer.remainingTime;
+        MTTimer *selectedTimer = runningTimer ?: pausedTimer;
+        duration = [selectedTimer respondsToSelector:@selector(duration)] ? selectedTimer.duration : 0;
 
         dispatch_async(dispatch_get_main_queue(), ^{
             BOOL changed = !((self->_alarms == nil && alarms.count == 0)
                              || [self->_alarms isEqualToArray:alarms]);
             BOOL timerChanged = !((self->_timerFireDate == nil && fireDate == nil)
-                                  || [self->_timerFireDate isEqualToDate:fireDate]);
+                                  || [self->_timerFireDate isEqualToDate:fireDate])
+                                || self->_pausedTimerRemaining != remaining;
 
             self->_alarms = alarms;
             self->_timerFireDate = fireDate;
