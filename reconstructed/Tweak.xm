@@ -167,8 +167,8 @@ typedef void (*GLTDrawTextIMP)(id, SEL, CGRect);
 // applyUpdate:toDisplayItem: — the time item exposes the labels we draw into.
 // timeView / dateView are the wide (date-style) pair, shortTimeView is the
 // narrow "9:41" label used when the status bar is compact.
-static void glt_applyUpdate(id self, SEL _cmd, id update, id displayItem) {
-    ((void (*)(id, SEL, id, id))glt_orig_applyUpdate)(self, _cmd, update, displayItem);
+static id glt_applyUpdate(id self, SEL _cmd, id update, id displayItem) {
+    id original = ((id (*)(id, SEL, id, id))glt_orig_applyUpdate)(self, _cmd, update, displayItem);
 
     GLTController *controller = [GLTController sharedController];
     id<GLTStatusBarTimeItem> item = (id<GLTStatusBarTimeItem>)self;
@@ -177,6 +177,7 @@ static void glt_applyUpdate(id self, SEL _cmd, id update, id displayItem) {
     UIView *shortTime = GLTMethodMatches([self class], @selector(shortTimeView), @encode(id), @[]) ? [item shortTimeView] : nil;
     [controller registerClockView:time dateView:date];
     [controller registerClockView:shortTime dateView:nil];
+    return original;
 }
 
 // While Glint is drawing into a label the system must not overwrite it, but the
@@ -306,7 +307,7 @@ static void glt_didMoveToWindow(id self, SEL _cmd) {
     if (!stringView) stringView = objc_getClass("_UIStatusBarStringView");
 
     // Admit the whole status-bar surface before installing any of its hooks.
-    BOOL ready = GLTMethodMatches(timeItem, @selector(applyUpdate:toDisplayItem:), @encode(void), @[@"@", @"@"]) &&
+    BOOL ready = GLTMethodMatches(timeItem, @selector(applyUpdate:toDisplayItem:), @encode(id), @[@"@", @"@"]) &&
         GLTMethodMatches(stringView, @selector(setText:), @encode(void), @[@"@"]) &&
         GLTMethodMatches(stringView, @selector(setAttributedText:), @encode(void), @[@"@"]) &&
         GLTMethodMatches(stringView, @selector(setTextColor:), @encode(void), @[@"@"]) &&
