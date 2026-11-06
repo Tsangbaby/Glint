@@ -1,0 +1,206 @@
+==== 00004000  [subfunc 00004000] (after ?) ====
+00004000  stp      x20, x19, [sp, #-0x20]!                   
+00004004  stp      x29, x30, [sp, #0x10]                     
+00004008  add      x29, sp, #0x10                            
+0000400c  adrp     x8, #0x34000                              
+00004010  ldr      x0, [x8, #0x48]                             ; CLS(GLTPrefs)
+00004014  bl       #0x208e0                                    ; msgSend[sharedPrefs]
+00004018  mov      x29, x29                                  
+0000401c  bl       #0x1c948                                    ; IMP:_objc_unsafeClaimAutoreleasedReturnValue
+00004020  adrp     x0, #0x22000                              
+00004024  add      x0, x0, #0x8d4                              ; STR("SpringBoard")
+00004028  bl       #0x1c870                                    ; IMP:_objc_getClass
+0000402c  adrp     x8, #0x32000                              
+00004030  ldr      x1, [x8, #0xa40]                            ; SEL(applicationDidFinishLaunching:)
+00004034  adrp     x2, #0x4000                               
+00004038  add      x2, x2, #0x334                            
+0000403c  adrp     x3, #0x34000                              
+00004040  add      x3, x3, #0xe78                              ; DATA(00034e78/__bss)
+00004044  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004048  adrp     x0, #0x22000                              
+0000404c  add      x0, x0, #0x8e0                              ; STR("SBVolumeControl")
+00004050  bl       #0x1c870                                    ; IMP:_objc_getClass
+00004054  mov      x19, x0                                   
+00004058  adrp     x8, #0x32000                              
+0000405c  ldr      x1, [x8, #0xa48]                            ; SEL(_presentVolumeHUDWithVolume:)
+00004060  adrp     x2, #0x4000                               
+00004064  add      x2, x2, #0x378                            
+00004068  adrp     x3, #0x34000                              
+0000406c  add      x3, x3, #0xe80                              ; DATA(00034e80/__bss)
+00004070  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004074  adrp     x8, #0x32000                              
+00004078  ldr      x1, [x8, #0xa50]                            ; SEL(initWithHUDController:ringerControl:telephonyManager:conferenceManager:)
+0000407c  adrp     x2, #0x4000                               
+00004080  add      x2, x2, #0x420                            
+00004084  adrp     x3, #0x34000                              
+00004088  add      x3, x3, #0xe88                              ; DATA(00034e88/__bss)
+0000408c  mov      x0, x19                                   
+00004090  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004094  adrp     x0, #0x22000                              
+00004098  add      x0, x0, #0x8f0                              ; STR("SBNotificationBannerDestination")
+0000409c  bl       #0x1c870                                    ; IMP:_objc_getClass
+000040a0  adrp     x8, #0x32000                              
+000040a4  ldr      x1, [x8, #0xa58]                            ; SEL(postNotificationRequest:)
+000040a8  adrp     x2, #0x4000                               
+000040ac  add      x2, x2, #0x42c                            
+000040b0  adrp     x3, #0x34000                              
+000040b4  add      x3, x3, #0xe90                              ; DATA(00034e90/__bss)
+000040b8  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+000040bc  adrp     x0, #0x22000                              
+000040c0  add      x0, x0, #0x910                              ; STR("SBMediaController")
+000040c4  bl       #0x1c870                                    ; IMP:_objc_getClass
+000040c8  mov      x19, x0                                   
+000040cc  adrp     x8, #0x32000                              
+000040d0  ldr      x1, [x8, #0xa60]                            ; SEL(_mediaRemoteNowPlayingInfoDidChange:)
+000040d4  adrp     x2, #0x4000                               
+000040d8  add      x2, x2, #0x6dc                            
+000040dc  adrp     x3, #0x34000                              
+000040e0  add      x3, x3, #0xe98                              ; DATA(00034e98/__bss)
+000040e4  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+000040e8  adrp     x8, #0x32000                              
+000040ec  ldr      x1, [x8, #0xa68]                            ; SEL(_mediaRemoteNowPlayingApplicationIsPlayingDidChange:)
+000040f0  adrp     x2, #0x4000                               
+000040f4  add      x2, x2, #0x720                            
+000040f8  adrp     x3, #0x34000                              
+000040fc  add      x3, x3, #0xea0                              ; DATA(00034ea0/__bss)
+00004100  mov      x0, x19                                   
+00004104  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004108  adrp     x8, #0x32000                              
+0000410c  ldr      x1, [x8, #0xa70]                            ; SEL(_mediaRemoteNowPlayingApplicationDidChange:)
+00004110  adrp     x2, #0x4000                               
+00004114  add      x2, x2, #0x764                            
+00004118  adrp     x3, #0x34000                              
+0000411c  add      x3, x3, #0xea8                              ; DATA(00034ea8/__bss)
+00004120  mov      x0, x19                                   
+00004124  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004128  adrp     x0, #0x22000                              
+0000412c  add      x0, x0, #0x922                              ; STR("STUIStatusBarTimeItem")
+00004130  bl       #0x1c870                                    ; IMP:_objc_getClass
+00004134  mov      x20, x0                                   
+00004138  cbnz     x0, #0x414c                               
+0000413c  adrp     x0, #0x22000                              
+00004140  add      x0, x0, #0x938                              ; STR("_UIStatusBarTimeItem")
+00004144  bl       #0x1c870                                    ; IMP:_objc_getClass
+00004148  mov      x20, x0                                   
+0000414c  adrp     x0, #0x22000                              
+00004150  add      x0, x0, #0x94d                              ; STR("STUIStatusBarStringView")
+00004154  bl       #0x1c870                                    ; IMP:_objc_getClass
+00004158  mov      x19, x0                                   
+0000415c  cbz      x0, #0x4168                               
+00004160  cbnz     x20, #0x417c                              
+00004164  b        #0x4328                                     ; -> sub_4328
+00004168  adrp     x0, #0x22000                              
+0000416c  add      x0, x0, #0x965                              ; STR("_UIStatusBarStringView")
+00004170  bl       #0x1c870                                    ; IMP:_objc_getClass
+00004174  mov      x19, x0                                   
+00004178  cbz      x20, #0x4328                              
+0000417c  cbz      x19, #0x4328                              
+00004180  adrp     x8, #0x32000                              
+00004184  ldr      x1, [x8, #0xa78]                            ; SEL(applyUpdate:toDisplayItem:)
+00004188  adrp     x2, #0x4000                               
+0000418c  add      x2, x2, #0x7a8                            
+00004190  adrp     x3, #0x34000                              
+00004194  add      x3, x3, #0xeb0                              ; DATA(00034eb0/__bss)
+00004198  mov      x0, x20                                   
+0000419c  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+000041a0  adrp     x8, #0x33000                              
+000041a4  ldr      x1, [x8, #0xa20]                            ; SEL(setText:)
+000041a8  adrp     x2, #0x4000                               
+000041ac  add      x2, x2, #0x894                            
+000041b0  adrp     x3, #0x34000                              
+000041b4  add      x3, x3, #0xeb8                              ; DATA(00034eb8/__bss)
+000041b8  mov      x0, x19                                   
+000041bc  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+000041c0  adrp     x8, #0x33000                              
+000041c4  ldr      x1, [x8, #0x720]                            ; SEL(setAttributedText:)
+000041c8  adrp     x2, #0x4000                               
+000041cc  add      x2, x2, #0x918                            
+000041d0  adrp     x3, #0x34000                              
+000041d4  add      x3, x3, #0xec0                              ; DATA(00034ec0/__bss)
+000041d8  mov      x0, x19                                   
+000041dc  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+000041e0  adrp     x8, #0x33000                              
+000041e4  ldr      x1, [x8, #0xa30]                            ; SEL(setTextColor:)
+000041e8  adrp     x2, #0x4000                               
+000041ec  add      x2, x2, #0x9bc                            
+000041f0  adrp     x3, #0x34000                              
+000041f4  add      x3, x3, #0xec8                              ; DATA(00034ec8/__bss)
+000041f8  mov      x0, x19                                   
+000041fc  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004200  adrp     x8, #0x32000                              
+00004204  ldr      x1, [x8, #0xa80]                            ; SEL(intrinsicContentSize)
+00004208  adrp     x2, #0x4000                               
+0000420c  add      x2, x2, #0xa2c                            
+00004210  adrp     x3, #0x34000                              
+00004214  add      x3, x3, #0xed0                              ; DATA(00034ed0/__bss)
+00004218  mov      x0, x19                                   
+0000421c  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004220  adrp     x8, #0x32000                              
+00004224  ldr      x1, [x8, #0xa88]                            ; SEL(sizeThatFits:)
+00004228  adrp     x2, #0x4000                               
+0000422c  add      x2, x2, #0xa9c                            
+00004230  adrp     x3, #0x34000                              
+00004234  add      x3, x3, #0xed8                              ; DATA(00034ed8/__bss)
+00004238  mov      x0, x19                                   
+0000423c  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004240  adrp     x8, #0x32000                              
+00004244  ldr      x1, [x8, #0xa90]                            ; SEL(drawTextInRect:)
+00004248  adrp     x2, #0x4000                               
+0000424c  add      x2, x2, #0xb0c                            
+00004250  adrp     x3, #0x34000                              
+00004254  add      x3, x3, #0xee0                              ; DATA(00034ee0/__bss)
+00004258  mov      x0, x19                                   
+0000425c  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004260  adrp     x8, #0x32000                              
+00004264  ldr      x1, [x8, #0xa98]                            ; SEL(layoutSubviews)
+00004268  adrp     x2, #0x4000                               
+0000426c  add      x2, x2, #0xbbc                            
+00004270  adrp     x3, #0x34000                              
+00004274  add      x3, x3, #0xee8                              ; DATA(00034ee8/__bss)
+00004278  mov      x0, x19                                   
+0000427c  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004280  adrp     x8, #0x33000                              
+00004284  ldr      x1, [x8, #0x798]                            ; SEL(setCenter:)
+00004288  adrp     x2, #0x4000                               
+0000428c  add      x2, x2, #0xc20                            
+00004290  adrp     x3, #0x34000                              
+00004294  add      x3, x3, #0xef0                              ; DATA(00034ef0/__bss)
+00004298  mov      x0, x19                                   
+0000429c  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+000042a0  adrp     x8, #0x33000                              
+000042a4  ldr      x1, [x8, #0x898]                            ; SEL(setFrame:)
+000042a8  adrp     x2, #0x4000                               
+000042ac  add      x2, x2, #0xc84                            
+000042b0  adrp     x3, #0x34000                              
+000042b4  add      x3, x3, #0xef8                              ; DATA(00034ef8/__bss)
+000042b8  mov      x0, x19                                   
+000042bc  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+000042c0  adrp     x8, #0x33000                              
+000042c4  ldr      x1, [x8, #0x700]                            ; SEL(setAlpha:)
+000042c8  adrp     x2, #0x4000                               
+000042cc  add      x2, x2, #0xce8                            
+000042d0  adrp     x3, #0x34000                              
+000042d4  add      x3, x3, #0xf00                              ; DATA(00034f00/__bss)
+000042d8  mov      x0, x19                                   
+000042dc  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+000042e0  adrp     x8, #0x33000                              
+000042e4  ldr      x1, [x8, #0x8b0]                            ; SEL(setHidden:)
+000042e8  adrp     x2, #0x4000                               
+000042ec  add      x2, x2, #0xd4c                            
+000042f0  adrp     x3, #0x34000                              
+000042f4  add      x3, x3, #0xf08                              ; DATA(00034f08/__bss)
+000042f8  mov      x0, x19                                   
+000042fc  bl       #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004300  adrp     x8, #0x32000                              
+00004304  ldr      x1, [x8, #0xaa0]                            ; SEL(didMoveToWindow)
+00004308  adrp     x2, #0x4000                               
+0000430c  add      x2, x2, #0xdb0                            
+00004310  adrp     x3, #0x34000                              
+00004314  add      x3, x3, #0xf10                              ; DATA(00034f10/__bss)
+00004318  mov      x0, x19                                   
+0000431c  ldp      x29, x30, [sp, #0x10]                     
+00004320  ldp      x20, x19, [sp], #0x20                     
+00004324  b        #0x1c6b4                                    ; IMP:_MSHookMessageEx
+00004328  ldp      x29, x30, [sp, #0x10]                     
+0000432c  ldp      x20, x19, [sp], #0x20                     
+00004330  ret                                                

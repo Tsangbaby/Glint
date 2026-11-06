@@ -1,0 +1,1586 @@
+
+### 00004000  [subfunc 00004000] (after ?)   (size 820)
+  SEL: sharedPrefs
+  IMP: @cls:GLTPrefs, _objc_unsafeClaimAutoreleasedReturnValue, _objc_getClass, _MSHookMessageEx
+  STR: SpringBoard | SBVolumeControl | SBNotificationBannerDestination | SBMediaController | STUIStatusBarTimeItem | _UIStatusBarTimeItem | STUIStatusBarStringView | _UIStatusBarStringView
+
+### 00004334  [subfunc 00004334] (after ?)   (size 68)
+  SEL: sharedController, start
+  IMP: @cls:GLTController, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004378  [subfunc 00004378] (after ?)   (size 168)
+  SEL: sharedPrefs, enabled, replaceVolumeHUD, sharedController, showVolume:
+  IMP: @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, @cls:GLTController, _objc_release
+
+### 00004420  [subfunc 00004420] (after ?)   (size 12)
+
+### 0000442c  [subfunc 0000442c] (after ?)   (size 688)
+  SEL: sharedPrefs, sectionIdentifier, enabled, replaceBanners, length, setBundleIdentifier:, sharedInstance, applicationWithBundleIdentifier:, displayName, setAppName:, content, header, mainScreen, scale, _applicationIconImageForBundleIdentifier:format:scale:, setIcon:, title, setTitle:, message, setMessage:, sharedController, showNotification:
+  IMP: _objc_retain, @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, @cls:GLTNotification, _objc_opt_new, _objc_getClass, _objc_retainAutorelease, _objc_release, @cls:UIImage, @cls:UIScreen, @cls:GLTController
+  STR: SBApplicationController
+
+### 000046dc  [subfunc 000046dc] (after ?)   (size 68)
+  SEL: sharedMedia, mediaDidChange
+  IMP: @cls:GLTMedia, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004720  [subfunc 00004720] (after ?)   (size 68)
+  SEL: sharedMedia, mediaDidChange
+  IMP: @cls:GLTMedia, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004764  [subfunc 00004764] (after ?)   (size 68)
+  SEL: sharedMedia, mediaDidChange
+  IMP: @cls:GLTMedia, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 000047a8  [subfunc 000047a8] (after ?)   (size 236)
+  SEL: sharedController, timeView, dateView, registerClockView:dateView:, shortTimeView
+  IMP: _objc_retainAutoreleasedReturnValue, @cls:GLTController, _objc_retain, _objc_release, _objc_autoreleaseReturnValue
+
+### 00004894  [subfunc 00004894] (after ?)   (size 132)
+  SEL: isStyled:, isRendering, setSystemText:forLabel:
+  IMP: _objc_retain, @cls:GLTClock, _objc_release
+
+### 00004918  [subfunc 00004918] (after ?)   (size 164)
+  SEL: isStyled:, isRendering, string, setSystemText:forLabel:
+  IMP: _objc_retain, @cls:GLTClock, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 000049bc  [subfunc 000049bc] (after ?)   (size 112)
+  SEL: isStyled:, isRendering
+  IMP: _objc_retain, @cls:GLTClock, _objc_release
+
+### 00004a2c  [subfunc 00004a2c] (after ?)   (size 112)
+  SEL: isStyled:, paddingForLabel:
+  IMP: @cls:GLTClock
+
+### 00004a9c  [subfunc 00004a9c] (after ?)   (size 112)
+  SEL: isStyled:, paddingForLabel:
+  IMP: @cls:GLTClock
+
+### 00004b0c  [subfunc 00004b0c] (after ?)   (size 176)
+  SEL: isStyled:, paddingForLabel:
+  IMP: @cls:GLTClock
+
+### 00004bbc  [subfunc 00004bbc] (after ?)   (size 100)
+  SEL: layoutBackgroundOfLabel:, ownerOfLabel:
+  IMP: @cls:GLTClock, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004c20  [subfunc 00004c20] (after ?)   (size 100)
+  SEL: layoutBackgroundOfLabel:, ownerOfLabel:
+  IMP: @cls:GLTClock, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004c84  [subfunc 00004c84] (after ?)   (size 100)
+  SEL: layoutBackgroundOfLabel:, ownerOfLabel:
+  IMP: @cls:GLTClock, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004ce8  [subfunc 00004ce8] (after ?)   (size 100)
+  SEL: layoutBackgroundOfLabel:, ownerOfLabel:
+  IMP: @cls:GLTClock, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004d4c  [subfunc 00004d4c] (after ?)   (size 100)
+  SEL: layoutBackgroundOfLabel:, ownerOfLabel:
+  IMP: @cls:GLTClock, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004db0  [subfunc 00004db0] (after ?)   (size 100)
+  SEL: layoutBackgroundOfLabel:, ownerOfLabel:
+  IMP: @cls:GLTClock, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00004e14  -[GLTWindow hitTest:withEvent:]   (size 280)
+  SEL: acceptsKeyboard, keyboardFrame, rootViewController, view
+  IMP: _objc_retain, _CGRectContainsPoint, _objc_msgSendSuper2, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_autoreleaseReturnValue
+
+### 00004f2c  -[GLTWindow canBecomeKeyWindow]   (size 4)
+  SEL: acceptsKeyboard
+
+### 00004f30  -[GLTWindow _shouldCreateContextAsSecure]   (size 8)
+
+### 00004f38  -[GLTWindow acceptsKeyboard]   (size 16)
+
+### 00004f48  -[GLTWindow setAcceptsKeyboard:]   (size 16)
+
+### 00004f58  -[GLTWindow keyboardFrame]   (size 24)
+
+### 00004f70  -[GLTWindow setKeyboardFrame:]   (size 24)
+
+### 00004f88  -[GLTPickerList hitTest:withEvent:]   (size 104)
+  IMP: _objc_msgSendSuper2, _objc_retainAutoreleasedReturnValue, _objc_retainAutoreleaseReturnValue, _objc_release
+
+### 00004ff0  +[GLTController sharedController]   (size 48)
+  IMP: _objc_retainAutoreleaseReturnValue
+
+### 00005020  [subfunc 00005020] (after +[GLTController sharedController])   (size 44)
+  IMP: @cls:GLTController, _objc_opt_new, _objc_release
+
+### 0000504c  -[GLTController init]   (size 140)
+  SEL: weakObjectsHashTable
+  IMP: _objc_msgSendSuper2, @cls:NSHashTable, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 000050d8  -[GLTController start]   (size 1712)
+  SEL: sharedApplication, connectedScenes, countByEnumeratingWithState:objects:count:, screen, mainScreen, setWindowLevel:, clearColor, setBackgroundColor:, setRootViewController:, rootViewController, view, moveWindowToScene:, colorWithWhite:alpha:, layer, setCornerCurve:, initWithTarget:action:, addGestureRecognizer:, setMinimumPressDuration:, addSubview:, currentLocale, dateFormatFromTemplate:options:locale:, setDateFormat:, array, currentDevice, setBatteryMonitoringEnabled:, defaultCenter, addObserver:selector:name:object:, sharedEvents, sharedUnlocks, sharedMedia, mediaDidChange, scheduledTimerWithTimeInterval:target:selector:userInfo:repeats:, prefsChanged
+  NUM: @f:1
+  IMP: ___stack_chk_guard, @cls:UIApplication, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_enumerationMutation, @cls:UIWindowScene, _objc_opt_class, _objc_opt_isKindOfClass, @cls:UIScreen, _objc_retain, @cls:GLTWindow, _objc_opt_new, _UIWindowLevelStatusBar, @cls:UIColor, @cls:UIViewController, @cls:UIView, _kCACornerCurveContinuous, @cls:UITapGestureRecognizer, _objc_alloc, @cls:UILongPressGestureRecognizer, @cls:NSDateFormatter, @cls:NSLocale, @cls:NSMutableArray, @cls:UIDevice, @cls:NSNotificationCenter, _UIKeyboardWillChangeFrameNotification, _UIKeyboardWillHideNotification, _UIDeviceBatteryLevelDidChangeNotification, _UIDeviceBatteryStateDidChangeNotification, @cls:GLTEvents, _objc_unsafeClaimAutoreleasedReturnValue, @cls:GLTUnlocks, @cls:GLTMedia, @cls:NSTimer, ___stack_chk_fail
+  STR: EEEdMMM
+
+### 00005788  -[GLTController moveWindowToScene:]   (size 208)
+  SEL: windowScene, isHidden, setWindowScene:, coordinateSpace, mainScreen, bounds, setFrame:, setHidden:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIScreen
+
+### 00005858  -[GLTController keyboardFrameChanged:]   (size 356)
+  SEL: userInfo, objectForKeyedSubscript:, CGRectValue, name, isEqualToString:, screen, coordinateSpace, convertRect:fromCoordinateSpace:, setKeyboardFrame:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _UIKeyboardFrameEndUserInfoKey, _objc_release, _UIKeyboardWillHideNotification, _CGRectZero
+
+### 000059bc  -[GLTController prefsChanged]   (size 392)
+  SEL: sharedPrefs, showSeconds, currentLocale, dateFormatFromTemplate:options:locale:, stringByReplacingOccurrencesOfString:withString:, whitespaceCharacterSet, stringByTrimmingCharactersInSet:, setDateFormat:, enabled, closePlatterAnimated:, hidePicker, wantsWeather, sharedWeather, refreshForcing:, update
+  IMP: @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, @cls:NSDateFormatter, @cls:NSLocale, _objc_release, @cls:NSCharacterSet, @cls:GLTWeather
+  STR: jmm | jmmss | a | 
+
+### 00005b44  -[GLTController tick]   (size 308)
+  SEL: sampleNetwork, checkDevices, wantsWeather, sharedWeather, refreshForcing:, sharedPrefs, enabled, currentPill, sharedItems, refresh, update
+  IMP: @cls:GLTWeather, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:GLTPrefs, @cls:GLTClockItems
+
+### 00005c78  -[GLTController wantsWeather]   (size 128)
+  SEL: sharedPrefs, pill, enabled
+  IMP: @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00005cf8  -[GLTController checkDevices]   (size 944)
+  SEL: dictionary, countByEnumeratingWithState:objects:count:, internal, identifier, setObject:forKeyedSubscript:, sharedPrefs, enabled, deviceConnections, objectForKeyedSubscript:, showConnection:connected:
+  IMP: ___stack_chk_guard, _objc_retainAutoreleasedReturnValue, @cls:NSMutableDictionary, _objc_retain, _objc_enumerationMutation, _objc_release, _objc_storeStrong, @cls:GLTPrefs, ___stack_chk_fail
+
+### 000060a8  -[GLTController showConnection:connected:]   (size 248)
+  SEL: sharedPrefs, notificationDuration, dateWithTimeIntervalSinceNow:, initWithStyle:, impactOccurred, update, updateAfter:
+  IMP: _objc_storeStrong, _objc_retain, @cls:NSDate, @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIImpactFeedbackGenerator, _objc_alloc
+
+### 000061a0  -[GLTController showsConnection]   (size 48)
+  SEL: timeIntervalSinceNow
+
+### 000061d0  -[GLTController showVolume:]   (size 160)
+  SEL: sharedPrefs, volumeDuration, dateWithTimeIntervalSinceNow:, update, updateAfter:
+  IMP: @cls:NSDate, @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00006270  -[GLTController showsVolume]   (size 36)
+  SEL: timeIntervalSinceNow
+
+### 00006294  -[GLTController showNotification:]   (size 264)
+  SEL: showsNotification, addObject:, sharedPrefs, notificationDuration, dateWithTimeIntervalSinceNow:, initWithStyle:, impactOccurred, update, updateAfter:
+  IMP: _objc_retain, _objc_storeStrong, @cls:NSDate, @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIImpactFeedbackGenerator, _objc_alloc
+
+### 0000639c  -[GLTController showsNotification]   (size 48)
+  SEL: timeIntervalSinceNow
+
+### 000063cc  -[GLTController updateAfter:]   (size 136)
+  IMP: _dispatch_time, __NSConcreteStackBlock, __dispatch_main_q, _dispatch_after
+
+### 00006454  [subfunc 00006454] (after -[GLTController updateAfter:])   (size 8)
+  SEL: update
+
+### 0000645c  [subfunc 0000645c] (after -[GLTController updateAfter:])   (size 8)
+  IMP: _objc_retain
+
+### 00006464  [subfunc 00006464] (after -[GLTController updateAfter:])   (size 8)
+  IMP: _objc_release
+
+### 0000646c  -[GLTController currentPill]   (size 184)
+  SEL: sharedPrefs, showMediaWhilePlaying, sharedMedia, isPlaying, hasMedia, pill
+  IMP: @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, @cls:GLTMedia, _objc_release
+
+### 00006524  -[GLTController update]   (size 136)
+  SEL: showsNotification, count, firstObject, removeObjectAtIndex:, showNotification:, renderClocks
+  IMP: _objc_release, _objc_retainAutoreleasedReturnValue
+
+### 000065ac  -[GLTController registerClockView:dateView:]   (size 204)
+  SEL: addObject:, setCompanion:forLabel:, renderClocks
+  IMP: _objc_retain, @cls:UILabel, _objc_opt_class, _objc_opt_isKindOfClass, @cls:GLTClock, _objc_release
+
+### 00006678  -[GLTController visibleClock]   (size 416)
+  SEL: countByEnumeratingWithState:objects:count:, window, isHidden, alpha, bounds
+  IMP: ___stack_chk_guard, _objc_retain, _objc_enumerationMutation, _objc_retainAutoreleasedReturnValue, _CGRectGetWidth, _objc_release, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: ping:
+
+### 00006818  -[GLTController frameOfClock:]   (size 472)
+  SEL: rootViewController, view, bounds, outsetForLabel:, window, screen, coordinateSpace, convertRect:toCoordinateSpace:, convertRect:fromCoordinateSpace:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:GLTClock, _CGRectInset
+
+### 000069f0  -[GLTController layoutTouchView]   (size 936)
+  SEL: visibleClock, window, windowScene, sharedPrefs, enabled, setHidden:, frameOfClock:, countByEnumeratingWithState:objects:count:, alpha, isHidden, setFrame:, layer, setCornerRadius:, moveWindowToScene:
+  NUM: @f:0.5
+  IMP: ___stack_chk_guard, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:GLTPrefs, _objc_retain, _objc_enumerationMutation, _CGRectUnion, _CGRectGetHeight, ___stack_chk_fail
+  STR: ping:
+
+### 00006d98  -[GLTController showsPlainTime]   (size 84)
+  SEL: showsVolume, showsNotification, showsConnection, currentPill
+
+### 00006dec  -[GLTController renderClocks]   (size 1088)
+  SEL: sharedPrefs, enabled, pillContent, backgroundColor, colorWithWhite:alpha:, shownKind, isEqualToString:, countByEnumeratingWithState:objects:count:, textColor, apply:toLabel:background:textColor:animated:, showsPlainTime, restoreAllLabels, alpha, animateWithDuration:delay:options:animations:completion:, fadeOutSnapshotOfLabel:, setAlpha:, ownerOfLabel:, invalidateIntrinsicContentSize, superview, setNeedsLayout, setNeedsDisplay, layoutBackgroundOfLabel:, layoutTouchView
+  NUM: @f:0.25
+  IMP: ___stack_chk_guard, @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_retain, @cls:UIColor, _objc_release, _objc_storeStrong, _objc_enumerationMutation, @cls:GLTClock, @cls:UIView, __NSConcreteStackBlock, ___stack_chk_fail
+  STR: ping:
+
+### 0000722c  [subfunc 0000722c] (after -[GLTController renderClocks])   (size 16)
+  SEL: setAlpha:
+
+### 0000723c  -[GLTController shownKind]   (size 236)
+  SEL: showsVolume, showsConnection, identifier, stringWithFormat:, showsNotification, currentPill
+  IMP: @cls:NSString, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_autoreleaseReturnValue
+  STR: volume | speaker.wave.1.fill | connection %@ %d | notification %p | pill %ld
+
+### 00007328  -[GLTController pillContent]   (size 784)
+  SEL: showsVolume, showsConnection, percent, stringWithFormat:, showsNotification, appName, contentWithSymbol:text:, icon, setImage:, setImageTint:, setProgress:, currentPill, contentForPill:, glyph, systemImageNamed:, configurationWithPointSize:weight:, imageByApplyingSymbolConfiguration:, systemRedColor
+  NUM: @f:12
+  IMP: @cls:NSString, _objc_retainAutoreleasedReturnValue, @cls:GLTPillContent, _objc_release, _objc_retain, @cls:UIImage, @cls:UIImageSymbolConfiguration, @cls:UIColor, _objc_autoreleaseReturnValue
+  STR: speaker.wave.1.fill | %ld%% | speaker.slash.fill | app.badge.fill | speaker.wave.3.fill | speaker.wave.2.fill | Off | On | headphones
+
+### 00007638  -[GLTController contentForPill:]   (size 832)
+  SEL: date, stringFromDate:, storageContent, mediaContent, countdownContent, nextEventContent, batteryContent, contentWithSymbol:text:, weatherContent, eventsLeftToday, countContent:singular:plural:none:symbol:, sharedUnlocks, today, stringWithFormat:, sharedEvents, reminders, count, sunContent, alarmContent
+  IMP: @cls:GLTPillContent, @cls:NSDate, _objc_retainAutoreleasedReturnValue, _objc_opt_new, _objc_release, @cls:GLTUnlocks, @cls:NSString, @cls:GLTEvents, _objc_autoreleaseReturnValue
+  STR: square.and.pencil | Message | �!0 | calendar | event | events | No events | %ld unlocks | %ld unlock | lock.open | reminder | reminders | All done | checklist
+
+### 00007978  -[GLTController batteryContent]   (size 624)
+  SEL: firstObject, percent, charging, stringWithFormat:, contentWithSymbol:text:, systemGreenColor, systemRedColor, setImageTint:
+  NUM: @f:-1, @f32:100
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release, _objc_retain, @cls:GLTPillContent, @cls:NSString, @cls:UIColor, _objc_autoreleaseReturnValue
+  STR: battery.100.bolt | battery.100 | battery.0 | battery.25 | battery.50 | battery.75 | %.0f%% | --%
+
+### 00007be8  -[GLTController mediaContent]   (size 212)
+  SEL: sharedMedia, hasMedia, isPlaying, title, contentWithSymbol:text:
+  IMP: @cls:GLTMedia, _objc_retainAutoreleasedReturnValue, @cls:GLTPillContent, _objc_release, _objc_autoreleaseReturnValue
+  STR: music.note | waveform | Not Playing
+
+### 00007cbc  -[GLTController weatherContent]   (size 260)
+  SEL: sharedWeather, hasData, temperature, temperatureString:, contentWithSymbol:text:, code, isDay, setImage:
+  NUM: @f:12
+  IMP: @cls:GLTWeather, _objc_retainAutoreleasedReturnValue, @cls:GLTPillContent, _objc_release, _objc_autoreleaseReturnValue
+  STR: cloud.sun | -
+
+### 00007dc0  -[GLTController stringForUpcomingDate:]   (size 248)
+  SEL: timeIntervalSinceNow, stringFromDate:, currentLocale, dateFormatFromTemplate:options:locale:, setDateFormat:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:NSDateFormatter, _objc_opt_new, @cls:NSLocale, _objc_release, _objc_autoreleaseReturnValue
+  STR: EEEjmm
+
+### 00007eb8  -[GLTController alarmContent]   (size 732)
+  SEL: sharedItems, timerFireDate, timeIntervalSinceNow, pausedTimerRemaining, alarms, firstObject, fireDate, stringForUpcomingDate:, contentWithSymbol:text:, systemOrangeColor, setImageTint:, stringWithFormat:
+  IMP: @cls:GLTClockItems, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:GLTPillContent, @cls:NSString, @cls:UIColor, _objc_autoreleaseReturnValue
+  STR: timer | pause.fill | %ld:%02ld:%02ld | alarm.fill | %ld:%02ld | alarm | No alarms
+
+### 00008194  -[GLTController nextEventContent]   (size 1452)
+  SEL: sharedEvents, upcomingEvents, countByEnumeratingWithState:objects:count:, endDate, timeIntervalSinceNow, isAllDay, currentCalendar, startDate, isDateInToday:, stringWithFormat:, contentWithSymbol:text:, title, length, substringToIndex:, stringByAppendingString:, calendar, CGColor, colorWithCGColor:, setImageTint:, stringFromDate:
+  NUM: @f:1
+  IMP: ___stack_chk_guard, @cls:GLTEvents, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_enumerationMutation, _objc_retain, @cls:NSCalendar, @cls:NSString, @cls:GLTPillContent, @cls:UIColor, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: today | in %ld min | calendar | No events | now | Event | &  | % | tomorrow
+
+### 00008740  -[GLTController storageContent]   (size 164)
+  SEL: contentWithSymbol:text:
+  IMP: @cls:GLTPillContent, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_autoreleaseReturnValue
+  STR: internaldrive
+
+### 000087e4  -[GLTController countdownContent]   (size 484)
+  SEL: sharedPrefs, countdownDate, contentWithSymbol:text:, stringWithFormat:, countdownTitle, length
+  IMP: @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:GLTPillContent, @cls:NSString, _objc_retain, _objc_autoreleaseReturnValue
+  STR: 1 day | hourglass | Set a date | today | %ld days | %ld days ago | % | 1 day ago
+
+### 000089c8  -[GLTController sunContent]   (size 304)
+  SEL: sharedWeather, nextSunEvent:, stringFromDate:, contentWithSymbol:text:, systemOrangeColor, setImageTint:
+  IMP: @cls:GLTWeather, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:GLTPillContent, @cls:UIColor, _objc_autoreleaseReturnValue
+  STR: sunset.fill | sunrise.fill | sunrise | --:--
+
+### 00008af8  -[GLTController eventsLeftToday]   (size 448)
+  SEL: sharedEvents, upcomingEvents, countByEnumeratingWithState:objects:count:, currentCalendar, startDate, isDateInToday:, timeIntervalSinceNow
+  IMP: ___stack_chk_guard, @cls:GLTEvents, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_enumerationMutation, @cls:NSCalendar, ___stack_chk_fail
+
+### 00008cb8  -[GLTController countContent:singular:plural:none:symbol:]   (size 112)
+  SEL: contentWithSymbol:text:, setBadge:
+  IMP: @cls:GLTPillContent, _objc_retainAutoreleasedReturnValue, _objc_autoreleaseReturnValue
+
+### 00008d28  -[GLTController sampleNetwork]   (size 476)
+  SEL: stringWithUTF8String:, hasPrefix:, date, timeIntervalSinceDate:, speed:, stringWithFormat:
+  IMP: _getifaddrs, @cls:NSString, _objc_retainAutoreleasedReturnValue, _objc_release, _freeifaddrs, @cls:NSDate
+  STR: en | pdp_ip | �!%
+
+### 00008f04  -[GLTController speed:]   (size 104)
+  SEL: stringWithFormat:
+  IMP: @cls:NSString, _objc_retainAutoreleasedReturnValue, _objc_autoreleaseReturnValue
+  STR: %.1fM | %.0fK
+
+### 00008f6c  -[GLTController cutout]   (size 60)
+  SEL: safeAreaInsets
+
+### 00008fa8  -[GLTController platterContent]   (size 456)
+  SEL: showsVolume, showsConnection, showsNotification, currentPill, sharedWeather, refreshForcing:, sharedPrefs, countdownDate, sharedItems, refresh
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_autoreleaseReturnValue, @cls:GLTWeather, _objc_release, @cls:GLTPrefs, @cls:GLTClockItems
+
+### 00009170  -[GLTController openPlatter:]   (size 1588)
+  SEL: rootViewController, view, cutout, safeAreaInsets, bounds, initWithFrame:, colorWithWhite:alpha:, setBackgroundColor:, addTarget:action:forControlEvents:, addSubview:, setCloseHandler:, setResizeHandler:, wantsKeyboard, windowScene, windows, countByEnumeratingWithState:objects:count:, isKeyWindow, setAcceptsKeyboard:, makeKeyWindow, setOpenWidth:, setTopInset:, setContent:, layer, setCornerRadius:, setAlpha:, layoutTouchView, openWidth, heightForWidth:, initWithStyle:, impactOccurred, animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:, setTransform:
+  NUM: @f:6, @f:20, @f:4, @f:18, @f:22, @f:-12, @f:0.5, @f:-0.5, @f:-6, @f:-14
+  IMP: ___stack_chk_guard, _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIControl, _objc_alloc, @cls:UIColor, _objc_initWeak, __NSConcreteStackBlock, _objc_copyWeak, _objc_enumerationMutation, _objc_storeWeak, @cls:GLTPlatterView, _CGRectGetWidth, _CGRectGetHeight, _CGRectGetMidX, @cls:UIImpactFeedbackGenerator, @cls:UIView, _CGAffineTransformMakeTranslation, _CGAffineTransformScale, _objc_destroyWeak, ___stack_chk_fail, __Unwind_Resume
+  STR: tDateStyle:
+
+### 000097a4  [subfunc 000097a4] (after -[GLTController openPlatter:])   (size 44)
+  SEL: closePlatter
+  IMP: _objc_loadWeakRetained, _objc_release
+
+### 000097d0  [subfunc 000097d0] (after -[GLTController openPlatter:])   (size 12)
+  IMP: _objc_copyWeak
+
+### 000097dc  [subfunc 000097dc] (after -[GLTController openPlatter:])   (size 8)
+  IMP: _objc_destroyWeak
+
+### 000097e4  [subfunc 000097e4] (after -[GLTController openPlatter:])   (size 44)
+  SEL: fitPlatterToContent
+  IMP: _objc_loadWeakRetained, _objc_release
+
+### 00009810  [subfunc 00009810] (after -[GLTController openPlatter:])   (size 96)
+  SEL: setFrame:, layer, setCornerRadius:
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00009870  [subfunc 00009870] (after -[GLTController openPlatter:])   (size 84)
+  SEL: setAlpha:, setTransform:
+  NUM: @f:1
+  IMP: _CGAffineTransformIdentity
+
+### 000098c4  -[GLTController closePlatter]   (size 8)
+  SEL: closePlatterAnimated:
+
+### 000098cc  -[GLTController fitPlatterToContent]   (size 240)
+  SEL: frame, openWidth, heightForWidth:, animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:
+  NUM: @f:-1
+  IMP: _CGRectGetWidth, @cls:UIView, __NSConcreteStackBlock
+
+### 000099bc  [subfunc 000099bc] (after -[GLTController fitPlatterToContent])   (size 56)
+  SEL: setFrame:, layoutIfNeeded
+
+### 000099f4  -[GLTController closePlatterAnimated:]   (size 544)
+  SEL: removeFromSuperview, acceptsKeyboard, endEditing:, setAcceptsKeyboard:, makeKeyWindow, layoutTouchView, animateWithDuration:animations:, animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:
+  IMP: _objc_retain, _objc_release, _objc_loadWeakRetained, _objc_storeWeak, __NSConcreteStackBlock, _objc_retainBlock, @cls:UIView
+
+### 00009c14  [subfunc 00009c14] (after -[GLTController closePlatterAnimated:])   (size 8)
+  SEL: removeFromSuperview
+
+### 00009c1c  [subfunc 00009c1c] (after -[GLTController closePlatterAnimated:])   (size 164)
+  SEL: content, setAlpha:, setTransform:
+  NUM: @f:-10
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release, _CGAffineTransformMakeTranslation, _CGAffineTransformScale
+
+### 00009cc0  [subfunc 00009cc0] (after -[GLTController closePlatterAnimated:])   (size 104)
+  SEL: setFrame:, layer, setCornerRadius:
+  NUM: @f:0.5
+  IMP: _CGRectGetHeight, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00009d28  -[GLTController clockTapped]   (size 536)
+  SEL: visibleClock, frameOfClock:, platterContent, popLabel:, openPlatter:, showsVolume, sharedPrefs, tapToCycle, initWithStyle:, impactOccurred, pillOrder, pill, numberWithInteger:, indexOfObject:, count, objectAtIndexedSubscript:, integerValue, setPill:, wantsWeather, sharedWeather, refreshForcing:, update
+  IMP: _objc_retainAutoreleasedReturnValue, @cls:GLTClock, @cls:GLTPrefs, _objc_release, @cls:UIImpactFeedbackGenerator, _objc_alloc, @cls:NSNumber, @cls:GLTWeather
+
+### 00009f40  -[GLTController clockLongPressed:]   (size 60)
+  SEL: state, showPicker
+
+### 00009f7c  -[GLTController pickerRowForPill:font:]   (size 1344)
+  SEL: sharedPrefs, backgroundColor, setBackgroundColor:, colorWithWhite:alpha:, layer, setCornerCurve:, setCornerRadius:, pill, setBorderWidth:, CGColor, setBorderColor:, contentForPill:, textColor, attributedStringWithFont:color:, setAttributedText:, sizeToFit, bounds, setFrame:, setCenter:, addSubview:, nameForPill:, setText:, systemFontOfSize:weight:, setFont:, setTextColor:, blackColor, setShadowColor:, setShadowOpacity:, setShadowRadius:, setShadowOffset:, frame, setTag:, initWithTarget:action:, addGestureRecognizer:
+  NUM: @f:17, @f:2, @f:1, @f:28, @f:13, @f:3, @f:10, @f:0.5
+  IMP: @cls:GLTPrefs, _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:UIView, _objc_opt_new, @cls:UIColor, _objc_release, _kCACornerCurveContinuous, _objc_retainAutorelease, @cls:UILabel, _CGRectGetWidth, _CGRectGetMidX, _CGRectGetMidY, @cls:UIFont, _UIFontWeightSemibold, _CGSizeZero, _CGRectGetMaxX, @cls:UITapGestureRecognizer, _objc_alloc, _objc_autoreleaseReturnValue
+
+### 0000a4bc  -[GLTController pickerCellForPill:font:width:]   (size 1404)
+  SEL: sharedPrefs, backgroundColor, setBackgroundColor:, colorWithWhite:alpha:, layer, setCornerCurve:, setCornerRadius:, pill, setBorderWidth:, CGColor, setBorderColor:, contentForPill:, textColor, attributedStringWithFont:color:, setAttributedText:, setAdjustsFontSizeToFitWidth:, setMinimumScaleFactor:, setLineBreakMode:, setTextAlignment:, sizeToFit, bounds, setFrame:, addSubview:, nameForPill:, setText:, systemFontOfSize:weight:, setFont:, setTextColor:, blackColor, setShadowColor:, setShadowOpacity:, setShadowRadius:, setShadowOffset:, setTag:, initWithTarget:action:, addGestureRecognizer:
+  NUM: @f:17, @f:2, @f:1, @f:-24, @f:0.5, @f:24, @f:12, @f:11, @f:3, @f:14
+  IMP: @cls:GLTPrefs, _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:UIView, _objc_opt_new, @cls:UIColor, _objc_release, _kCACornerCurveContinuous, _objc_retainAutorelease, @cls:UILabel, _CGRectGetWidth, @cls:UIFont, _UIFontWeightSemibold, _CGSizeZero, @cls:UITapGestureRecognizer, _objc_alloc, _objc_autoreleaseReturnValue
+
+### 0000aa38  -[GLTController showPicker]   (size 1756)
+  SEL: visibleClock, sharedPrefs, enabled, initWithStyle:, impactOccurred, rootViewController, view, frameOfClock:, bounds, initWithFrame:, setAutoresizingMask:, addSubview:, initWithEffect:, setFrame:, initWithTarget:action:, addGestureRecognizer:, systemFontOfSize:weight:, array, sharedItems, refresh, safeAreaInsets, setShowsVerticalScrollIndicator:, setClipsToBounds:, setAlwaysBounceVertical:, pillOrder, count, objectAtIndexedSubscript:, integerValue, pickerCellForPill:font:width:, addObject:, pickerRowForPill:font:, setContentSize:, convertPoint:fromView:, enumerateObjectsUsingBlock:, animateWithDuration:animations:, layoutTouchView
+  NUM: @f:15, @f:14, @f:12, @f:-8, @f:-10, @f:0.5, @f:-2, @f:10, @f:-12
+  IMP: _objc_retainAutoreleasedReturnValue, @cls:GLTPrefs, _objc_release, @cls:UIImpactFeedbackGenerator, _objc_alloc, @cls:UIView, @cls:UIVisualEffectView, @cls:UITapGestureRecognizer, @cls:UIFont, _UIFontWeightSemibold, _CGRectGetMaxY, _CGRectGetMinX, @cls:NSMutableArray, @cls:GLTClockItems, @cls:GLTPickerList, _CGRectGetWidth, _CGRectGetHeight, _CGRectGetMidX, _CGRectGetMidY, __NSConcreteStackBlock, _objc_retain
+
+### 0000b114  [subfunc 0000b114] (after -[GLTController showPicker])   (size 324)
+  SEL: center, setAlpha:, setTransform:, animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:
+  NUM: @f:0.5
+  IMP: _objc_retain, _CGAffineTransformMakeScale, _CGAffineTransformMakeTranslation, _CGAffineTransformConcat, @cls:UIView, __NSConcreteStackBlock, _objc_release
+
+### 0000b258  [subfunc 0000b258] (after -[GLTController showPicker])   (size 84)
+  SEL: setAlpha:, setTransform:
+  NUM: @f:1
+  IMP: _CGAffineTransformIdentity
+
+### 0000b2ac  [subfunc 0000b2ac] (after -[GLTController showPicker])   (size 72)
+  SEL: effectWithStyle:, setEffect:
+  IMP: @cls:UIBlurEffect, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000b2f4  -[GLTController pickerRowTapped:]   (size 228)
+  SEL: view, tag, selectionChanged, sharedPrefs, setPill:, wantsWeather, sharedWeather, refreshForcing:, hidePicker, update
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UISelectionFeedbackGenerator, _objc_opt_new, @cls:GLTPrefs, @cls:GLTWeather
+
+### 0000b3d8  -[GLTController hidePicker]   (size 248)
+  SEL: setUserInteractionEnabled:, animateWithDuration:animations:completion:, layoutTouchView
+  IMP: _objc_retain, _objc_release, @cls:UIView, __NSConcreteStackBlock
+
+### 0000b4d0  [subfunc 0000b4d0] (after -[GLTController hidePicker])   (size 368)
+  SEL: setAlpha:, subviews, countByEnumeratingWithState:objects:count:, setEffect:, setTransform:
+  IMP: ___stack_chk_guard, _objc_retainAutoreleasedReturnValue, _objc_enumerationMutation, @cls:UIVisualEffectView, _objc_opt_class, _objc_opt_isKindOfClass, _CGAffineTransformMakeScale, _objc_release, ___stack_chk_fail
+  STR: ping:
+
+### 0000b640  [subfunc 0000b640] (after -[GLTController hidePicker])   (size 8)
+  SEL: removeFromSuperview
+
+### 0000b648  -[GLTController .cxx_destruct]   (size 272)
+  IMP: _objc_storeStrong, _objc_destroyWeak
+
+### 0000b758  [subfunc 0000b758] (after -[GLTController .cxx_destruct])   (size 128)
+  SEL: configurationWithPointSize:weight:, systemImageNamed:withConfiguration:
+  NUM: @f:12
+  IMP: @cls:UIImageSymbolConfiguration, _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:UIImage, _objc_release, _objc_autoreleaseReturnValue
+
+### 0000b7d8  +[GLTPillContent contentWithSymbol:text:]   (size 172)
+  SEL: setImage:, setText:
+  IMP: _objc_retain, @cls:GLTPillContent, _objc_opt_new, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_autoreleaseReturnValue
+
+### 0000b884  -[GLTPillContent init]   (size 64)
+  IMP: _objc_msgSendSuper2
+
+### 0000b8c4  -[GLTPillContent attributedStringWithFont:color:]   (size 1600)
+  SEL: dictionaryWithObjects:forKeys:count:, initWithString:attributes:, pointSize, image, isSymbolImage, imageTint, imageWithTintColor:renderingMode:, size, initWithSize:, imageWithActions:, appendAttributedString:, badge, length, stringWithFormat:, monospacedDigitSystemFontOfSize:weight:, sizeWithAttributes:, text, progress
+  NUM: @f:1, @f:0.75, @f:8, @f:4
+  IMP: ___stack_chk_guard, _objc_retain, @cls:NSMutableAttributedString, _objc_opt_new, @cls:NSAttributedString, _objc_alloc, _NSFontAttributeName, @cls:NSDictionary, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIGraphicsImageRenderer, __NSConcreteStackBlock, @cls:NSString, @cls:UIFont, _UIFontWeightBold, _NSForegroundColorAttributeName, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR:   | %ld
+
+### 0000bf04  [subfunc 0000bf04] (after -[GLTPillContent attributedStringWithFont:color:])   (size 128)
+  SEL: bezierPathWithRoundedRect:cornerRadius:, addClip, image, drawInRect:
+  NUM: @f:0.25
+  IMP: @cls:UIBezierPath, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000bf84  [subfunc 0000bf84] (after -[GLTPillContent attributedStringWithFont:color:])   (size 216)
+  SEL: setImage:, capHeight, setBounds:, attributedStringWithAttachment:
+  NUM: @f:0.5
+  IMP: @cls:NSTextAttachment, _objc_retain, _objc_opt_new, _objc_release, @cls:NSAttributedString, _objc_retainAutoreleasedReturnValue, _objc_autoreleaseReturnValue
+
+### 0000c05c  [subfunc 0000c05c] (after -[GLTPillContent attributedStringWithFont:color:])   (size 424)
+  SEL: systemRedColor, setFill, bezierPathWithRoundedRect:cornerRadius:, fill, dictionaryWithObjects:forKeys:count:, sizeWithAttributes:, whiteColor, drawAtPoint:withAttributes:
+  NUM: @f:0.5
+  IMP: ___stack_chk_guard, @cls:UIColor, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIBezierPath, _NSFontAttributeName, @cls:NSDictionary, _NSForegroundColorAttributeName, ___stack_chk_fail
+
+### 0000c204  [subfunc 0000c204] (after -[GLTPillContent attributedStringWithFont:color:])   (size 40)
+  IMP: _objc_retain
+
+### 0000c22c  [subfunc 0000c22c] (after -[GLTPillContent attributedStringWithFont:color:])   (size 40)
+  IMP: _objc_release
+
+### 0000c254  [subfunc 0000c254] (after -[GLTPillContent attributedStringWithFont:color:])   (size 204)
+  SEL: colorWithAlphaComponent:, setFill, bezierPathWithRoundedRect:cornerRadius:, fill
+  NUM: @f:0.25, @f:4, @f:2
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIBezierPath
+
+### 0000c320  -[GLTPillContent image]   (size 8)
+
+### 0000c328  -[GLTPillContent setImage:]   (size 12)
+  IMP: _objc_storeStrong
+
+### 0000c334  -[GLTPillContent imageTint]   (size 8)
+
+### 0000c33c  -[GLTPillContent setImageTint:]   (size 12)
+  IMP: _objc_storeStrong
+
+### 0000c348  -[GLTPillContent text]   (size 8)
+
+### 0000c350  -[GLTPillContent setText:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 0000c358  -[GLTPillContent badge]   (size 8)
+
+### 0000c360  -[GLTPillContent setBadge:]   (size 8)
+
+### 0000c368  -[GLTPillContent progress]   (size 8)
+
+### 0000c370  -[GLTPillContent setProgress:]   (size 8)
+
+### 0000c378  -[GLTPillContent .cxx_destruct]   (size 60)
+  IMP: _objc_storeStrong
+
+### 0000c3b4  +[GLTClock isStyled:]   (size 72)
+  SEL: boolValue
+  IMP: _objc_getAssociatedObject, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000c3fc  +[GLTClock isRendering]   (size 12)
+
+### 0000c408  +[GLTClock padding]   (size 20)
+  NUM: @f:9
+
+### 0000c41c  +[GLTClock outsetForLabel:]   (size 264)
+  SEL: window, bounds, screen, coordinateSpace, convertRect:toCoordinateSpace:
+  NUM: @f:-2, @f:1.5, @f:4.5
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000c524  +[GLTClock backgroundForLabel:create:]   (size 260)
+  SEL: setUserInteractionEnabled:, setClipsToBounds:, layer, setCornerCurve:, weakObjectsHashTable, addObject:
+  IMP: _objc_retain, _objc_getAssociatedObject, _objc_retainAutoreleasedReturnValue, @cls:UIView, _objc_opt_new, _kCACornerCurveContinuous, _objc_release, _objc_setAssociatedObject, @cls:NSHashTable, _objc_autoreleaseReturnValue
+
+### 0000c628  +[GLTClock layoutBackgroundOfLabel:]   (size 1012)
+  SEL: backgroundForLabel:create:, isStyled:, superview, visibleDateOfLabel:, removeFromSuperview, subviews, indexOfObject:, insertSubview:belowSubview:, outsetForLabel:, timeIntervalSinceNow, bounds, animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:, alpha, setAlpha:, isHidden, setHidden:, window
+  NUM: @f:0.5
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_setAssociatedObject, _objc_release, __NSConcreteStackBlock, _objc_retainBlock, _objc_getAssociatedObject, _CGRectIsEmpty, @cls:UIView
+
+### 0000ca1c  [subfunc 0000ca1c] (after +[GLTClock layoutBackgroundOfLabel:])   (size 632)
+  SEL: bounds, convertRect:toView:, padding, setTransform:, setBounds:, setCenter:, center, transform, layer, setCornerRadius:
+  NUM: @f:0.5
+  IMP: _CGRectUnion, _CGRectGetMinX, _CGRectInset, _CGAffineTransformIdentity, _CGPointZero, _CGRectGetMidX, _CGRectGetMidY, _CGRectGetHeight, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000cc94  [subfunc 0000cc94] (after +[GLTClock layoutBackgroundOfLabel:])   (size 56)
+  IMP: _objc_retain
+
+### 0000cccc  [subfunc 0000cccc] (after +[GLTClock layoutBackgroundOfLabel:])   (size 56)
+  IMP: _objc_release
+
+### 0000cd04  +[GLTClock visibleDateOfLabel:]   (size 460)
+  SEL: objectForKey:, window, isHidden, alpha, bounds, superview, convertRect:toView:
+  NUM: @f:0.5
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _CGRectIsEmpty, _objc_release, _CGRectGetMidY, _CGRectGetHeight, _objc_autoreleaseReturnValue
+
+### 0000ced0  +[GLTClock paddingForLabel:]   (size 180)
+  SEL: padding, visibleDateOfLabel:, bounds, convertRect:toView:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _CGRectGetMinX, _objc_release
+
+### 0000cf84  +[GLTClock setCompanion:forLabel:]   (size 196)
+  SEL: weakToWeakObjectsMapTable, setObject:forKey:
+  IMP: _objc_retain, @cls:NSMapTable, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000d048  +[GLTClock ownerOfLabel:]   (size 12)
+  SEL: objectForKey:
+
+### 0000d054  +[GLTClock setSystemText:forLabel:]   (size 20)
+  IMP: _objc_setAssociatedObject
+
+### 0000d068  +[GLTClock apply:toLabel:background:textColor:]   (size 8)
+  SEL: apply:toLabel:background:textColor:animated:
+
+### 0000d070  +[GLTClock apply:toLabel:background:textColor:animated:]   (size 992)
+  SEL: isStyled:, window, isHidden, text, setSystemText:forLabel:, weakObjectsHashTable, addObject:, font, attributedStringWithFont:color:, attributedText, isEqualToAttributedString:, setAttributedText:, setTextColor:, backgroundForLabel:create:, setBackgroundColor:, invalidateIntrinsicContentSize, superview, setNeedsLayout, layoutBackgroundOfLabel:, fadeInLabel:, removeFromSuperview, setText:, alpha, fadeOutSnapshotOfLabel:, dateWithTimeIntervalSinceNow:
+  NUM: @f:0.5
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSHashTable, ___kCFBooleanTrue, _objc_setAssociatedObject, _objc_getAssociatedObject, @cls:NSDate
+
+### 0000d450  +[GLTClock fadeOutSnapshotOfLabel:]   (size 460)
+  SEL: snapshotViewAfterScreenUpdates:, superview, setUserInteractionEnabled:, bounds, setBounds:, center, setCenter:, transform, setTransform:, insertSubview:aboveSubview:, animateWithDuration:delay:options:animations:completion:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIView, __NSConcreteStackBlock
+
+### 0000d61c  [subfunc 0000d61c] (after +[GLTClock fadeOutSnapshotOfLabel:])   (size 152)
+  SEL: setAlpha:, transform, setTransform:
+  NUM: @f:-6
+  IMP: _CGAffineTransformTranslate, _CGAffineTransformScale
+
+### 0000d6b4  [subfunc 0000d6b4] (after +[GLTClock fadeOutSnapshotOfLabel:])   (size 8)
+  SEL: removeFromSuperview
+
+### 0000d6bc  +[GLTClock fadeInLabel:]   (size 684)
+  SEL: animationWithKeyPath:, setFromValue:, setToValue:, setDuration:, setBeginTime:, setFillMode:, functionWithName:, setTimingFunction:, layer, addAnimation:forKey:, setDamping:, setStiffness:, setMass:, beginTime, settlingDuration, damping, stiffness
+  NUM: @f:14, @f:1
+  IMP: @cls:CABasicAnimation, _objc_retain, _objc_retainAutoreleasedReturnValue, _OBJC_CLASS_$_NSConstantIntegerNumber, _CACurrentMediaTime, _kCAFillModeBackwards, @cls:CAMediaTimingFunction, _kCAMediaTimingFunctionEaseOut, _objc_release, @cls:CASpringAnimation, _OBJC_CLASS_$_NSConstantDoubleNumber
+  STR: opacity | glint.fade | transform.scale | glint.grow | transform.translation.y | glint.rise
+
+### 0000d968  +[GLTClock restoreAllLabels]   (size 448)
+  SEL: allObjects, countByEnumeratingWithState:objects:count:, apply:toLabel:background:textColor:, removeAllObjects, removeFromSuperview
+  IMP: ___stack_chk_guard, _objc_retainAutoreleasedReturnValue, _objc_enumerationMutation, _objc_release, ___stack_chk_fail
+
+### 0000db28  +[GLTClock popLabel:]   (size 244)
+  SEL: setTransform:, layoutBackgroundOfLabel:, animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:
+  IMP: _objc_retain, _CGAffineTransformMakeScale, @cls:UIView, __NSConcreteStackBlock, _objc_release
+
+### 0000dc1c  [subfunc 0000dc1c] (after +[GLTClock popLabel:])   (size 80)
+  SEL: setTransform:, layoutBackgroundOfLabel:
+  IMP: _CGAffineTransformIdentity
+
+### 0000dc6c  -[GLTPlatterContent fillWith:]   (size 588)
+  SEL: setTranslatesAutoresizingMaskIntoConstraints:, addSubview:, topAnchor, constraintEqualToAnchor:, bottomAnchor, leadingAnchor, trailingAnchor, arrayWithObjects:count:, activateConstraints:
+  IMP: ___stack_chk_guard, _objc_retain, @cls:NSLayoutConstraint, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSArray, ___stack_chk_fail
+
+### 0000deb8  -[GLTPlatterContent close]   (size 96)
+  SEL: closeHandler
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000df18  -[GLTPlatterContent wantsKeyboard]   (size 8)
+
+### 0000df20  -[GLTPlatterContent closeHandler]   (size 16)
+
+### 0000df30  -[GLTPlatterContent setCloseHandler:]   (size 12)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 0000df3c  -[GLTPlatterContent resizeHandler]   (size 16)
+
+### 0000df4c  -[GLTPlatterContent setResizeHandler:]   (size 12)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 0000df58  -[GLTPlatterContent .cxx_destruct]   (size 64)
+  IMP: _objc_storeStrong
+
+### 0000df98  -[GLTMediaPlatterView initWithFrame:]   (size 2416)
+  SEL: setContentMode:, colorWithWhite:alpha:, setBackgroundColor:, setTintColor:, layer, setCornerRadius:, setCornerCurve:, setClipsToBounds:, setTranslatesAutoresizingMaskIntoConstraints:, whiteColor, arrayWithObjects:count:, setAlignment:, addSubview:, monospacedDigitSystemFontOfSize:weight:, setFont:, font, setTextAlignment:, setDistribution:, controlWithSymbol:size:action:, setCustomSpacing:afterView:, fillWith:, widthAnchor, constraintEqualToConstant:, heightAnchor, centerXAnchor, constraintEqualToAnchor:, topAnchor, bottomAnchor, activateConstraints:, defaultCenter, addObserver:selector:name:object:, refresh
+  NUM: @f:1, @f:10, @f:16, @f:14, @f:2, @f:12, @f:11, @f:22, @f:30, @f:6, @f:4
+  IMP: ___stack_chk_guard, _objc_msgSendSuper2, @cls:UIImageView, _objc_opt_new, _objc_release, @cls:UIColor, _objc_retainAutoreleasedReturnValue, _kCACornerCurveContinuous, _UIFontWeightSemibold, _UIFontWeightRegular, @cls:NSArray, @cls:UIView, _UIFontWeightMedium, @cls:UIFont, @cls:NSLayoutConstraint, @cls:NSNotificationCenter, ___stack_chk_fail
+  STR: backward.fill | play.fill | forward.fill
+
+### 0000e908  [subfunc 0000e908] (after -[GLTMediaPlatterView initWithFrame:])   (size 164)
+  SEL: systemFontOfSize:weight:, setFont:, setTextColor:, setTranslatesAutoresizingMaskIntoConstraints:
+  IMP: @cls:UILabel, _objc_retain, _objc_opt_new, @cls:UIFont, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_autoreleaseReturnValue
+
+### 0000e9ac  [subfunc 0000e9ac] (after -[GLTMediaPlatterView initWithFrame:])   (size 132)
+  SEL: initWithArrangedSubviews:, setAxis:, setSpacing:, setTranslatesAutoresizingMaskIntoConstraints:
+  IMP: @cls:UIStackView, _objc_retain, _objc_alloc, _objc_release, _objc_autoreleaseReturnValue
+
+### 0000ea30  -[GLTMediaPlatterView controlWithSymbol:size:action:]   (size 276)
+  SEL: buttonWithType:, configurationWithPointSize:weight:, systemImageNamed:withConfiguration:, setImage:forState:, whiteColor, setTintColor:, addTarget:action:forControlEvents:
+  IMP: @cls:UIButton, _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:UIImageSymbolConfiguration, @cls:UIImage, _objc_release, @cls:UIColor, _objc_autoreleaseReturnValue
+
+### 0000eb44  -[GLTMediaPlatterView didMoveToWindow]   (size 180)
+  SEL: invalidate, window, scheduledTimerWithTimeInterval:target:selector:userInfo:repeats:
+  NUM: @f:1
+  IMP: _objc_msgSendSuper2, _objc_retainAutoreleasedReturnValue, @cls:NSTimer, _objc_release
+
+### 0000ebf8  -[GLTMediaPlatterView refresh]   (size 916)
+  SEL: sharedMedia, hasMedia, title, setText:, artist, length, setHidden:, artwork, setImage:, systemImageNamed:, setContentMode:, duration, elapsed, stringWithFormat:, stringByAppendingString:, setNeedsLayout, configurationWithPointSize:weight:, isPlaying, systemImageNamed:withConfiguration:, setImage:forState:
+  NUM: @f:1, @f:30
+  IMP: @cls:GLTMedia, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIImage, @cls:NSString, @cls:UIImageSymbolConfiguration
+  STR: Not Playing | music.note | %ld:%02ld | - | play.fill | pause.fill
+
+### 0000ef8c  -[GLTMediaPlatterView layoutSubviews]   (size 128)
+  SEL: bounds, setFrame:
+  NUM: @f:4
+  IMP: _objc_msgSendSuper2, _CGRectGetWidth
+
+### 0000f00c  -[GLTMediaPlatterView playPause]   (size 56)
+  SEL: sharedMedia, togglePlayPause
+  IMP: @cls:GLTMedia, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000f044  -[GLTMediaPlatterView next]   (size 56)
+  SEL: sharedMedia, nextTrack
+  IMP: @cls:GLTMedia, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000f07c  -[GLTMediaPlatterView previous]   (size 56)
+  SEL: sharedMedia, previousTrack
+  IMP: @cls:GLTMedia, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0000f0b4  -[GLTMediaPlatterView .cxx_destruct]   (size 204)
+  IMP: _objc_storeStrong
+
+### 0000f180  [subfunc 0000f180] (after -[GLTMediaPlatterView .cxx_destruct])   (size 28)
+  IMP: @cls:GLTMediaPlatterView, _objc_opt_new, _objc_autoreleaseReturnValue
+
+### 0000f19c  [subfunc 0000f19c] (after -[GLTMediaPlatterView .cxx_destruct])   (size 1624)
+  SEL: array, countByEnumeratingWithState:objects:count:, glyph, initWithImage:, whiteColor, setTintColor:, setContentMode:, setTranslatesAutoresizingMaskIntoConstraints:, heightAnchor, constraintEqualToConstant:, setActive:, percent, stringWithFormat:, setText:, setTextAlignment:, charging, systemImageNamed:, systemRedColor, systemGreenColor, colorWithWhite:alpha:, name, setNumberOfLines:, arrayWithObjects:, details, monospacedDigitSystemFontOfSize:weight:, setFont:, addObject:, setAlignment:, setDistribution:, fillWith:
+  NUM: @f:30, @f:15, @f:1, @f:12, @f:11, @f:6, @f:8
+  IMP: ___stack_chk_guard, @cls:GLTPlatterContent, _objc_opt_new, @cls:NSMutableArray, _objc_retainAutoreleasedReturnValue, _UIFontWeightSemibold, _UIFontWeightRegular, _UIFontWeightMedium, _objc_enumerationMutation, @cls:UIImageView, _objc_alloc, _objc_release, @cls:UIColor, @cls:NSString, _objc_retain, @cls:UIImage, @cls:UIFont, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: ping: | %ld%% | --% | battery.100.bolt | battery.25 | battery.50 | battery.100 | battery.75
+
+### 0000f7f4  [subfunc 0000f7f4] (after -[GLTMediaPlatterView .cxx_destruct])   (size 1668)
+  SEL: sharedEvents, arrayWithObject:, hasCalendarAccess, upcomingEvents, count, addObject:, setDateStyle:, setTimeStyle:, setDoesRelativeDateFormatting:, subarrayWithRange:, countByEnumeratingWithState:objects:count:, calendar, CGColor, colorWithCGColor:, setBackgroundColor:, layer, setCornerRadius:, setTranslatesAutoresizingMaskIntoConstraints:, widthAnchor, constraintEqualToConstant:, setActive:, whiteColor, title, setText:, colorWithWhite:alpha:, currentCalendar, startDate, isDateInTomorrow:, isAllDay, stringFromDate:, endDate, stringWithFormat:, stringByAppendingString:, arrayWithObjects:count:, fillWith:
+  NUM: @f:2, @f:4, @f:15, @f:1, @f:13, @f:10, @f:12
+  IMP: ___stack_chk_guard, @cls:GLTPlatterContent, _objc_opt_new, @cls:GLTEvents, _objc_retainAutoreleasedReturnValue, @cls:NSMutableArray, _objc_release, @cls:NSDateFormatter, _UIFontWeightSemibold, _UIFontWeightRegular, _objc_enumerationMutation, @cls:UIView, @cls:UIColor, @cls:NSCalendar, @cls:NSString, @cls:NSArray, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: Upcoming | No more events today or tomorrow. | Glint can't read your calendar. | ping: | All day | % | Tomorrow, 
+
+### 0000fe78  [subfunc 0000fe78] (after -[GLTMediaPlatterView .cxx_destruct])   (size 184)
+  SEL: colorWithWhite:alpha:, uppercaseString, setText:
+  NUM: @f:1, @f:13
+  IMP: _UIFontWeightSemibold, @cls:UIColor, _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_autoreleaseReturnValue
+
+### 0000ff30  [subfunc 0000ff30] (after -[GLTMediaPlatterView .cxx_destruct])   (size 168)
+  SEL: colorWithWhite:alpha:, setText:, setNumberOfLines:
+  NUM: @f:1, @f:15
+  IMP: _UIFontWeightRegular, @cls:UIColor, _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_autoreleaseReturnValue
+
+### 0000ffd8  -[GLTRemindersPlatterView initWithFrame:]   (size 572)
+  SEL: sharedEvents, arrayWithObject:, hasRemindersAccess, reminders, count, addObject:, subarrayWithRange:, enumerateObjectsUsingBlock:, fillWith:
+  NUM: @f:12
+  IMP: _objc_msgSendSuper2, @cls:GLTEvents, _objc_retainAutoreleasedReturnValue, @cls:NSMutableArray, _objc_release, __NSConcreteStackBlock, _objc_retain
+  STR: Reminders | All done. | Glint can't read your reminders.
+
+### 00010214  [subfunc 00010214] (after -[GLTRemindersPlatterView initWithFrame:])   (size 628)
+  SEL: buttonWithType:, configurationWithPointSize:weight:, systemImageNamed:withConfiguration:, setImage:forState:, calendar, CGColor, colorWithCGColor:, setTintColor:, setTag:, addTarget:action:forControlEvents:, setContentHuggingPriority:forAxis:, whiteColor, title, setText:, arrayWithObjects:count:, setAlignment:, addObject:
+  NUM: @f:20, @f32:1000, @f:15, @f:10
+  IMP: ___stack_chk_guard, @cls:UIButton, _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:UIImageSymbolConfiguration, @cls:UIImage, _objc_release, @cls:UIColor, _UIFontWeightRegular, @cls:NSArray, ___stack_chk_fail
+  STR: circle
+
+### 00010488  -[GLTRemindersPlatterView complete:]   (size 276)
+  SEL: configurationWithPointSize:weight:, systemImageNamed:withConfiguration:, setImage:forState:, setEnabled:, sharedEvents, tag, objectAtIndexedSubscript:, completeReminder:
+  NUM: @f:20
+  IMP: @cls:UIImageSymbolConfiguration, _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:UIImage, _objc_release, @cls:GLTEvents
+  STR: checkmark.circle.fill
+
+### 0001059c  -[GLTRemindersPlatterView .cxx_destruct]   (size 20)
+  IMP: _objc_storeStrong
+
+### 000105b0  [subfunc 000105b0] (after -[GLTRemindersPlatterView .cxx_destruct])   (size 28)
+  IMP: @cls:GLTRemindersPlatterView, _objc_opt_new, _objc_autoreleaseReturnValue
+
+### 000105cc  -[GLTNotificationPlatterView open]   (size 60)
+  SEL: notification, open, close
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00010608  -[GLTNotificationPlatterView notification]   (size 16)
+
+### 00010618  -[GLTNotificationPlatterView setNotification:]   (size 20)
+  IMP: _objc_storeStrong
+
+### 0001062c  -[GLTNotificationPlatterView .cxx_destruct]   (size 20)
+  IMP: _objc_storeStrong
+
+### 00010640  [subfunc 00010640] (after -[GLTNotificationPlatterView .cxx_destruct])   (size 1176)
+  SEL: setNotification:, icon, initWithImage:, layer, setCornerRadius:, setCornerCurve:, setClipsToBounds:, setTranslatesAutoresizingMaskIntoConstraints:, widthAnchor, constraintEqualToConstant:, heightAnchor, arrayWithObjects:count:, activateConstraints:, colorWithWhite:alpha:, appName, uppercaseString, setText:, whiteColor, title, length, setHidden:, message, setNumberOfLines:, setAlignment:, fillWith:, initWithTarget:action:, addGestureRecognizer:
+  NUM: @f:8, @f:1, @f:13, @f:16, @f:15, @f:3, @f:12
+  IMP: ___stack_chk_guard, @cls:GLTNotificationPlatterView, _objc_retain, _objc_opt_new, @cls:UIImageView, _objc_alloc, _objc_retainAutoreleasedReturnValue, _objc_release, _kCACornerCurveContinuous, @cls:NSLayoutConstraint, @cls:NSArray, _UIFontWeightSemibold, @cls:UIColor, _UIFontWeightRegular, @cls:UITapGestureRecognizer, _objc_autoreleaseReturnValue, ___stack_chk_fail
+
+### 00010ad8  [subfunc 00010ad8] (after -[GLTNotificationPlatterView .cxx_destruct])   (size 2600)
+  SEL: sharedWeather, hasData, whiteColor, place, length, setText:, arrayWithObject:, problem, addObject:, fillWith:, code, descriptionForCode:, colorWithWhite:alpha:, feelsLike, temperatureString:, rainChance, stringWithFormat:, isDay, initWithImage:, setTintColor:, setContentMode:, arrayWithObjects:, sunrises, firstObject, sunsets, setDateStyle:, setTimeStyle:, stringFromDate:, setCustomSpacing:afterView:, temperature, setTextAlignment:, high, low, arrayWithObjects:count:, setAlignment:, currentLocale, dateFormatFromTemplate:options:locale:, setDateFormat:, array, hours, enumerateObjectsUsingBlock:, setDistribution:
+  NUM: @f:17, @f:12, @f:14, @f:1, @f:13, @f:30, @f:2, @f:6, @f:10, @f:8
+  IMP: ___stack_chk_guard, @cls:GLTPlatterContent, _objc_opt_new, @cls:GLTWeather, _objc_retainAutoreleasedReturnValue, _UIFontWeightSemibold, @cls:UIColor, _objc_release, @cls:NSMutableArray, _UIFontWeightRegular, @cls:NSString, @cls:UIImageView, _objc_alloc, @cls:NSDateFormatter, _UIFontWeightLight, _UIFontWeightMedium, @cls:NSArray, @cls:NSLocale, __NSConcreteStackBlock, _objc_retain, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: Weather | L | Current Location | F | S | H %@  L %@ | j | Weather data by Open-Meteo.com
+
+### 00011500  [subfunc 00011500] (after -[GLTNotificationPlatterView .cxx_destruct])   (size 804)
+  SEL: colorWithWhite:alpha:, date, stringFromDate:, setText:, setTextAlignment:, code, isDay, initWithImage:, whiteColor, setTintColor:, setContentMode:, setTranslatesAutoresizingMaskIntoConstraints:, heightAnchor, constraintEqualToConstant:, setActive:, temperature, temperatureString:, arrayWithObjects:count:, setAlignment:, addObject:
+  NUM: @f:1, @f:12, @f:18, @f:26, @f:14, @f:4
+  IMP: ___stack_chk_guard, _objc_retain, _UIFontWeightMedium, @cls:UIColor, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIImageView, _objc_alloc, _UIFontWeightSemibold, @cls:GLTWeather, @cls:NSArray, ___stack_chk_fail
+  STR: Now
+
+### 00011824  -[GLTClockPlatterView initWithFrame:]   (size 208)
+  SEL: fillWith:, defaultCenter, addObserver:selector:name:object:, rebuild
+  NUM: @f:12
+  IMP: _objc_msgSendSuper2, ___NSArray0__struct, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSNotificationCenter
+
+### 000118f4  -[GLTClockPlatterView didMoveToWindow]   (size 296)
+  SEL: invalidate, window, scheduledTimerWithTimeInterval:repeats:block:
+  NUM: @f:1
+  IMP: _objc_msgSendSuper2, _objc_release, _objc_retainAutoreleasedReturnValue, _objc_initWeak, __NSConcreteStackBlock, @cls:NSTimer, _objc_copyWeak, _objc_destroyWeak, __Unwind_Resume
+
+### 00011a1c  [subfunc 00011a1c] (after -[GLTClockPlatterView didMoveToWindow])   (size 44)
+  SEL: tick
+  IMP: _objc_loadWeakRetained, _objc_release
+
+### 00011a48  -[GLTClockPlatterView rebuild]   (size 2228)
+  SEL: arrangedSubviews, countByEnumeratingWithState:objects:count:, removeFromSuperview, sharedItems, timerFireDate, pausedTimerRemaining, addArrangedSubview:, whiteColor, monospacedDigitSystemFontOfSize:weight:, setFont:, colorWithWhite:alpha:, setBackgroundColor:, layer, setCornerRadius:, setClipsToBounds:, setTranslatesAutoresizingMaskIntoConstraints:, heightAnchor, constraintEqualToConstant:, setActive:, systemOrangeColor, addSubview:, setCustomSpacing:afterView:, alarms, count, setDateStyle:, setTimeStyle:, currentLocale, dateFormatFromTemplate:options:locale:, setDateFormat:, subarrayWithRange:, fireDate, stringFromDate:, setText:, currentCalendar, isDateInToday:, isDateInTomorrow:, title, length, stringWithFormat:, arrayWithObjects:count:, setAlignment:, tick
+  NUM: @f:1, @f:2, @f:4, @f:18, @f:22, @f:13, @f:10
+  IMP: ___stack_chk_guard, _objc_retainAutoreleasedReturnValue, _objc_enumerationMutation, _objc_release, @cls:GLTClockItems, _UIFontWeightLight, @cls:UIColor, @cls:UIFont, @cls:UIView, _objc_opt_new, @cls:NSDateFormatter, @cls:NSLocale, _UIFontWeightMedium, _UIFontWeightRegular, @cls:NSCalendar, @cls:NSString, @cls:NSArray, ___stack_chk_fail
+  STR: Timer | T | Alarms | No alarms are on. | EEEE | ping: | Today | Tomorrow | %
+
+### 000122fc  -[GLTClockPlatterView tick]   (size 548)
+  SEL: sharedItems, timerFireDate, timeIntervalSinceNow, pausedTimerRemaining, stringWithFormat:, setText:, timerDuration, layoutIfNeeded, bounds, setFrame:
+  NUM: @f:1, @f:4
+  IMP: @cls:GLTClockItems, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSString, _CGRectGetWidth
+  STR: %ld:%02ld:%02ld | %ld:%02ld
+
+### 00012520  -[GLTClockPlatterView layoutSubviews]   (size 72)
+  SEL: tick
+  IMP: _objc_msgSendSuper2
+
+### 00012568  -[GLTClockPlatterView .cxx_destruct]   (size 124)
+  IMP: _objc_storeStrong
+
+### 000125e4  [subfunc 000125e4] (after -[GLTClockPlatterView .cxx_destruct])   (size 28)
+  IMP: @cls:GLTClockPlatterView, _objc_opt_new, _objc_autoreleaseReturnValue
+
+### 00012600  [subfunc 00012600] (after -[GLTClockPlatterView .cxx_destruct])   (size 380)
+  SEL: systemBlueColor, systemPurpleColor, arrayWithObjects:count:, fillWith:
+  NUM: @f:18
+  IMP: ___stack_chk_guard, @cls:GLTPlatterContent, _objc_opt_new, @cls:UIColor, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSArray, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: Storage | internaldrive.fill | Memory | memorychip.fill
+
+### 0001277c  [subfunc 0001277c] (after -[GLTClockPlatterView .cxx_destruct])   (size 1548)
+  SEL: systemImageNamed:, initWithImage:, setTintColor:, whiteColor, setText:, colorWithWhite:alpha:, stringWithFormat:, setTextAlignment:, arrayWithObjects:count:, setAlignment:, setContentHuggingPriority:forAxis:, setBackgroundColor:, layer, setCornerRadius:, setClipsToBounds:, setTranslatesAutoresizingMaskIntoConstraints:, addSubview:, heightAnchor, constraintEqualToConstant:, leadingAnchor, constraintEqualToAnchor:, topAnchor, bottomAnchor, widthAnchor, constraintEqualToAnchor:multiplier:, activateConstraints:
+  NUM: @f:15, @f:1, @f:13, @f:8, @f32:1000, @f:3, @f:6
+  IMP: ___stack_chk_guard, @cls:UIImageView, _objc_retain, _objc_alloc, @cls:UIImage, _objc_retainAutoreleasedReturnValue, _objc_release, _UIFontWeightSemibold, @cls:UIColor, _UIFontWeightRegular, @cls:NSString, @cls:NSArray, @cls:UIView, _objc_opt_new, @cls:NSLayoutConstraint, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: %@ free of %@
+
+### 00012d88  [subfunc 00012d88] (after -[GLTClockPlatterView .cxx_destruct])   (size 244)
+  SEL: currentCalendar, date, startOfDayForDate:, components:fromDate:toDate:options:, day
+  IMP: @cls:NSCalendar, _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:NSDate, _objc_release
+
+### 00012e7c  [subfunc 00012e7c] (after -[GLTClockPlatterView .cxx_destruct])   (size 720)
+  SEL: sharedPrefs, countdownDate, countdownTitle, length, stringWithFormat:, setDateStyle:, setTimeStyle:, stringFromDate:, arrayWithObjects:count:, fillWith:
+  NUM: @f:10
+  IMP: ___stack_chk_guard, @cls:GLTPlatterContent, _objc_opt_new, @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSString, @cls:NSDateFormatter, @cls:NSArray, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: the date | days | day | %@ until %@ | %@ is today | %@ since %@ | Countdown | %ld
+
+### 0001314c  [subfunc 0001314c] (after -[GLTClockPlatterView .cxx_destruct])   (size 500)
+  SEL: whiteColor, setText:, setNumberOfLines:, arrayWithObjects:, colorWithWhite:alpha:, addObject:
+  NUM: @f:15, @f:1, @f:13, @f:2
+  IMP: _objc_retain, _UIFontWeightLight, @cls:UIColor, _objc_retainAutoreleasedReturnValue, _objc_release, _UIFontWeightSemibold, @cls:NSMutableArray, _UIFontWeightRegular, _objc_autoreleaseReturnValue
+
+### 00013340  [subfunc 00013340] (after -[GLTClockPlatterView .cxx_destruct])   (size 460)
+  SEL: sharedUnlocks, today, yesterday, stringWithFormat:, arrayWithObjects:count:, fillWith:
+  NUM: @f:10
+  IMP: ___stack_chk_guard, @cls:GLTPlatterContent, _objc_opt_new, @cls:GLTUnlocks, _objc_retainAutoreleasedReturnValue, @cls:NSString, _objc_retain, _objc_release, @cls:NSArray, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: unlocks today | unlock today | Yesterday: %ld | Unlocks | %ld
+
+### 0001350c  -[GLTComposePlatterView wantsKeyboard]   (size 8)
+
+### 00013514  -[GLTComposePlatterView initWithFrame:]   (size 1260)
+  SEL: setAutocorrectionType:, setReturnKeyType:, setDelegate:, addTarget:action:forControlEvents:, buttonWithType:, setContentHorizontalAlignment:, systemFontOfSize:weight:, titleLabel, setFont:, whiteColor, setTintColor:, setHidden:, configurationWithPointSize:, systemImageNamed:withConfiguration:, setImage:forState:, systemBlueColor, setContentHuggingPriority:forAxis:, arrayWithObjects:count:, setAlignment:, colorWithWhite:alpha:, fillWith:, showSuggestions:, updateSendButton
+  NUM: @f:16, @f:4, @f:30, @f32:1000, @f:8, @f:1, @f:13, @f:10
+  IMP: ___stack_chk_guard, _objc_msgSendSuper2, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIButton, @cls:UIFont, _UIFontWeightSemibold, @cls:UIColor, ___NSArray0__struct, @cls:UIImage, @cls:UIImageSymbolConfiguration, @cls:NSArray, _UIFontWeightMedium, ___stack_chk_fail
+  STR: Name or number | Message | arrow.up.circle.fill | New Message
+
+### 00013a00  [subfunc 00013a00] (after -[GLTComposePlatterView initWithFrame:])   (size 680)
+  SEL: whiteColor, setTextColor:, systemFontOfSize:, setFont:, colorWithWhite:alpha:, dictionaryWithObjects:forKeys:count:, initWithString:attributes:, setAttributedPlaceholder:, setBackgroundColor:, layer, setCornerRadius:, setCornerCurve:, initWithFrame:, setLeftView:, setLeftViewMode:, setKeyboardAppearance:, setTranslatesAutoresizingMaskIntoConstraints:, heightAnchor, constraintEqualToConstant:, setActive:
+  NUM: @f:16, @f:1, @f:18, @f:14
+  IMP: ___stack_chk_guard, @cls:UITextField, _objc_retain, _objc_opt_new, @cls:UIColor, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIFont, @cls:NSAttributedString, _objc_alloc, _NSForegroundColorAttributeName, @cls:NSDictionary, _kCACornerCurveContinuous, @cls:UIView, _objc_autoreleaseReturnValue, ___stack_chk_fail
+
+### 00013ca8  -[GLTComposePlatterView didMoveToWindow]   (size 172)
+  SEL: window
+  IMP: _objc_msgSendSuper2, _objc_retainAutoreleasedReturnValue, _objc_release, _dispatch_time, __NSConcreteStackBlock, __dispatch_main_q, _dispatch_after
+
+### 00013d54  [subfunc 00013d54] (after -[GLTComposePlatterView didMoveToWindow])   (size 52)
+  SEL: becomeFirstResponder
+
+### 00013d88  -[GLTComposePlatterView resize]   (size 104)
+  SEL: invalidateIntrinsicContentSize, resizeHandler
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00013df0  -[GLTComposePlatterView showSuggestions:]   (size 1376)
+  SEL: arrangedSubviews, countByEnumeratingWithState:objects:count:, removeFromSuperview, count, subarrayWithRange:, buttonWithType:, name, systemFontOfSize:weight:, whiteColor, dictionaryWithObjects:forKeys:count:, initWithString:attributes:, detail, length, isEqualToString:, stringByAppendingString:, systemFontOfSize:, colorWithWhite:alpha:, appendAttributedString:, setAttributedTitle:forState:, setContentHorizontalAlignment:, actionWithHandler:, addAction:forControlEvents:, addArrangedSubview:, setHidden:, resize
+  NUM: @f:15, @f:13, @f:1
+  IMP: ___stack_chk_guard, _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_enumerationMutation, _objc_release, _NSFontAttributeName, _UIFontWeightSemibold, _NSForegroundColorAttributeName, @cls:UIButton, @cls:NSMutableAttributedString, _objc_alloc, @cls:UIFont, @cls:UIColor, @cls:NSDictionary, @cls:NSAttributedString, @cls:UIAction, __NSConcreteStackBlock, ___stack_chk_fail
+  STR: ping: |   
+
+### 00014350  [subfunc 00014350] (after -[GLTComposePlatterView showSuggestions:])   (size 12)
+  SEL: chooseRecipient:
+
+### 0001435c  -[GLTComposePlatterView searchChanged]   (size 132)
+  SEL: text, length, showSuggestions:
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 000143e0  -[GLTComposePlatterView chooseRecipient:]   (size 436)
+  SEL: name, address, isEqualToString:, stringWithFormat:, stringByAppendingString:, setTitle:forState:, setHidden:, showSuggestions:, becomeFirstResponder, updateSendButton
+  IMP: _objc_retain, _objc_storeStrong, _objc_retainAutoreleasedReturnValue, @cls:NSString, _objc_release, ___NSArray0__struct
+  STR: % | To: 
+
+### 00014594  -[GLTComposePlatterView clearRecipient]   (size 152)
+  SEL: setHidden:, setText:, becomeFirstResponder, showSuggestions:, updateSendButton
+  IMP: _objc_release, _objc_retainAutoreleasedReturnValue
+  STR: 
+
+### 0001462c  -[GLTComposePlatterView updateSendButton]   (size 284)
+  SEL: text, whitespaceAndNewlineCharacterSet, stringByTrimmingCharactersInSet:, length, setEnabled:, setAlpha:
+  NUM: @f:1
+  IMP: _objc_retainAutoreleasedReturnValue, @cls:NSCharacterSet, _objc_release
+
+### 00014748  -[GLTComposePlatterView textFieldShouldReturn:]   (size 160)
+  SEL: send, text, firstObject, chooseRecipient:
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 000147e8  -[GLTComposePlatterView showStatus:]   (size 76)
+  SEL: setText:, setHidden:, resize
+
+### 00014834  -[GLTComposePlatterView send]   (size 344)
+  SEL: text, whitespaceAndNewlineCharacterSet, stringByTrimmingCharactersInSet:, length, updateSendButton, showStatus:
+  IMP: _objc_retainAutoreleasedReturnValue, @cls:NSCharacterSet, _objc_release, _objc_retain, __NSConcreteStackBlock
+  STR: S
+
+### 0001498c  [subfunc 0001498c] (after -[GLTComposePlatterView send])   (size 252)
+  SEL: notificationOccurred:, showStatus:, setText:, composeWithApple:text:, updateSendButton
+  IMP: @cls:UINotificationFeedbackGenerator, _objc_opt_new, _objc_release, _dispatch_time, __NSConcreteStackBlock, __dispatch_main_q, _dispatch_after
+  STR: Sent | 
+
+### 00014a88  [subfunc 00014a88] (after -[GLTComposePlatterView send])   (size 8)
+  SEL: close
+
+### 00014a90  [subfunc 00014a90] (after -[GLTComposePlatterView send])   (size 48)
+  IMP: _objc_retain
+
+### 00014ac0  [subfunc 00014ac0] (after -[GLTComposePlatterView send])   (size 48)
+  IMP: _objc_release
+
+### 00014af0  -[GLTComposePlatterView composeWithApple:text:]   (size 752)
+  SEL: window, rootViewController, canSendText, address, stringByReplacingOccurrencesOfString:withString:, stringByAppendingString:, componentsWithString:, queryItemWithName:value:, arrayWithObjects:count:, setQueryItems:, URL, sharedApplication, openURL:options:completionHandler:, close, setRecipients:, setBody:, setMessageComposeDelegate:, endEditing:, presentViewController:animated:completion:
+  IMP: ___stack_chk_guard, _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:MFMessageComposeViewController, @cls:NSURLComponents, @cls:NSURLQueryItem, @cls:NSArray, @cls:UIApplication, ___NSDictionary0__struct, _objc_opt_new, ___stack_chk_fail
+  STR:   |  | sms: | body
+
+### 00014de0  -[GLTComposePlatterView messageComposeViewController:didFinishWithResult:]   (size 88)
+  SEL: dismissViewControllerAnimated:completion:
+  IMP: __NSConcreteStackBlock
+
+### 00014e38  [subfunc 00014e38] (after -[GLTComposePlatterView messageComposeViewController:didFinishWithResult:])   (size 24)
+  SEL: close
+
+### 00014e50  -[GLTComposePlatterView .cxx_destruct]   (size 164)
+  IMP: _objc_storeStrong
+
+### 00014ef4  [subfunc 00014ef4] (after -[GLTComposePlatterView .cxx_destruct])   (size 28)
+  IMP: @cls:GLTComposePlatterView, _objc_opt_new, _objc_autoreleaseReturnValue
+
+### 00014f10  -[GLTPlatterView initWithFrame:]   (size 320)
+  SEL: setClipsToBounds:, layer, setCornerCurve:, effectWithStyle:, initWithEffect:, colorWithWhite:alpha:, contentView, setBackgroundColor:, addSubview:
+  IMP: _objc_msgSendSuper2, _kCACornerCurveContinuous, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIVisualEffectView, _objc_alloc, @cls:UIBlurEffect, @cls:UIColor
+
+### 00015050  -[GLTPlatterView setContent:]   (size 108)
+  SEL: removeFromSuperview, addSubview:, setNeedsLayout
+  IMP: _objc_retain, _objc_storeStrong, _objc_release
+
+### 000150bc  -[GLTPlatterView heightForWidth:]   (size 120)
+  SEL: systemLayoutSizeFittingSize:withHorizontalFittingPriority:verticalFittingPriority:, topInset
+  NUM: @f32:1000, @f32:50, @f:20
+  IMP: _UILayoutFittingCompressedSize
+
+### 00015134  -[GLTPlatterView layoutSubviews]   (size 196)
+  SEL: bounds, setFrame:, openWidth, heightForWidth:, topInset
+  NUM: @f:-20, @f:20
+  IMP: _objc_msgSendSuper2
+
+### 000151f8  -[GLTPlatterView content]   (size 16)
+
+### 00015208  -[GLTPlatterView topInset]   (size 16)
+
+### 00015218  -[GLTPlatterView setTopInset:]   (size 16)
+
+### 00015228  -[GLTPlatterView openWidth]   (size 16)
+
+### 00015238  -[GLTPlatterView setOpenWidth:]   (size 16)
+
+### 00015248  -[GLTPlatterView .cxx_destruct]   (size 64)
+  IMP: _objc_storeStrong
+
+### 00015288  +[GLTMedia sharedMedia]   (size 48)
+  IMP: _objc_retainAutoreleaseReturnValue
+
+### 000152b8  [subfunc 000152b8] (after +[GLTMedia sharedMedia])   (size 44)
+  IMP: @cls:GLTMedia, _objc_opt_new, _objc_release
+
+### 000152e4  -[GLTMedia init]   (size 392)
+  SEL: countByEnumeratingWithState:objects:count:, defaultCenter, addObserver:selector:name:object:, mediaDidChange
+  IMP: ___stack_chk_guard, _objc_msgSendSuper2, __dispatch_main_q, _OBJC_CLASS_$_NSConstantArray, _objc_enumerationMutation, @cls:NSNotificationCenter, _objc_retainAutoreleasedReturnValue, _objc_release, ___stack_chk_fail
+  STR: MRMediaRemoteRegisterForNowPlayingNotifications
+
+### 0001546c  [subfunc 0001546c] (after -[GLTMedia init])   (size 80)
+  IMP: _dlsym
+
+### 000154bc  -[GLTMedia controller]   (size 28)
+  SEL: sharedInstance
+  IMP: _NSClassFromString
+  STR: SBMediaController
+
+### 000154d8  -[GLTMedia mediaDidChange]   (size 340)
+  IMP: __NSConcreteStackBlock, __dispatch_main_q, _objc_retainBlock, _objc_retain, _dispatch_async, _objc_release
+  STR: MRMediaRemoteGetNowPlayingInfo | MRMediaRemoteGetNowPlayingApplicationIsPlaying
+
+### 0001562c  [subfunc 0001562c] (after -[GLTMedia mediaDidChange])   (size 80)
+  SEL: defaultCenter, postNotificationName:object:
+  IMP: @cls:NSNotificationCenter, _objc_retainAutoreleasedReturnValue, _objc_release
+  STR: GLTSourcesDidChangeNotification
+
+### 0001567c  [subfunc 0001567c] (after -[GLTMedia mediaDidChange])   (size 288)
+  SEL: controller, _nowPlayingInfo, date, defaultCenter, postNotificationName:object:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_release, @cls:NSDictionary, _objc_opt_class, _objc_opt_isKindOfClass, _objc_storeStrong, @cls:NSDate, @cls:NSNotificationCenter
+  STR: GLTSourcesDidChangeNotification
+
+### 0001579c  [subfunc 0001579c] (after -[GLTMedia mediaDidChange])   (size 112)
+  SEL: objectForKeyedSubscript:, length
+  IMP: _objc_retainAutoreleasedReturnValue, @cls:NSString, _objc_opt_class, _objc_opt_isKindOfClass, _objc_release
+  STR: kMRMediaRemoteNowPlayingInfoTitle
+
+### 0001580c  [subfunc 0001580c] (after -[GLTMedia mediaDidChange])   (size 84)
+  SEL: copy
+  IMP: _objc_release
+
+### 00015860  [subfunc 00015860] (after -[GLTMedia mediaDidChange])   (size 16)
+  IMP: __Block_object_assign
+
+### 00015870  [subfunc 00015870] (after -[GLTMedia mediaDidChange])   (size 16)
+
+### 00015880  -[GLTMedia hasMedia]   (size 8)
+
+### 00015888  -[GLTMedia isPlaying]   (size 112)
+  SEL: controller, isPlaying
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_release
+
+### 000158f8  -[GLTMedia title]   (size 16)
+  SEL: objectForKeyedSubscript:
+  STR: kMRMediaRemoteNowPlayingInfoTitle
+
+### 00015908  -[GLTMedia artist]   (size 16)
+  SEL: objectForKeyedSubscript:
+  STR: kMRMediaRemoteNowPlayingInfoArtist
+
+### 00015918  -[GLTMedia artwork]   (size 104)
+  SEL: objectForKeyedSubscript:, imageWithData:
+  IMP: _objc_retainAutoreleasedReturnValue, @cls:UIImage, _objc_release, _objc_autoreleaseReturnValue
+  STR: kMRMediaRemoteNowPlayingInfoArtworkData
+
+### 00015980  -[GLTMedia duration]   (size 80)
+  SEL: objectForKeyedSubscript:, doubleValue
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+  STR: kMRMediaRemoteNowPlayingInfoDuration
+
+### 000159d0  -[GLTMedia elapsed]   (size 264)
+  SEL: objectForKeyedSubscript:, doubleValue, isPlaying, timeIntervalSinceNow, duration
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release, _objc_retain
+  STR: kMRMediaRemoteNowPlayingInfoElapsedTime | kMRMediaRemoteNowPlayingInfoTimestamp | kMRMediaRemoteNowPlayingInfoPlaybackRate
+
+### 00015ad8  -[GLTMedia togglePlayPause]   (size 128)
+  SEL: controller, togglePlayPauseForEventSource:
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_release
+  STR: MRMediaRemoteSendCommand
+
+### 00015b58  -[GLTMedia nextTrack]   (size 132)
+  SEL: controller, changeTrack:eventSource:
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_release
+  STR: MRMediaRemoteSendCommand
+
+### 00015bdc  -[GLTMedia previousTrack]   (size 132)
+  SEL: controller, changeTrack:eventSource:
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_release
+  STR: MRMediaRemoteSendCommand
+
+### 00015c60  -[GLTMedia .cxx_destruct]   (size 48)
+  IMP: _objc_storeStrong
+
+### 00015c90  +[GLTEvents sharedEvents]   (size 48)
+  IMP: _objc_retainAutoreleaseReturnValue
+
+### 00015cc0  [subfunc 00015cc0] (after +[GLTEvents sharedEvents])   (size 44)
+  IMP: @cls:GLTEvents, _objc_opt_new, _objc_release
+
+### 00015cec  -[GLTEvents init]   (size 172)
+  SEL: defaultCenter, addObserver:selector:name:object:, requestAccess
+  IMP: _objc_msgSendSuper2, @cls:EKEventStore, _objc_opt_new, _objc_release, @cls:NSNotificationCenter, _objc_retainAutoreleasedReturnValue, _EKEventStoreChangedNotification
+
+### 00015d98  -[GLTEvents requestAccess]   (size 188)
+  SEL: requestFullAccessToEventsWithCompletion:, requestFullAccessToRemindersWithCompletion:, requestAccessToEntityType:completion:
+  IMP: __NSConcreteStackBlock, _objc_retainBlock, _objc_release
+
+### 00015e54  [subfunc 00015e54] (after -[GLTEvents requestAccess])   (size 8)
+  SEL: refresh
+
+### 00015e5c  -[GLTEvents hasCalendarAccess]   (size 72)
+  SEL: authorizationStatusForEntityType:
+  IMP: @cls:EKEventStore
+
+### 00015ea4  -[GLTEvents hasRemindersAccess]   (size 72)
+  SEL: authorizationStatusForEntityType:
+  IMP: @cls:EKEventStore
+
+### 00015eec  -[GLTEvents upcomingEvents]   (size 24)
+  IMP: ___NSArray0__struct, _objc_retainAutoreleaseReturnValue
+
+### 00015f04  -[GLTEvents reminders]   (size 24)
+  IMP: ___NSArray0__struct, _objc_retainAutoreleaseReturnValue
+
+### 00015f1c  -[GLTEvents refresh]   (size 520)
+  SEL: hasCalendarAccess, date, currentCalendar, dateByAddingTimeInterval:, startOfDayForDate:, predicateForEventsWithStartDate:endDate:calendars:, eventsMatchingPredicate:, sortedArrayUsingSelector:, hasRemindersAccess, predicateForIncompleteRemindersWithDueDateStarting:ending:calendars:, fetchRemindersMatchingPredicate:completion:
+  IMP: __NSConcreteStackBlock, @cls:NSDate, _objc_retainAutoreleasedReturnValue, @cls:NSCalendar, _objc_release, _objc_retain, __dispatch_main_q, _dispatch_async, __NSConcreteGlobalBlock, _objc_unsafeClaimAutoreleasedReturnValue
+
+### 00016124  [subfunc 00016124] (after -[GLTEvents refresh])   (size 12)
+  IMP: _objc_storeStrong
+
+### 00016130  [subfunc 00016130] (after -[GLTEvents refresh])   (size 172)
+  SEL: sortedArrayUsingComparator:
+  IMP: __NSConcreteGlobalBlock, _objc_retainAutoreleasedReturnValue, __NSConcreteStackBlock, _objc_retain, __dispatch_main_q, _dispatch_async, _objc_release
+
+### 000161dc  [subfunc 000161dc] (after -[GLTEvents refresh])   (size 280)
+  SEL: dueDateComponents, date, distantFuture, compare:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, @cls:NSDate, _objc_release
+
+### 000162f4  [subfunc 000162f4] (after -[GLTEvents refresh])   (size 12)
+  IMP: _objc_storeStrong
+
+### 00016300  -[GLTEvents completeReminder:]   (size 80)
+  SEL: setCompleted:, saveReminder:commit:error:, refresh
+  IMP: _objc_retain, _objc_release
+
+### 00016350  -[GLTEvents .cxx_destruct]   (size 60)
+  IMP: _objc_storeStrong
+
+### 0001638c  -[GLTDevice identifier]   (size 8)
+
+### 00016394  -[GLTDevice setIdentifier:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 0001639c  -[GLTDevice name]   (size 8)
+
+### 000163a4  -[GLTDevice setName:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 000163ac  -[GLTDevice percent]   (size 8)
+
+### 000163b4  -[GLTDevice setPercent:]   (size 8)
+
+### 000163bc  -[GLTDevice charging]   (size 8)
+
+### 000163c4  -[GLTDevice setCharging:]   (size 8)
+
+### 000163cc  -[GLTDevice internal]   (size 8)
+
+### 000163d4  -[GLTDevice setInternal:]   (size 8)
+
+### 000163dc  -[GLTDevice glyph]   (size 8)
+
+### 000163e4  -[GLTDevice setGlyph:]   (size 12)
+  IMP: _objc_storeStrong
+
+### 000163f0  -[GLTDevice details]   (size 8)
+
+### 000163f8  -[GLTDevice setDetails:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 00016400  -[GLTDevice .cxx_destruct]   (size 72)
+  IMP: _objc_storeStrong
+
+### 00016448  [subfunc 00016448] (after -[GLTDevice .cxx_destruct])   (size 3512)
+  SEL: array, dictionary, sharedInstance, connectedDevices, countByEnumeratingWithState:objects:count:, percentCharge, numberWithLongLong:, setObject:forKeyedSubscript:, name, groupName, identifier, parts, numberWithUnsignedLongLong:, isCharging, numberWithInt:, isInternal, addObject:, objectForKeyedSubscript:, length, UUID, UUIDString, boolValue, isEqualToString:, insertObject:atIndex:, firstObject, setIdentifier:, setInternal:, internal, currentDevice, setName:, systemImageNamed:, setGlyph:, integerValue, unsignedLongLongValue, setCharging:, stringWithFormat:, setPercent:, count, componentsJoinedByString:, setDetails:, batteryLevel, batteryState
+  NUM: @f32:100
+  IMP: ___stack_chk_guard, @cls:NSMutableArray, _objc_retainAutoreleasedReturnValue, @cls:NSMutableDictionary, _NSClassFromString, _objc_opt_respondsToSelector, _objc_opt_new, _objc_release, _objc_begin_catch, _NSLog, _objc_end_catch, _objc_retain, _objc_enumerationMutation, @cls:NSNumber, @cls:NSUUID, @cls:GLTDevice, @cls:UIDevice, @cls:UIImage, @cls:NSString, _objc_autoreleaseReturnValue, ___stack_chk_fail, __Unwind_Resume
+  STR: BCBatteryDeviceController | [Glint] battery devices: %@ | percent | name | groupName | identifier | parts | charging | internal | R | L | Case | %ld%% | --% | %@ %@ |  
+
+### 00017200  [subfunc 00017200] (after -[GLTDevice .cxx_destruct])   (size 536)
+  SEL: currentDevice, userInterfaceIdiom, lowercaseString, countByEnumeratingWithState:objects:count:, objectAtIndexedSubscript:, containsString:, systemImageNamed:
+  IMP: ___stack_chk_guard, @cls:UIDevice, _objc_retainAutoreleasedReturnValue, _objc_retain, _objc_release, _OBJC_CLASS_$_NSConstantArray, _objc_enumerationMutation, @cls:UIImage, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: iphone | ipad |  | headphones
+
+### 00017418  -[GLTAlarm isEqual:]   (size 336)
+  SEL: fireDate, isEqualToDate:, title, isEqualToString:
+  IMP: _objc_retain, @cls:GLTAlarm, _objc_opt_class, _objc_opt_isKindOfClass, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00017568  -[GLTAlarm hash]   (size 60)
+  SEL: fireDate, hash
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 000175a4  -[GLTAlarm title]   (size 8)
+
+### 000175ac  -[GLTAlarm setTitle:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 000175b4  -[GLTAlarm fireDate]   (size 8)
+
+### 000175bc  -[GLTAlarm setFireDate:]   (size 12)
+  IMP: _objc_storeStrong
+
+### 000175c8  -[GLTAlarm .cxx_destruct]   (size 48)
+  IMP: _objc_storeStrong
+
+### 000175f8  +[GLTClockItems sharedItems]   (size 48)
+  IMP: _objc_retainAutoreleaseReturnValue
+
+### 00017628  [subfunc 00017628] (after +[GLTClockItems sharedItems])   (size 44)
+  IMP: @cls:GLTClockItems, _objc_opt_new, _objc_release
+
+### 00017654  -[GLTClockItems init]   (size 212)
+  SEL: refresh
+  IMP: _objc_msgSendSuper2, _dlopen, _NSClassFromString, _objc_opt_new, _objc_release, _dispatch_queue_create, ___NSArray0__struct
+  STR: /System/Library/PrivateFrameworks/MobileTimer.framework/MobileTimer | MTAlarmManager | MTTimerManager | com.antonym.glint.clock
+
+### 00017728  -[GLTClockItems refresh]   (size 200)
+  IMP: _objc_retain, __NSConcreteStackBlock, _dispatch_async, _objc_release
+
+### 000177f0  [subfunc 000177f0] (after -[GLTClockItems refresh])   (size 1520)
+  SEL: array, alarmsSync, countByEnumeratingWithState:objects:count:, isEnabled, nextFireDate, timeIntervalSinceNow, setFireDate:, displayTitle, setTitle:, addObject:, sortUsingComparator:, timersSync, addObjectsFromArray:, getCurrentTimerSync, state, fireDate, compare:, remainingTime, duration
+  IMP: ___stack_chk_guard, @cls:NSMutableArray, _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_retain, _objc_enumerationMutation, @cls:GLTAlarm, _objc_opt_new, _objc_release, __NSConcreteGlobalBlock, ___NSArray0__struct, __NSConcreteStackBlock, __dispatch_main_q, _dispatch_async, ___stack_chk_fail
+
+### 00017de0  [subfunc 00017de0] (after -[GLTClockItems refresh])   (size 132)
+  SEL: fireDate, compare:
+  IMP: _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00017e64  [subfunc 00017e64] (after -[GLTClockItems refresh])   (size 232)
+  SEL: isEqualToDate:, isEqualToArray:, defaultCenter, postNotificationName:object:
+  IMP: _objc_storeStrong, @cls:NSNotificationCenter, _objc_retainAutoreleasedReturnValue, _objc_release
+  STR: GLTSourcesDidChangeNotification
+
+### 00017f4c  -[GLTClockItems alarms]   (size 8)
+
+### 00017f54  -[GLTClockItems timerFireDate]   (size 8)
+
+### 00017f5c  -[GLTClockItems pausedTimerRemaining]   (size 8)
+
+### 00017f64  -[GLTClockItems timerDuration]   (size 8)
+
+### 00017f6c  -[GLTClockItems .cxx_destruct]   (size 84)
+  IMP: _objc_storeStrong
+
+### 00017fc0  [subfunc 00017fc0] (after -[GLTClockItems .cxx_destruct])   (size 348)
+  SEL: defaultManager, attributesOfFileSystemForPath:error:, objectForKeyedSubscript:, longLongValue, processInfo, physicalMemory
+  IMP: @cls:NSFileManager, _objc_retainAutoreleasedReturnValue, _objc_release, _NSFileSystemFreeSize, _NSFileSystemSize, _mach_host_self, _host_page_size, _host_statistics64, @cls:NSProcessInfo
+  STR: /private/var
+
+### 0001811c  [subfunc 0001811c] (after -[GLTClockItems .cxx_destruct])   (size 20)
+  SEL: stringFromByteCount:countStyle:
+  IMP: @cls:NSByteCountFormatter
+
+### 00018130  +[GLTUnlocks sharedUnlocks]   (size 48)
+  IMP: _objc_retainAutoreleaseReturnValue
+
+### 00018160  [subfunc 00018160] (after +[GLTUnlocks sharedUnlocks])   (size 44)
+  IMP: @cls:GLTUnlocks, _objc_opt_new, _objc_release
+
+### 0001818c  -[GLTUnlocks init]   (size 412)
+  SEL: integerValue, rollOverIfNeeded
+  IMP: _objc_msgSendSuper2, _CFPreferencesAppSynchronize, _CFPreferencesCopyAppValue, _objc_release, _objc_initWeak, __dispatch_main_q, _objc_retain, __NSConcreteStackBlock, _objc_copyWeak, _notify_register_dispatch, _notify_get_state, _objc_destroyWeak, __Unwind_Resume
+  STR: com.antonym.glint.unlocks | day | today | yesterday | com.apple.springboard.lockstate
+
+### 00018328  [subfunc 00018328] (after -[GLTUnlocks init])   (size 92)
+  SEL: lockStateChanged:
+  IMP: _notify_get_state, _objc_loadWeakRetained, _objc_release
+
+### 00018384  -[GLTUnlocks rollOverIfNeeded]   (size 300)
+  SEL: date, isEqualToString:, currentCalendar, dateByAddingUnit:value:toDate:options:, save
+  IMP: @cls:NSDate, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSCalendar, _objc_storeStrong
+
+### 000184b0  [subfunc 000184b0] (after -[GLTUnlocks rollOverIfNeeded])   (size 204)
+  SEL: currentCalendar, components:fromDate:, year, month, day, stringWithFormat:
+  IMP: @cls:NSCalendar, _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSString, _objc_autoreleaseReturnValue
+  STR: %04ld-%02ld-%02ld
+
+### 0001857c  -[GLTUnlocks lockStateChanged:]   (size 88)
+  SEL: rollOverIfNeeded, save
+  IMP: __dispatch_main_q, __NSConcreteGlobalBlock, _dispatch_async
+
+### 000185d4  -[GLTUnlocks today]   (size 36)
+  SEL: rollOverIfNeeded
+
+### 000185f8  -[GLTUnlocks yesterday]   (size 36)
+  SEL: rollOverIfNeeded
+
+### 0001861c  -[GLTUnlocks save]   (size 136)
+  SEL: numberWithInteger:
+  IMP: _CFPreferencesSetAppValue, @cls:NSNumber, _CFPreferencesAppSynchronize
+  STR: day | com.antonym.glint.unlocks | today | yesterday
+
+### 000186a4  -[GLTUnlocks .cxx_destruct]   (size 12)
+  IMP: _objc_storeStrong
+
+### 000186b0  -[GLTRecipient name]   (size 8)
+
+### 000186b8  -[GLTRecipient setName:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 000186c0  -[GLTRecipient address]   (size 8)
+
+### 000186c8  -[GLTRecipient setAddress:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 000186d0  -[GLTRecipient detail]   (size 8)
+
+### 000186d8  -[GLTRecipient setDetail:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 000186e0  -[GLTRecipient .cxx_destruct]   (size 60)
+  IMP: _objc_storeStrong
+
+### 0001871c  [subfunc 0001871c] (after -[GLTRecipient .cxx_destruct])   (size 1872)
+  SEL: whitespaceAndNewlineCharacterSet, stringByTrimmingCharactersInSet:, length, array, characterSetWithCharactersInString:, decimalDigitCharacterSet, invertedSet, componentsSeparatedByCharactersInSet:, componentsJoinedByString:, addObject:, containsString:, arrayWithObjects:count:, predicateForContactsMatchingName:, unifiedContactsMatchingPredicate:keysToFetch:error:, countByEnumeratingWithState:objects:count:, givenName, familyName, stringWithFormat:, whitespaceCharacterSet, organizationName, phoneNumbers, label, localizedStringForLabel:, value, stringValue, emailAddresses, count
+  IMP: ___stack_chk_guard, @cls:NSCharacterSet, _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSMutableArray, ___NSArray0__struct, _CNContactGivenNameKey, _CNContactFamilyNameKey, _CNContactOrganizationNameKey, _CNContactPhoneNumbersKey, _CNContactEmailAddressesKey, @cls:NSArray, @cls:CNContactStore, _objc_opt_new, @cls:CNContact, _objc_enumerationMutation, @cls:NSString, @cls:CNLabeledValue, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: +0123456789 ()-. |  | Number | @ | . | Email | %@ %@ | phone
+
+### 00018e6c  [subfunc 00018e6c] (after -[GLTRecipient .cxx_destruct])   (size 156)
+  SEL: setName:, setAddress:, setDetail:
+  IMP: @cls:GLTRecipient, _objc_retain, _objc_opt_new, _objc_release, _objc_autoreleaseReturnValue
+
+### 00018f08  [subfunc 00018f08] (after -[GLTRecipient .cxx_destruct])   (size 732)
+  SEL: array, countByEnumeratingWithState:objects:count:, objectForKeyedSubscript:, addObject:
+  IMP: ___stack_chk_guard, _CFPreferencesAppSynchronize, _CFPreferencesCopyAppValue, @cls:NSMutableArray, _objc_retainAutoreleasedReturnValue, @cls:NSArray, _objc_opt_class, _objc_opt_isKindOfClass, ___NSArray0__struct, _objc_retain, _objc_enumerationMutation, @cls:NSDictionary, @cls:NSString, _objc_release, _objc_autoreleaseReturnValue, ___stack_chk_fail
+  STR: com.antonym.glint.recents | recipients | address | name | detail
+
+### 000191e4  [subfunc 000191e4] (after -[GLTRecipient .cxx_destruct])   (size 424)
+  SEL: sharedController, address, length, isConnected, connectToDaemonWithLaunch:capabilities:blockUntilConnected:, connectToDaemon
+  IMP: _objc_retain, _dlopen, _NSClassFromString, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_opt_respondsToSelector, _objc_begin_catch, _objc_end_catch, __Unwind_Resume
+  STR: /System/Library/PrivateFrameworks/IMCore.framework/IMCore | IMDaemonController
+
+### 0001938c  [subfunc 0001938c] (after -[GLTRecipient .cxx_destruct])   (size 2016)
+  SEL: isConnected, sharedInstance, activeIMessageAccount, address, containsString:, activeSMSAccount, imHandleWithID:, chatForIMHandle:, initWithString:, length, addAttribute:value:range:, instantMessageWithText:flags:threadIdentifier:, instantMessageWithText:flags:, sendMessage:, name, detail, dictionaryWithObjects:forKeys:count:, arrayWithObject:, countByEnumeratingWithState:objects:count:, isEqualToString:, count, addObject:
+  IMP: ___stack_chk_guard, _objc_retain, _NSClassFromString, _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_release, _dispatch_time, __NSConcreteStackBlock, __dispatch_main_q, _dispatch_after, @cls:NSMutableAttributedString, _objc_alloc, _OBJC_CLASS_$_NSConstantIntegerNumber, @cls:NSMutableArray, @cls:NSDictionary, _objc_enumerationMutation, _CFPreferencesSetAppValue, _CFPreferencesAppSynchronize, ___stack_chk_fail, _objc_begin_catch, _NSLog, _objc_end_catch, __Unwind_Resume
+  STR: IMAccountController | @ | IMChatRegistry | __kIMMessagePartAttributeName | IMMessage | name | address | detail |  | recipients | com.antonym.glint.recents | [Glint] Sending failed: %@
+
+### 00019b6c  -[GLTNotification open]   (size 100)
+  SEL: sharedApplication, bundleIdentifier, launchApplicationWithIdentifier:suspended:
+  IMP: @cls:UIApplication, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 00019bd0  -[GLTNotification bundleIdentifier]   (size 8)
+
+### 00019bd8  -[GLTNotification setBundleIdentifier:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 00019be0  -[GLTNotification appName]   (size 8)
+
+### 00019be8  -[GLTNotification setAppName:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 00019bf0  -[GLTNotification icon]   (size 8)
+
+### 00019bf8  -[GLTNotification setIcon:]   (size 12)
+  IMP: _objc_storeStrong
+
+### 00019c04  -[GLTNotification title]   (size 8)
+
+### 00019c0c  -[GLTNotification setTitle:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 00019c14  -[GLTNotification message]   (size 8)
+
+### 00019c1c  -[GLTNotification setMessage:]   (size 8)
+  IMP: _objc_setProperty_nonatomic_copy
+
+### 00019c24  -[GLTNotification .cxx_destruct]   (size 84)
+  IMP: _objc_storeStrong
+
+### 00019c78  [subfunc 00019c78] (after -[GLTNotification .cxx_destruct])   (size 40)
+  IMP: _dlopen
+  STR: /System/Library/PrivateFrameworks/MediaRemote.framework/MediaRemote
+
+### 00019ca0  [subfunc 00019ca0] (after -[GLTNotification .cxx_destruct])   (size 68)
+  SEL: defaultCenter, postNotificationName:object:
+  IMP: @cls:NSNotificationCenter, _objc_retainAutoreleasedReturnValue, _objc_release
+  STR: GLTSourcesDidChangeNotification
+
+### 00019ce4  [subfunc 00019ce4] (after -[GLTNotification .cxx_destruct])   (size 24)
+
+### 00019cfc  [subfunc 00019cfc] (after -[GLTNotification .cxx_destruct])   (size 68)
+  IMP: _objc_retain, __Block_object_assign
+
+### 00019d40  -[GLTWeatherHour date]   (size 8)
+
+### 00019d48  -[GLTWeatherHour setDate:]   (size 12)
+  IMP: _objc_storeStrong
+
+### 00019d54  -[GLTWeatherHour temperature]   (size 8)
+
+### 00019d5c  -[GLTWeatherHour setTemperature:]   (size 8)
+
+### 00019d64  -[GLTWeatherHour code]   (size 8)
+
+### 00019d6c  -[GLTWeatherHour setCode:]   (size 8)
+
+### 00019d74  -[GLTWeatherHour isDay]   (size 8)
+
+### 00019d7c  -[GLTWeatherHour setIsDay:]   (size 8)
+
+### 00019d84  -[GLTWeatherHour .cxx_destruct]   (size 12)
+  IMP: _objc_storeStrong
+
+### 00019d90  +[GLTWeather sharedWeather]   (size 48)
+  IMP: _objc_retainAutoreleaseReturnValue
+
+### 00019dc0  [subfunc 00019dc0] (after +[GLTWeather sharedWeather])   (size 44)
+  IMP: @cls:GLTWeather, _objc_opt_new, _objc_release
+
+### 00019dec  -[GLTWeather init]   (size 180)
+  SEL: setDelegate:, setDesiredAccuracy:
+  IMP: _objc_msgSendSuper2, @cls:CLLocationManager, _objc_opt_new, _objc_release, _kCLLocationAccuracyKilometer, @cls:CLGeocoder, ___NSArray0__struct
+
+### 00019ea0  -[GLTWeather refreshForcing:]   (size 564)
+  SEL: sharedPrefs, weatherCity, isEqualToString:, timeIntervalSinceNow, length, geocodeAddressString:completionHandler:, authorizationStatus, failWithProblem:, mainBundle, bundleIdentifier, setAuthorizationStatusByType:forBundleIdentifier:, requestAlwaysAuthorization, requestLocation
+  IMP: @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_storeStrong, __NSConcreteStackBlock, _objc_retain, @cls:CLLocationManager, _objc_opt_respondsToSelector, @cls:NSBundle, _dispatch_time, __dispatch_main_q, _dispatch_after
+  STR:  | Location is off. Type a city in Glint's settings.
+
+### 0001a0d4  [subfunc 0001a0d4] (after -[GLTWeather refreshForcing:])   (size 284)
+  SEL: firstObject, location, locality, fetchForLocation:place:, stringWithFormat:, failWithProblem:, name
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSString
+  STR: Glint can't find "%@".
+
+### 0001a1f0  [subfunc 0001a1f0] (after -[GLTWeather refreshForcing:])   (size 80)
+  SEL: authorizationStatus, failWithProblem:
+  STR: Glint can't use your location. Type a city in Glint's settings.
+
+### 0001a240  -[GLTWeather locationManagerDidChangeAuthorization:]   (size 76)
+  SEL: authorizationStatus, refreshForcing:
+
+### 0001a28c  -[GLTWeather locationManager:didUpdateLocations:]   (size 144)
+  SEL: lastObject, reverseGeocodeLocation:completionHandler:
+  IMP: _objc_retainAutoreleasedReturnValue, __NSConcreteStackBlock, _objc_retain, _objc_release
+
+### 0001a31c  [subfunc 0001a31c] (after -[GLTWeather locationManager:didUpdateLocations:])   (size 100)
+  SEL: firstObject, locality, fetchForLocation:place:
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0001a380  -[GLTWeather locationManager:didFailWithError:]   (size 12)
+  SEL: failWithProblem:
+  STR: Glint can't find where you are. Type a city in Glint's settings.
+
+### 0001a38c  -[GLTWeather failWithProblem:]   (size 132)
+  IMP: _objc_retain, __NSConcreteStackBlock, __dispatch_main_q, _dispatch_async, _objc_release
+
+### 0001a410  [subfunc 0001a410] (after -[GLTWeather failWithProblem:])   (size 92)
+  SEL: defaultCenter, postNotificationName:object:
+  IMP: _objc_storeStrong, @cls:NSNotificationCenter, _objc_retainAutoreleasedReturnValue, _objc_release
+
+### 0001a46c  -[GLTWeather fetchForLocation:place:]   (size 352)
+  SEL: coordinate, stringWithFormat:, sharedSession, URLWithString:, dataTaskWithURL:completionHandler:, resume
+  IMP: _objc_retain, @cls:NSString, _objc_release, _objc_retainAutoreleasedReturnValue, @cls:NSURLSession, @cls:NSURL, __NSConcreteStackBlock
+  STR: https://api.open-meteo.com/v1/forecast?latitude=%.2f&longitude=%.2f&current=temperature_2m,apparent_temperature,weather_code,is_day&hourly=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&forecast_days=2
+
+### 0001a5cc  [subfunc 0001a5cc] (after -[GLTWeather fetchForLocation:place:])   (size 404)
+  SEL: JSONObjectWithData:options:error:, objectForKeyedSubscript:, failWithProblem:
+  IMP: _objc_retain, @cls:NSJSONSerialization, _objc_retainAutoreleasedReturnValue, @cls:NSDictionary, _objc_opt_class, _objc_opt_isKindOfClass, _objc_release, __NSConcreteStackBlock, __dispatch_main_q, _dispatch_async
+  STR: current | The weather isn't available right now.
+
+### 0001a760  [subfunc 0001a760] (after -[GLTWeather fetchForLocation:place:])   (size 16)
+  SEL: applyForecast:place:
+
+### 0001a770  -[GLTWeather applyForecast:place:]   (size 2136)
+  SEL: objectForKeyedSubscript:, firstObject, localeWithLocaleIdentifier:, setLocale:, setDateFormat:, timeZoneForSecondsFromGMT:, setTimeZone:, array, dateWithTimeIntervalSinceNow:, count, objectAtIndexedSubscript:, dateFromString:, compare:, setDate:, setTemperature:, setCode:, setIsDay:, addObject:, countByEnumeratingWithState:objects:count:, date, defaultCenter, postNotificationName:object:
+  IMP: ___stack_chk_guard, _objc_retain, _objc_retainAutoreleasedReturnValue, _objc_storeStrong, _objc_release, @cls:NSDateFormatter, _objc_opt_new, @cls:NSLocale, @cls:NSTimeZone, @cls:NSMutableArray, @cls:NSDate, @cls:GLTWeatherHour, _objc_enumerationMutation, @cls:NSString, _objc_opt_class, _objc_opt_isKindOfClass, @cls:NSNotificationCenter, ___stack_chk_fail
+  STR: current | daily | hourly |  | temperature_2m | apparent_temperature | weather_code | is_day | temperature_2m_max | temperature_2m_min | precipitation_probability_max | en_US_POSIX | yyyy-MM-dd'T'HH:mm | utc_offset_seconds | time | sunrise | ping: | sunset
+
+### 0001afc8  [subfunc 0001afc8] (after -[GLTWeather applyForecast:place:])   (size 84)
+  SEL: doubleValue
+  IMP: _objc_retain, _objc_opt_respondsToSelector, _objc_release
+
+### 0001b01c  +[GLTWeather symbolForCode:isDay:]   (size 272)
+  IMP: _objc_retain, _objc_autoreleaseReturnValue
+  STR: cloud.moon.fill | cloud.sun.fill | moon.stars.fill | sun.max.fill | cloud.fill | cloud.fog.fill | cloud.drizzle.fill | cloud.sleet.fill | cloud.rain.fill | cloud.snow.fill | cloud.heavyrain.fill | cloud.bolt.rain.fill
+
+### 0001b12c  +[GLTWeather descriptionForCode:]   (size 304)
+  IMP: _objc_autoreleaseReturnValue, _objc_retain
+  STR: Partly Cloudy | Fog | Clear | Cloudy | Drizzle | Mostly Clear | Freezing Rain | Rain | Heavy Rain | Snow | Showers | Thunderstorms
+
+### 0001b25c  -[GLTWeather nextSunEvent:]   (size 568)
+  SEL: countByEnumeratingWithState:objects:count:, timeIntervalSinceNow, compare:
+  IMP: ___stack_chk_guard, _objc_retain, _objc_enumerationMutation, _objc_release, _objc_autoreleaseReturnValue, ___stack_chk_fail
+
+### 0001b494  +[GLTWeather temperatureString:]   (size 168)
+  SEL: celsius, initWithDoubleValue:unit:, stringFromMeasurement:
+  IMP: @cls:NSMeasurement, _objc_alloc, @cls:NSUnitTemperature, _objc_retainAutoreleasedReturnValue, _objc_release, _objc_autoreleaseReturnValue
+
+### 0001b53c  [subfunc 0001b53c] (after +[GLTWeather temperatureString:])   (size 112)
+  SEL: setUnitStyle:, setUnitOptions:, numberFormatter, setMaximumFractionDigits:
+  IMP: @cls:NSMeasurementFormatter, _objc_opt_new, _objc_release, _objc_retainAutoreleasedReturnValue
+
+### 0001b5ac  -[GLTWeather hasData]   (size 8)
+
+### 0001b5b4  -[GLTWeather problem]   (size 8)
+
+### 0001b5bc  -[GLTWeather place]   (size 8)
+
+### 0001b5c4  -[GLTWeather temperature]   (size 8)
+
+### 0001b5cc  -[GLTWeather feelsLike]   (size 8)
+
+### 0001b5d4  -[GLTWeather high]   (size 8)
+
+### 0001b5dc  -[GLTWeather low]   (size 8)
+
+### 0001b5e4  -[GLTWeather rainChance]   (size 8)
+
+### 0001b5ec  -[GLTWeather code]   (size 8)
+
+### 0001b5f4  -[GLTWeather isDay]   (size 8)
+
+### 0001b5fc  -[GLTWeather hours]   (size 8)
+
+### 0001b604  -[GLTWeather sunrises]   (size 8)
+
+### 0001b60c  -[GLTWeather sunsets]   (size 8)
+
+### 0001b614  -[GLTWeather .cxx_destruct]   (size 132)
+  IMP: _objc_storeStrong
+
+### 0001b698  [subfunc 0001b698] (after -[GLTWeather .cxx_destruct])   (size 224)
+  SEL: configurationWithPointSize:weight:, configurationPreferringMulticolor, configurationByApplyingConfiguration:, symbolForCode:isDay:, systemImageNamed:withConfiguration:
+  IMP: @cls:UIImageSymbolConfiguration, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:UIImage, @cls:GLTWeather, _objc_autoreleaseReturnValue
+
+### 0001b778  +[GLTPrefs sharedPrefs]   (size 48)
+  IMP: _objc_retainAutoreleaseReturnValue
+
+### 0001b7a8  [subfunc 0001b7a8] (after +[GLTPrefs sharedPrefs])   (size 96)
+  SEL: reload
+  IMP: @cls:GLTPrefs, _objc_opt_new, _objc_release, _CFNotificationCenterGetDarwinNotifyCenter, _CFNotificationCenterAddObserver
+  STR: com.antonym.glint/reload
+
+### 0001b808  [subfunc 0001b808] (after +[GLTPrefs sharedPrefs])   (size 20)
+  IMP: __dispatch_main_q, __NSConcreteGlobalBlock, _dispatch_async
+
+### 0001b81c  +[GLTPrefs pillOrder]   (size 12)
+  IMP: _OBJC_CLASS_$_NSConstantArray
+
+### 0001b828  +[GLTPrefs nameForPill:]   (size 32)
+
+### 0001b848  +[GLTPrefs symbolForPill:]   (size 32)
+
+### 0001b868  -[GLTPrefs objectForKey:]   (size 32)
+  IMP: _CFPreferencesCopyAppValue, _objc_autoreleaseReturnValue
+  STR: com.antonym.glint
+
+### 0001b888  -[GLTPrefs boolForKey:fallback:]   (size 84)
+  SEL: objectForKey:, boolValue
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_release
+
+### 0001b8dc  -[GLTPrefs doubleForKey:fallback:min:max:]   (size 124)
+  SEL: objectForKey:, doubleValue
+  IMP: _objc_retainAutoreleasedReturnValue, _objc_opt_respondsToSelector, _objc_release
+
+### 0001b958  -[GLTPrefs reload]   (size 960)
+  SEL: boolForKey:fallback:, doubleForKey:fallback:min:max:, objectForKey:, blackColor, whiteColor, whitespaceAndNewlineCharacterSet, stringByTrimmingCharactersInSet:
+  NUM: @f:1, @f:3, @f:8, @f:1.5, @f:0.5, @f:5, @f:14
+  IMP: _CFPreferencesAppSynchronize, _objc_retainAutoreleasedReturnValue, _objc_retain, @cls:UIColor, _objc_release, @cls:NSString, _objc_opt_class, _objc_opt_isKindOfClass, @cls:NSCharacterSet, @cls:NSDate, _objc_storeStrong
+  STR: com.antonym.glint | enabled | tapToCycle | backgroundStyle | backgroundColor | textColor | showSeconds | showMediaWhilePlaying | replaceBanners | notificationDuration | deviceConnections | weatherCity | countdownTitle | countdownDate | replaceVolumeHUD | volumeDuration | pill
+
+### 0001bd18  [subfunc 0001bd18] (after -[GLTPrefs reload])   (size 292)
+  SEL: stringByReplacingOccurrencesOfString:withString:, length, scannerWithString:, scanHexInt:, colorWithRed:green:blue:alpha:
+  NUM: @f:1
+  IMP: _objc_retain, @cls:NSString, _objc_opt_class, _objc_opt_isKindOfClass, _objc_retainAutoreleasedReturnValue, @cls:NSScanner, _objc_release, @cls:UIColor, _objc_autoreleaseReturnValue
+  STR: # | 
+
+### 0001be3c  -[GLTPrefs setPill:]   (size 72)
+  SEL: numberWithInteger:
+  IMP: @cls:NSNumber, _CFPreferencesSetAppValue, _CFPreferencesAppSynchronize
+  STR: pill | com.antonym.glint
+
+### 0001be84  -[GLTPrefs enabled]   (size 8)
+
+### 0001be8c  -[GLTPrefs tapToCycle]   (size 8)
+
+### 0001be94  -[GLTPrefs backgroundColor]   (size 8)
+
+### 0001be9c  -[GLTPrefs textColor]   (size 8)
+
+### 0001bea4  -[GLTPrefs showSeconds]   (size 8)
+
+### 0001beac  -[GLTPrefs showMediaWhilePlaying]   (size 8)
+
+### 0001beb4  -[GLTPrefs replaceBanners]   (size 8)
+
+### 0001bebc  -[GLTPrefs notificationDuration]   (size 8)
+
+### 0001bec4  -[GLTPrefs deviceConnections]   (size 8)
+
+### 0001becc  -[GLTPrefs weatherCity]   (size 8)
+
+### 0001bed4  -[GLTPrefs countdownTitle]   (size 8)
+
+### 0001bedc  -[GLTPrefs countdownDate]   (size 8)
+
+### 0001bee4  -[GLTPrefs replaceVolumeHUD]   (size 8)
+
+### 0001beec  -[GLTPrefs volumeDuration]   (size 8)
+
+### 0001bef4  -[GLTPrefs pill]   (size 8)
+
+### 0001befc  -[GLTPrefs .cxx_destruct]   (size 84)
+  IMP: _objc_storeStrong
+
+### 0001bf50  [subfunc 0001bf50] (after -[GLTPrefs .cxx_destruct])   (size 104)
+  SEL: sharedPrefs, reload, defaultCenter, postNotificationName:object:
+  IMP: @cls:GLTPrefs, _objc_retainAutoreleasedReturnValue, _objc_release, @cls:NSNotificationCenter
+  STR: GLTPrefsDidChangeNotification
+
+### 0001bfb8  [subfunc 0001bfb8] (after -[GLTPrefs .cxx_destruct])   (size 200)
+  IMP: _dispatch_once_f
+
+### 0001c080  [subfunc 0001c080] (after -[GLTPrefs .cxx_destruct])   (size 8)
+
+### 0001c088  [subfunc 0001c088] (after -[GLTPrefs .cxx_destruct])   (size 336)
+  IMP: ___stack_chk_guard, _dispatch_once_f, __availability_version_check, ___stack_chk_fail
+
+### 0001c1d8  [subfunc 0001c1d8] (after -[GLTPrefs .cxx_destruct])   (size 8)
+
+### 0001c1e0  [subfunc 0001c1e0] (after -[GLTPrefs .cxx_destruct])   (size 792)
+  IMP: ___stack_chk_guard, __availability_version_check, _dlsym, _fopen, _fseek, _ftell, _rewind, _malloc, _fread, _sscanf, _free, _fclose, ___stack_chk_fail
+  STR: kCFAllocatorNull | CFDataCreateWithBytesNoCopy | CFPropertyListCreateWithData | CFPropertyListCreateFromXMLData | CFStringCreateWithCStringNoCopy | CFDictionaryGetValue | CFGetTypeID | CFStringGetTypeID | CFStringGetCString | CFRelease | /System/Library/CoreServices/SystemVersion.plist | r | ProductVersion | %d.%d.%d
+
+### 0001c4f8  [subfunc 0001c4f8] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once
+
+### 0001c50c  [subfunc 0001c50c] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once
+
+### 0001c520  [subfunc 0001c520] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once
+
+### 0001c534  [subfunc 0001c534] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once
+
+### 0001c548  [subfunc 0001c548] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once
+
+### 0001c55c  [subfunc 0001c55c] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once
+
+### 0001c570  [subfunc 0001c570] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once
+
+### 0001c584  [subfunc 0001c584] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once
+
+### 0001c598  [subfunc 0001c598] (after -[GLTPrefs .cxx_destruct])   (size 20)
+  IMP: __NSConcreteGlobalBlock, _dispatch_once

@@ -1,0 +1,452 @@
+=== GLTWindow : UIWindow  (instsize 48) @000345c8
+    ivar _acceptsKeyboard                         B                              offvar=000343a0 off=8
+    ivar _keyboardFrame                           {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} offvar=000343a4 off=16
+    00004e14 -[GLTWindow hitTest:withEvent:]                                        @40@0:8{CGPoint=dd}16@32
+    00004f2c -[GLTWindow canBecomeKeyWindow]                                        B16@0:8
+    00004f30 -[GLTWindow _shouldCreateContextAsSecure]                              B16@0:8
+    00004f38 -[GLTWindow acceptsKeyboard]                                           B16@0:8
+    00004f48 -[GLTWindow setAcceptsKeyboard:]                                       v20@0:8B16
+    00004f58 -[GLTWindow keyboardFrame]                                             {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8
+    00004f70 -[GLTWindow setKeyboardFrame:]                                         v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16
+=== GLTPickerList : UIScrollView  (instsize 8) @00034618
+    00004f88 -[GLTPickerList hitTest:withEvent:]                                    @40@0:8{CGPoint=dd}16@32
+=== GLTController : NSObject  (instsize 248) @00034668
+    ivar _window                                  @"GLTWindow"                   offvar=000343a8 off=8
+    ivar _clockViews                              @"NSHashTable"                 offvar=000343ac off=16
+    ivar _dateViews                               @"NSHashTable"                 offvar=000343b0 off=24
+    ivar _anchorFrame                             {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} offvar=000343b4 off=32
+    ivar _touchView                               @"UIView"                      offvar=000343b8 off=64
+    ivar _pickerView                              @"UIView"                      offvar=000343bc off=72
+    ivar _shownKind                               @"NSString"                    offvar=000343c0 off=80
+    ivar _previousKeyWindow                       @"UIWindow"                    offvar=000343c4 off=88
+    ivar _timer                                   @"NSTimer"                     offvar=000343c8 off=96
+    ivar _timeFormatter                           @"NSDateFormatter"             offvar=000343cc off=104
+    ivar _dateFormatter                           @"NSDateFormatter"             offvar=000343d0 off=112
+    ivar _volumeUntil                             @"NSDate"                      offvar=000343d4 off=120
+    ivar _volume                                  f                              offvar=000343d8 off=128
+    ivar _notification                            @"GLTNotification"             offvar=000343dc off=136
+    ivar _notificationUntil                       @"NSDate"                      offvar=000343e0 off=144
+    ivar _pendingNotifications                    @"NSMutableArray"              offvar=000343e4 off=152
+    ivar _connectionDevice                        @"GLTDevice"                   offvar=000343e8 off=160
+    ivar _connectionConnected                     B                              offvar=000343ec off=168
+    ivar _connectionUntil                         @"NSDate"                      offvar=000343f0 off=176
+    ivar _knownDevices                            @"NSDictionary"                offvar=000343f4 off=184
+    ivar _ticks                                   Q                              offvar=000343f8 off=192
+    ivar _platterView                             @"GLTPlatterView"              offvar=000343fc off=200
+    ivar _dismissView                             @"UIControl"                   offvar=00034400 off=208
+    ivar _lastReceived                            Q                              offvar=00034404 off=216
+    ivar _lastSent                                Q                              offvar=00034408 off=224
+    ivar _lastNetworkDate                         @"NSDate"                      offvar=0003440c off=232
+    ivar _networkText                             @"NSString"                    offvar=00034410 off=240
+    0000504c -[GLTController init]                                                  @16@0:8
+    000050d8 -[GLTController start]                                                 v16@0:8
+    00005788 -[GLTController moveWindowToScene:]                                    v24@0:8@16
+    00005858 -[GLTController keyboardFrameChanged:]                                 v24@0:8@16
+    000059bc -[GLTController prefsChanged]                                          v16@0:8
+    00005b44 -[GLTController tick]                                                  v16@0:8
+    00005c78 -[GLTController wantsWeather]                                          B16@0:8
+    00005cf8 -[GLTController checkDevices]                                          v16@0:8
+    000060a8 -[GLTController showConnection:connected:]                             v28@0:8@16B24
+    000061a0 -[GLTController showsConnection]                                       B16@0:8
+    000061d0 -[GLTController showVolume:]                                           v20@0:8f16
+    00006270 -[GLTController showsVolume]                                           B16@0:8
+    00006294 -[GLTController showNotification:]                                     v24@0:8@16
+    0000639c -[GLTController showsNotification]                                     B16@0:8
+    000063cc -[GLTController updateAfter:]                                          v24@0:8d16
+    0000646c -[GLTController currentPill]                                           q16@0:8
+    00006524 -[GLTController update]                                                v16@0:8
+    000065ac -[GLTController registerClockView:dateView:]                           v32@0:8@16@24
+    00006678 -[GLTController visibleClock]                                          @16@0:8
+    00006818 -[GLTController frameOfClock:]                                         {CGRect={CGPoint=dd}{CGSize=dd}}24@0:8@16
+    000069f0 -[GLTController layoutTouchView]                                       v16@0:8
+    00006d98 -[GLTController showsPlainTime]                                        B16@0:8
+    00006dec -[GLTController renderClocks]                                          v16@0:8
+    0000723c -[GLTController shownKind]                                             @16@0:8
+    00007328 -[GLTController pillContent]                                           @16@0:8
+    00007638 -[GLTController contentForPill:]                                       @24@0:8q16
+    00007978 -[GLTController batteryContent]                                        @16@0:8
+    00007be8 -[GLTController mediaContent]                                          @16@0:8
+    00007cbc -[GLTController weatherContent]                                        @16@0:8
+    00007dc0 -[GLTController stringForUpcomingDate:]                                @24@0:8@16
+    00007eb8 -[GLTController alarmContent]                                          @16@0:8
+    00008194 -[GLTController nextEventContent]                                      @16@0:8
+    00008740 -[GLTController storageContent]                                        @16@0:8
+    000087e4 -[GLTController countdownContent]                                      @16@0:8
+    000089c8 -[GLTController sunContent]                                            @16@0:8
+    00008af8 -[GLTController eventsLeftToday]                                       q16@0:8
+    00008cb8 -[GLTController countContent:singular:plural:none:symbol:]             @56@0:8q16@24@32@40@48
+    00008d28 -[GLTController sampleNetwork]                                         v16@0:8
+    00008f04 -[GLTController speed:]                                                @24@0:8d16
+    00008f6c -[GLTController cutout]                                                q16@0:8
+    00008fa8 -[GLTController platterContent]                                        @16@0:8
+    00009170 -[GLTController openPlatter:]                                          v24@0:8@16
+    000098c4 -[GLTController closePlatter]                                          v16@0:8
+    000098cc -[GLTController fitPlatterToContent]                                   v16@0:8
+    000099f4 -[GLTController closePlatterAnimated:]                                 v20@0:8B16
+    00009d28 -[GLTController clockTapped]                                           v16@0:8
+    00009f40 -[GLTController clockLongPressed:]                                     v24@0:8@16
+    00009f7c -[GLTController pickerRowForPill:font:]                                @32@0:8q16@24
+    0000a4bc -[GLTController pickerCellForPill:font:width:]                         @40@0:8q16@24d32
+    0000aa38 -[GLTController showPicker]                                            v16@0:8
+    0000b2f4 -[GLTController pickerRowTapped:]                                      v24@0:8@16
+    0000b3d8 -[GLTController hidePicker]                                            v16@0:8
+    0000b648 -[GLTController .cxx_destruct]                                         v16@0:8
+    00004ff0 +[GLTController sharedController]                                      @16@0:8
+=== GLTPillContent : NSObject  (instsize 48) @000346b8
+    ivar _image                                   @"UIImage"                     offvar=00034414 off=8
+    ivar _imageTint                               @"UIColor"                     offvar=00034418 off=16
+    ivar _text                                    @"NSString"                    offvar=0003441c off=24
+    ivar _badge                                   q                              offvar=00034420 off=32
+    ivar _progress                                d                              offvar=00034424 off=40
+    0000b884 -[GLTPillContent init]                                                 @16@0:8
+    0000b8c4 -[GLTPillContent attributedStringWithFont:color:]                      @32@0:8@16@24
+    0000c320 -[GLTPillContent image]                                                @16@0:8
+    0000c328 -[GLTPillContent setImage:]                                            v24@0:8@16
+    0000c334 -[GLTPillContent imageTint]                                            @16@0:8
+    0000c33c -[GLTPillContent setImageTint:]                                        v24@0:8@16
+    0000c348 -[GLTPillContent text]                                                 @16@0:8
+    0000c350 -[GLTPillContent setText:]                                             v24@0:8@16
+    0000c358 -[GLTPillContent badge]                                                q16@0:8
+    0000c360 -[GLTPillContent setBadge:]                                            v24@0:8q16
+    0000c368 -[GLTPillContent progress]                                             d16@0:8
+    0000c370 -[GLTPillContent setProgress:]                                         v24@0:8d16
+    0000c378 -[GLTPillContent .cxx_destruct]                                        v16@0:8
+    0000b7d8 +[GLTPillContent contentWithSymbol:text:]                              @32@0:8@16@24
+=== GLTClock : NSObject  (instsize 8) @00034730
+    0000c3b4 +[GLTClock isStyled:]                                                  B24@0:8@16
+    0000c3fc +[GLTClock isRendering]                                                B16@0:8
+    0000c408 +[GLTClock padding]                                                    {UIEdgeInsets=dddd}16@0:8
+    0000c41c +[GLTClock outsetForLabel:]                                            d24@0:8@16
+    0000c524 +[GLTClock backgroundForLabel:create:]                                 @28@0:8@16B24
+    0000c628 +[GLTClock layoutBackgroundOfLabel:]                                   v24@0:8@16
+    0000cd04 +[GLTClock visibleDateOfLabel:]                                        @24@0:8@16
+    0000ced0 +[GLTClock paddingForLabel:]                                           {UIEdgeInsets=dddd}24@0:8@16
+    0000cf84 +[GLTClock setCompanion:forLabel:]                                     v32@0:8@16@24
+    0000d048 +[GLTClock ownerOfLabel:]                                              @24@0:8@16
+    0000d054 +[GLTClock setSystemText:forLabel:]                                    v32@0:8@16@24
+    0000d068 +[GLTClock apply:toLabel:background:textColor:]                        v48@0:8@16@24@32@40
+    0000d070 +[GLTClock apply:toLabel:background:textColor:animated:]               v52@0:8@16@24@32@40B48
+    0000d450 +[GLTClock fadeOutSnapshotOfLabel:]                                    v24@0:8@16
+    0000d6bc +[GLTClock fadeInLabel:]                                               v24@0:8@16
+    0000d968 +[GLTClock restoreAllLabels]                                           v16@0:8
+    0000db28 +[GLTClock popLabel:]                                                  v24@0:8@16
+=== GLTPlatterContent : UIView  (instsize 24) @00034780
+    ivar _closeHandler                            @?                             offvar=00034428 off=8
+    ivar _resizeHandler                           @?                             offvar=0003442c off=16
+    0000dc6c -[GLTPlatterContent fillWith:]                                         v24@0:8@16
+    0000deb8 -[GLTPlatterContent close]                                             v16@0:8
+    0000df18 -[GLTPlatterContent wantsKeyboard]                                     B16@0:8
+    0000df20 -[GLTPlatterContent closeHandler]                                      @?16@0:8
+    0000df30 -[GLTPlatterContent setCloseHandler:]                                  v24@0:8@?16
+    0000df3c -[GLTPlatterContent resizeHandler]                                     @?16@0:8
+    0000df4c -[GLTPlatterContent setResizeHandler:]                                 v24@0:8@?16
+    0000df58 -[GLTPlatterContent .cxx_destruct]                                     v16@0:8
+=== GLTMediaPlatterView : GLTPlatterContent  (instsize 104) @000347a8
+    ivar _artworkView                             @"UIImageView"                 offvar=00034430 off=24
+    ivar _titleLabel                              @"UILabel"                     offvar=00034434 off=32
+    ivar _artistLabel                             @"UILabel"                     offvar=00034438 off=40
+    ivar _track                                   @"UIView"                      offvar=0003443c off=48
+    ivar _fill                                    @"UIView"                      offvar=00034440 off=56
+    ivar _elapsedLabel                            @"UILabel"                     offvar=00034444 off=64
+    ivar _remainingLabel                          @"UILabel"                     offvar=00034448 off=72
+    ivar _playButton                              @"UIButton"                    offvar=0003444c off=80
+    ivar _timer                                   @"NSTimer"                     offvar=00034450 off=88
+    ivar _fraction                                d                              offvar=00034454 off=96
+    0000df98 -[GLTMediaPlatterView initWithFrame:]                                  @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16
+    0000ea30 -[GLTMediaPlatterView controlWithSymbol:size:action:]                  @40@0:8@16d24:32
+    0000eb44 -[GLTMediaPlatterView didMoveToWindow]                                 v16@0:8
+    0000ebf8 -[GLTMediaPlatterView refresh]                                         v16@0:8
+    0000ef8c -[GLTMediaPlatterView layoutSubviews]                                  v16@0:8
+    0000f00c -[GLTMediaPlatterView playPause]                                       v16@0:8
+    0000f044 -[GLTMediaPlatterView next]                                            v16@0:8
+    0000f07c -[GLTMediaPlatterView previous]                                        v16@0:8
+    0000f0b4 -[GLTMediaPlatterView .cxx_destruct]                                   v16@0:8
+=== GLTRemindersPlatterView : GLTPlatterContent  (instsize 32) @000347f8
+    ivar _shown                                   @"NSArray"                     offvar=00034458 off=24
+    0000ffd8 -[GLTRemindersPlatterView initWithFrame:]                              @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16
+    00010488 -[GLTRemindersPlatterView complete:]                                   v24@0:8@16
+    0001059c -[GLTRemindersPlatterView .cxx_destruct]                               v16@0:8
+=== GLTNotificationPlatterView : GLTPlatterContent  (instsize 32) @00034870
+    ivar _notification                            @"GLTNotification"             offvar=0003445c off=24
+    000105cc -[GLTNotificationPlatterView open]                                     v16@0:8
+    00010608 -[GLTNotificationPlatterView notification]                             @16@0:8
+    00010618 -[GLTNotificationPlatterView setNotification:]                         v24@0:8@16
+    0001062c -[GLTNotificationPlatterView .cxx_destruct]                            v16@0:8
+=== GLTClockPlatterView : GLTPlatterContent  (instsize 64) @00034898
+    ivar _stack                                   @"UIStackView"                 offvar=00034460 off=24
+    ivar _countdown                               @"UILabel"                     offvar=00034468 off=32
+    ivar _track                                   @"UIView"                      offvar=0003446c off=40
+    ivar _fill                                    @"UIView"                      offvar=00034470 off=48
+    ivar _timer                                   @"NSTimer"                     offvar=00034464 off=56
+    00011824 -[GLTClockPlatterView initWithFrame:]                                  @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16
+    000118f4 -[GLTClockPlatterView didMoveToWindow]                                 v16@0:8
+    00011a48 -[GLTClockPlatterView rebuild]                                         v16@0:8
+    000122fc -[GLTClockPlatterView tick]                                            v16@0:8
+    00012520 -[GLTClockPlatterView layoutSubviews]                                  v16@0:8
+    00012568 -[GLTClockPlatterView .cxx_destruct]                                   v16@0:8
+=== GLTComposePlatterView : GLTPlatterContent  (instsize 81) @000348e8
+    ivar _toField                                 @"UITextField"                 offvar=00034474 off=24
+    ivar _recipientChip                           @"UIButton"                    offvar=00034478 off=32
+    ivar _suggestions                             @"UIStackView"                 offvar=0003447c off=40
+    ivar _messageField                            @"UITextField"                 offvar=00034480 off=48
+    ivar _sendButton                              @"UIButton"                    offvar=00034484 off=56
+    ivar _statusLabel                             @"UILabel"                     offvar=00034488 off=64
+    ivar _recipient                               @"GLTRecipient"                offvar=0003448c off=72
+    ivar _sending                                 B                              offvar=00034490 off=80
+    0001350c -[GLTComposePlatterView wantsKeyboard]                                 B16@0:8
+    00013514 -[GLTComposePlatterView initWithFrame:]                                @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16
+    00013ca8 -[GLTComposePlatterView didMoveToWindow]                               v16@0:8
+    00013d88 -[GLTComposePlatterView resize]                                        v16@0:8
+    00013df0 -[GLTComposePlatterView showSuggestions:]                              v24@0:8@16
+    0001435c -[GLTComposePlatterView searchChanged]                                 v16@0:8
+    000143e0 -[GLTComposePlatterView chooseRecipient:]                              v24@0:8@16
+    00014594 -[GLTComposePlatterView clearRecipient]                                v16@0:8
+    0001462c -[GLTComposePlatterView updateSendButton]                              v16@0:8
+    00014748 -[GLTComposePlatterView textFieldShouldReturn:]                        B24@0:8@16
+    000147e8 -[GLTComposePlatterView showStatus:]                                   v24@0:8@16
+    00014834 -[GLTComposePlatterView send]                                          v16@0:8
+    00014af0 -[GLTComposePlatterView composeWithApple:text:]                        v32@0:8@16@24
+    00014de0 -[GLTComposePlatterView messageComposeViewController:didFinishWithResult:] v32@0:8@16q24
+    00014e50 -[GLTComposePlatterView .cxx_destruct]                                 v16@0:8
+=== GLTPlatterView : UIView  (instsize 40) @00034938
+    ivar _blurView                                @"UIVisualEffectView"          offvar=00034494 off=8
+    ivar _content                                 @"GLTPlatterContent"           offvar=00034498 off=16
+    ivar _topInset                                d                              offvar=0003449c off=24
+    ivar _openWidth                               d                              offvar=000344a0 off=32
+    00014f10 -[GLTPlatterView initWithFrame:]                                       @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16
+    00015050 -[GLTPlatterView setContent:]                                          v24@0:8@16
+    000150bc -[GLTPlatterView heightForWidth:]                                      d24@0:8d16
+    00015134 -[GLTPlatterView layoutSubviews]                                       v16@0:8
+    000151f8 -[GLTPlatterView content]                                              @16@0:8
+    00015208 -[GLTPlatterView topInset]                                             d16@0:8
+    00015218 -[GLTPlatterView setTopInset:]                                         v24@0:8d16
+    00015228 -[GLTPlatterView openWidth]                                            d16@0:8
+    00015238 -[GLTPlatterView setOpenWidth:]                                        v24@0:8d16
+    00015248 -[GLTPlatterView .cxx_destruct]                                        v16@0:8
+=== GLTMedia : NSObject  (instsize 32) @00034988
+    ivar _info                                    @"NSDictionary"                offvar=000344a4 off=8
+    ivar _infoDate                                @"NSDate"                      offvar=000344a8 off=16
+    ivar _remotePlaying                           q                              offvar=000344ac off=24
+    000152e4 -[GLTMedia init]                                                       @16@0:8
+    000154bc -[GLTMedia controller]                                                 @16@0:8
+    000154d8 -[GLTMedia mediaDidChange]                                             v16@0:8
+    00015880 -[GLTMedia hasMedia]                                                   B16@0:8
+    00015888 -[GLTMedia isPlaying]                                                  B16@0:8
+    000158f8 -[GLTMedia title]                                                      @16@0:8
+    00015908 -[GLTMedia artist]                                                     @16@0:8
+    00015918 -[GLTMedia artwork]                                                    @16@0:8
+    00015980 -[GLTMedia duration]                                                   d16@0:8
+    000159d0 -[GLTMedia elapsed]                                                    d16@0:8
+    00015ad8 -[GLTMedia togglePlayPause]                                            v16@0:8
+    00015b58 -[GLTMedia nextTrack]                                                  v16@0:8
+    00015bdc -[GLTMedia previousTrack]                                              v16@0:8
+    00015c60 -[GLTMedia .cxx_destruct]                                              v16@0:8
+    00015288 +[GLTMedia sharedMedia]                                                @16@0:8
+=== GLTEvents : NSObject  (instsize 32) @000349d8
+    ivar _store                                   @"EKEventStore"                offvar=000344b0 off=8
+    ivar _upcomingEvents                          @"NSArray"                     offvar=000344b4 off=16
+    ivar _reminders                               @"NSArray"                     offvar=000344b8 off=24
+    00015cec -[GLTEvents init]                                                      @16@0:8
+    00015d98 -[GLTEvents requestAccess]                                             v16@0:8
+    00015e5c -[GLTEvents hasCalendarAccess]                                         B16@0:8
+    00015ea4 -[GLTEvents hasRemindersAccess]                                        B16@0:8
+    00015eec -[GLTEvents upcomingEvents]                                            @16@0:8
+    00015f04 -[GLTEvents reminders]                                                 @16@0:8
+    00015f1c -[GLTEvents refresh]                                                   v16@0:8
+    00016300 -[GLTEvents completeReminder:]                                         v24@0:8@16
+    00016350 -[GLTEvents .cxx_destruct]                                             v16@0:8
+    00015c90 +[GLTEvents sharedEvents]                                              @16@0:8
+=== GLTDevice : NSObject  (instsize 56) @00034a50
+    ivar _charging                                B                              offvar=000344bc off=8
+    ivar _internal                                B                              offvar=000344c0 off=9
+    ivar _identifier                              @"NSString"                    offvar=000344c4 off=16
+    ivar _name                                    @"NSString"                    offvar=000344c8 off=24
+    ivar _percent                                 q                              offvar=000344cc off=32
+    ivar _glyph                                   @"UIImage"                     offvar=000344d0 off=40
+    ivar _details                                 @"NSString"                    offvar=000344d4 off=48
+    0001638c -[GLTDevice identifier]                                                @16@0:8
+    00016394 -[GLTDevice setIdentifier:]                                            v24@0:8@16
+    0001639c -[GLTDevice name]                                                      @16@0:8
+    000163a4 -[GLTDevice setName:]                                                  v24@0:8@16
+    000163ac -[GLTDevice percent]                                                   q16@0:8
+    000163b4 -[GLTDevice setPercent:]                                               v24@0:8q16
+    000163bc -[GLTDevice charging]                                                  B16@0:8
+    000163c4 -[GLTDevice setCharging:]                                              v20@0:8B16
+    000163cc -[GLTDevice internal]                                                  B16@0:8
+    000163d4 -[GLTDevice setInternal:]                                              v20@0:8B16
+    000163dc -[GLTDevice glyph]                                                     @16@0:8
+    000163e4 -[GLTDevice setGlyph:]                                                 v24@0:8@16
+    000163f0 -[GLTDevice details]                                                   @16@0:8
+    000163f8 -[GLTDevice setDetails:]                                               v24@0:8@16
+    00016400 -[GLTDevice .cxx_destruct]                                             v16@0:8
+=== GLTAlarm : NSObject  (instsize 24) @00034a78
+    ivar _title                                   @"NSString"                    offvar=000344d8 off=8
+    ivar _fireDate                                @"NSDate"                      offvar=000344dc off=16
+    00017418 -[GLTAlarm isEqual:]                                                   B24@0:8@16
+    00017568 -[GLTAlarm hash]                                                       Q16@0:8
+    000175a4 -[GLTAlarm title]                                                      @16@0:8
+    000175ac -[GLTAlarm setTitle:]                                                  v24@0:8@16
+    000175b4 -[GLTAlarm fireDate]                                                   @16@0:8
+    000175bc -[GLTAlarm setFireDate:]                                               v24@0:8@16
+    000175c8 -[GLTAlarm .cxx_destruct]                                              v16@0:8
+=== GLTClockItems : NSObject  (instsize 72) @00034ac8
+    ivar _alarmManager                            @"MTAlarmManager"              offvar=000344e0 off=8
+    ivar _timerManager                            @"MTTimerManager"              offvar=000344e4 off=16
+    ivar _queue                                   @"NSObject<OS_dispatch_queue>" offvar=000344e8 off=24
+    ivar _refreshing                              B                              offvar=000344ec off=32
+    ivar _alarms                                  @"NSArray"                     offvar=000344f0 off=40
+    ivar _timerFireDate                           @"NSDate"                      offvar=000344f4 off=48
+    ivar _pausedTimerRemaining                    d                              offvar=000344f8 off=56
+    ivar _timerDuration                           d                              offvar=000344fc off=64
+    00017654 -[GLTClockItems init]                                                  @16@0:8
+    00017728 -[GLTClockItems refresh]                                               v16@0:8
+    00017f4c -[GLTClockItems alarms]                                                @16@0:8
+    00017f54 -[GLTClockItems timerFireDate]                                         @16@0:8
+    00017f5c -[GLTClockItems pausedTimerRemaining]                                  d16@0:8
+    00017f64 -[GLTClockItems timerDuration]                                         d16@0:8
+    00017f6c -[GLTClockItems .cxx_destruct]                                         v16@0:8
+    000175f8 +[GLTClockItems sharedItems]                                           @16@0:8
+=== GLTUnlocks : NSObject  (instsize 40) @00034b18
+    ivar _today                                   q                              offvar=00034500 off=8
+    ivar _yesterday                               q                              offvar=00034504 off=16
+    ivar _lockToken                               i                              offvar=00034508 off=24
+    ivar _locked                                  B                              offvar=0003450c off=28
+    ivar _day                                     @"NSString"                    offvar=00034510 off=32
+    0001818c -[GLTUnlocks init]                                                     @16@0:8
+    00018384 -[GLTUnlocks rollOverIfNeeded]                                         v16@0:8
+    0001857c -[GLTUnlocks lockStateChanged:]                                        v20@0:8B16
+    000185d4 -[GLTUnlocks today]                                                    q16@0:8
+    000185f8 -[GLTUnlocks yesterday]                                                q16@0:8
+    0001861c -[GLTUnlocks save]                                                     v16@0:8
+    000186a4 -[GLTUnlocks .cxx_destruct]                                            v16@0:8
+    00018130 +[GLTUnlocks sharedUnlocks]                                            @16@0:8
+=== GLTRecipient : NSObject  (instsize 32) @00034b90
+    ivar _name                                    @"NSString"                    offvar=00034514 off=8
+    ivar _address                                 @"NSString"                    offvar=00034518 off=16
+    ivar _detail                                  @"NSString"                    offvar=0003451c off=24
+    000186b0 -[GLTRecipient name]                                                   @16@0:8
+    000186b8 -[GLTRecipient setName:]                                               v24@0:8@16
+    000186c0 -[GLTRecipient address]                                                @16@0:8
+    000186c8 -[GLTRecipient setAddress:]                                            v24@0:8@16
+    000186d0 -[GLTRecipient detail]                                                 @16@0:8
+    000186d8 -[GLTRecipient setDetail:]                                             v24@0:8@16
+    000186e0 -[GLTRecipient .cxx_destruct]                                          v16@0:8
+=== GLTNotification : NSObject  (instsize 48) @00034be0
+    ivar _bundleIdentifier                        @"NSString"                    offvar=00034520 off=8
+    ivar _appName                                 @"NSString"                    offvar=00034524 off=16
+    ivar _icon                                    @"UIImage"                     offvar=00034528 off=24
+    ivar _title                                   @"NSString"                    offvar=0003452c off=32
+    ivar _message                                 @"NSString"                    offvar=00034530 off=40
+    00019b6c -[GLTNotification open]                                                v16@0:8
+    00019bd0 -[GLTNotification bundleIdentifier]                                    @16@0:8
+    00019bd8 -[GLTNotification setBundleIdentifier:]                                v24@0:8@16
+    00019be0 -[GLTNotification appName]                                             @16@0:8
+    00019be8 -[GLTNotification setAppName:]                                         v24@0:8@16
+    00019bf0 -[GLTNotification icon]                                                @16@0:8
+    00019bf8 -[GLTNotification setIcon:]                                            v24@0:8@16
+    00019c04 -[GLTNotification title]                                               @16@0:8
+    00019c0c -[GLTNotification setTitle:]                                           v24@0:8@16
+    00019c14 -[GLTNotification message]                                             @16@0:8
+    00019c1c -[GLTNotification setMessage:]                                         v24@0:8@16
+    00019c24 -[GLTNotification .cxx_destruct]                                       v16@0:8
+=== GLTWeatherHour : NSObject  (instsize 40) @00034c30
+    ivar _isDay                                   B                              offvar=00034534 off=8
+    ivar _date                                    @"NSDate"                      offvar=00034538 off=16
+    ivar _temperature                             d                              offvar=0003453c off=24
+    ivar _code                                    q                              offvar=00034540 off=32
+    00019d40 -[GLTWeatherHour date]                                                 @16@0:8
+    00019d48 -[GLTWeatherHour setDate:]                                             v24@0:8@16
+    00019d54 -[GLTWeatherHour temperature]                                          d16@0:8
+    00019d5c -[GLTWeatherHour setTemperature:]                                      v24@0:8d16
+    00019d64 -[GLTWeatherHour code]                                                 q16@0:8
+    00019d6c -[GLTWeatherHour setCode:]                                             v24@0:8q16
+    00019d74 -[GLTWeatherHour isDay]                                                B16@0:8
+    00019d7c -[GLTWeatherHour setIsDay:]                                            v20@0:8B16
+    00019d84 -[GLTWeatherHour .cxx_destruct]                                        v16@0:8
+=== GLTWeather : NSObject  (instsize 144) @00034c58
+    ivar _locationManager                         @"CLLocationManager"           offvar=00034544 off=8
+    ivar _geocoder                                @"CLGeocoder"                  offvar=00034548 off=16
+    ivar _updated                                 @"NSDate"                      offvar=0003454c off=24
+    ivar _loading                                 B                              offvar=00034550 off=32
+    ivar _lastCity                                @"NSString"                    offvar=00034554 off=40
+    ivar _hasData                                 B                              offvar=00034558 off=48
+    ivar _isDay                                   B                              offvar=0003455c off=49
+    ivar _problem                                 @"NSString"                    offvar=00034560 off=56
+    ivar _place                                   @"NSString"                    offvar=00034564 off=64
+    ivar _temperature                             d                              offvar=00034568 off=72
+    ivar _feelsLike                               d                              offvar=0003456c off=80
+    ivar _high                                    d                              offvar=00034570 off=88
+    ivar _low                                     d                              offvar=00034574 off=96
+    ivar _rainChance                              q                              offvar=00034578 off=104
+    ivar _code                                    q                              offvar=0003457c off=112
+    ivar _hours                                   @"NSArray"                     offvar=00034580 off=120
+    ivar _sunrises                                @"NSArray"                     offvar=00034584 off=128
+    ivar _sunsets                                 @"NSArray"                     offvar=00034588 off=136
+    00019dec -[GLTWeather init]                                                     @16@0:8
+    00019ea0 -[GLTWeather refreshForcing:]                                          v20@0:8B16
+    0001a240 -[GLTWeather locationManagerDidChangeAuthorization:]                   v24@0:8@16
+    0001a28c -[GLTWeather locationManager:didUpdateLocations:]                      v32@0:8@16@24
+    0001a380 -[GLTWeather locationManager:didFailWithError:]                        v32@0:8@16@24
+    0001a38c -[GLTWeather failWithProblem:]                                         v24@0:8@16
+    0001a46c -[GLTWeather fetchForLocation:place:]                                  v32@0:8@16@24
+    0001a770 -[GLTWeather applyForecast:place:]                                     v32@0:8@16@24
+    0001b25c -[GLTWeather nextSunEvent:]                                            @24@0:8^B16
+    0001b5ac -[GLTWeather hasData]                                                  B16@0:8
+    0001b5b4 -[GLTWeather problem]                                                  @16@0:8
+    0001b5bc -[GLTWeather place]                                                    @16@0:8
+    0001b5c4 -[GLTWeather temperature]                                              d16@0:8
+    0001b5cc -[GLTWeather feelsLike]                                                d16@0:8
+    0001b5d4 -[GLTWeather high]                                                     d16@0:8
+    0001b5dc -[GLTWeather low]                                                      d16@0:8
+    0001b5e4 -[GLTWeather rainChance]                                               q16@0:8
+    0001b5ec -[GLTWeather code]                                                     q16@0:8
+    0001b5f4 -[GLTWeather isDay]                                                    B16@0:8
+    0001b5fc -[GLTWeather hours]                                                    @16@0:8
+    0001b604 -[GLTWeather sunrises]                                                 @16@0:8
+    0001b60c -[GLTWeather sunsets]                                                  @16@0:8
+    0001b614 -[GLTWeather .cxx_destruct]                                            v16@0:8
+    00019d90 +[GLTWeather sharedWeather]                                            @16@0:8
+    0001b01c +[GLTWeather symbolForCode:isDay:]                                     @28@0:8q16B24
+    0001b12c +[GLTWeather descriptionForCode:]                                      @24@0:8q16
+    0001b494 +[GLTWeather temperatureString:]                                       @24@0:8d16
+=== GLTPrefs : NSObject  (instsize 80) @00034ca8
+    ivar _enabled                                 B                              offvar=0003458c off=8
+    ivar _tapToCycle                              B                              offvar=00034590 off=9
+    ivar _showSeconds                             B                              offvar=00034594 off=10
+    ivar _showMediaWhilePlaying                   B                              offvar=00034598 off=11
+    ivar _replaceBanners                          B                              offvar=0003459c off=12
+    ivar _deviceConnections                       B                              offvar=000345a0 off=13
+    ivar _replaceVolumeHUD                        B                              offvar=000345a4 off=14
+    ivar _backgroundColor                         @"UIColor"                     offvar=000345a8 off=16
+    ivar _textColor                               @"UIColor"                     offvar=000345ac off=24
+    ivar _notificationDuration                    d                              offvar=000345b0 off=32
+    ivar _weatherCity                             @"NSString"                    offvar=000345b4 off=40
+    ivar _countdownTitle                          @"NSString"                    offvar=000345b8 off=48
+    ivar _countdownDate                           @"NSDate"                      offvar=000345bc off=56
+    ivar _volumeDuration                          d                              offvar=000345c0 off=64
+    ivar _pill                                    q                              offvar=000345c4 off=72
+    0001b868 -[GLTPrefs objectForKey:]                                              @24@0:8@16
+    0001b888 -[GLTPrefs boolForKey:fallback:]                                       B28@0:8@16B24
+    0001b8dc -[GLTPrefs doubleForKey:fallback:min:max:]                             d48@0:8@16d24d32d40
+    0001b958 -[GLTPrefs reload]                                                     v16@0:8
+    0001be3c -[GLTPrefs setPill:]                                                   v24@0:8q16
+    0001be84 -[GLTPrefs enabled]                                                    B16@0:8
+    0001be8c -[GLTPrefs tapToCycle]                                                 B16@0:8
+    0001be94 -[GLTPrefs backgroundColor]                                            @16@0:8
+    0001be9c -[GLTPrefs textColor]                                                  @16@0:8
+    0001bea4 -[GLTPrefs showSeconds]                                                B16@0:8
+    0001beac -[GLTPrefs showMediaWhilePlaying]                                      B16@0:8
+    0001beb4 -[GLTPrefs replaceBanners]                                             B16@0:8
+    0001bebc -[GLTPrefs notificationDuration]                                       d16@0:8
+    0001bec4 -[GLTPrefs deviceConnections]                                          B16@0:8
+    0001becc -[GLTPrefs weatherCity]                                                @16@0:8
+    0001bed4 -[GLTPrefs countdownTitle]                                             @16@0:8
+    0001bedc -[GLTPrefs countdownDate]                                              @16@0:8
+    0001bee4 -[GLTPrefs replaceVolumeHUD]                                           B16@0:8
+    0001beec -[GLTPrefs volumeDuration]                                             d16@0:8
+    0001bef4 -[GLTPrefs pill]                                                       q16@0:8
+    0001befc -[GLTPrefs .cxx_destruct]                                              v16@0:8
+    0001b778 +[GLTPrefs sharedPrefs]                                                @16@0:8
+    0001b81c +[GLTPrefs pillOrder]                                                  @16@0:8
+    0001b828 +[GLTPrefs nameForPill:]                                               @24@0:8q16
+    0001b848 +[GLTPrefs symbolForPill:]                                             @24@0:8q16

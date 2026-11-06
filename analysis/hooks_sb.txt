@@ -1,0 +1,500 @@
+000047a8  stp      x24, x23, [sp, #-0x40]!                   
+000047ac  stp      x22, x21, [sp, #0x10]                     
+000047b0  stp      x20, x19, [sp, #0x20]                     
+000047b4  stp      x29, x30, [sp, #0x30]                     
+000047b8  add      x29, sp, #0x30                            
+000047bc  mov      x20, x0                                   
+000047c0  adrp     x8, #0x34000                              
+000047c4  ldr      x8, [x8, #0xeb0]                            ; DATA(00034eb0/__bss)
+000047c8  blr      x8                                        
+000047cc  mov      x29, x29                                  
+000047d0  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+000047d4  mov      x19, x0                                   
+000047d8  adrp     x8, #0x34000                              
+000047dc  ldr      x0, [x8, #0x50]                             ; CLS(GLTController)
+000047e0  bl       #0x20840                                    ; msgSend[sharedController]
+000047e4  mov      x29, x29                                  
+000047e8  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+000047ec  mov      x21, x0                                   
+000047f0  mov      x0, x20                                   
+000047f4  bl       #0x1c8dc                                    ; IMP:_objc_retain
+000047f8  mov      x20, x0                                   
+000047fc  bl       #0x211a0                                    ; msgSend[timeView]
+00004800  mov      x29, x29                                  
+00004804  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004808  mov      x22, x0                                   
+0000480c  mov      x0, x20                                   
+00004810  bl       #0x1db80                                    ; msgSend[dateView]
+00004814  mov      x29, x29                                  
+00004818  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000481c  mov      x23, x0                                   
+00004820  mov      x0, x21                                   
+00004824  mov      x2, x22                                   
+00004828  mov      x3, x23                                   
+0000482c  bl       #0x1f400                                    ; msgSend[registerClockView:dateView:]
+00004830  mov      x0, x23                                   
+00004834  bl       #0x1c8d0                                    ; IMP:_objc_release
+00004838  mov      x0, x22                                   
+0000483c  bl       #0x1c8d0                                    ; IMP:_objc_release
+00004840  mov      x0, x20                                   
+00004844  bl       #0x20960                                    ; msgSend[shortTimeView]
+00004848  mov      x29, x29                                  
+0000484c  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004850  mov      x22, x0                                   
+00004854  mov      x0, x20                                   
+00004858  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000485c  mov      x0, x21                                   
+00004860  mov      x2, x22                                   
+00004864  mov      x3, #0                                    
+00004868  bl       #0x1f400                                    ; msgSend[registerClockView:dateView:]
+0000486c  mov      x0, x22                                   
+00004870  bl       #0x1c8d0                                    ; IMP:_objc_release
+00004874  mov      x0, x21                                   
+00004878  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000487c  mov      x0, x19                                   
+00004880  ldp      x29, x30, [sp, #0x30]                     
+00004884  ldp      x20, x19, [sp, #0x20]                     
+00004888  ldp      x22, x21, [sp, #0x10]                     
+0000488c  ldp      x24, x23, [sp], #0x40                     
+00004890  b        #0x1c81c                                    ; IMP:_objc_autoreleaseReturnValue
+00004894  stp      x22, x21, [sp, #-0x30]!                   
+00004898  stp      x20, x19, [sp, #0x10]                     
+0000489c  stp      x29, x30, [sp, #0x20]                     
+000048a0  add      x29, sp, #0x20                            
+000048a4  mov      x21, x1                                   
+000048a8  mov      x20, x0                                   
+000048ac  mov      x0, x2                                    
+000048b0  bl       #0x1c8dc                                    ; IMP:_objc_retain
+000048b4  mov      x19, x0                                   
+000048b8  adrp     x22, #0x34000                             
+000048bc  ldr      x0, [x22, #0x78]                            ; CLS(GLTClock)
+000048c0  mov      x2, x20                                   
+000048c4  bl       #0x1e960                                    ; msgSend[isStyled:]
+000048c8  cbz      w0, #0x48d8                               
+000048cc  ldr      x0, [x22, #0x78]                            ; CLS(GLTClock)
+000048d0  bl       #0x1e940                                    ; msgSend[isRendering]
+000048d4  tbz      w0, #0, #0x48f4                           
+000048d8  adrp     x8, #0x34000                              
+000048dc  ldr      x8, [x8, #0xeb8]                            ; DATA(00034eb8/__bss)
+000048e0  mov      x0, x20                                   
+000048e4  mov      x1, x21                                   
+000048e8  mov      x2, x19                                   
+000048ec  blr      x8                                        
+000048f0  b        #0x4904                                     ; -> sub_4904
+000048f4  ldr      x0, [x22, #0x78]                            ; CLS(GLTClock)
+000048f8  mov      x2, x19                                   
+000048fc  mov      x3, x20                                   
+00004900  bl       #0x20560                                    ; msgSend[setSystemText:forLabel:]
+00004904  mov      x0, x19                                   
+00004908  ldp      x29, x30, [sp, #0x20]                     
+0000490c  ldp      x20, x19, [sp, #0x10]                     
+00004910  ldp      x22, x21, [sp], #0x30                     
+00004914  b        #0x1c8d0                                    ; IMP:_objc_release
+00004918  stp      x22, x21, [sp, #-0x30]!                   
+0000491c  stp      x20, x19, [sp, #0x10]                     
+00004920  stp      x29, x30, [sp, #0x20]                     
+00004924  add      x29, sp, #0x20                            
+00004928  mov      x21, x1                                   
+0000492c  mov      x20, x0                                   
+00004930  mov      x0, x2                                    
+00004934  bl       #0x1c8dc                                    ; IMP:_objc_retain
+00004938  mov      x19, x0                                   
+0000493c  adrp     x22, #0x34000                             
+00004940  ldr      x0, [x22, #0x78]                            ; CLS(GLTClock)
+00004944  mov      x2, x20                                   
+00004948  bl       #0x1e960                                    ; msgSend[isStyled:]
+0000494c  cbz      w0, #0x495c                               
+00004950  ldr      x0, [x22, #0x78]                            ; CLS(GLTClock)
+00004954  bl       #0x1e940                                    ; msgSend[isRendering]
+00004958  tbz      w0, #0, #0x4978                           
+0000495c  adrp     x8, #0x34000                              
+00004960  ldr      x8, [x8, #0xec0]                            ; DATA(00034ec0/__bss)
+00004964  mov      x0, x20                                   
+00004968  mov      x1, x21                                   
+0000496c  mov      x2, x19                                   
+00004970  blr      x8                                        
+00004974  b        #0x49a8                                     ; -> sub_49a8
+00004978  ldr      x21, [x22, #0x78]                           ; CLS(GLTClock)
+0000497c  mov      x0, x19                                   
+00004980  bl       #0x20ce0                                    ; msgSend[string]
+00004984  mov      x29, x29                                  
+00004988  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000498c  mov      x22, x0                                   
+00004990  mov      x0, x21                                   
+00004994  mov      x2, x22                                   
+00004998  mov      x3, x20                                   
+0000499c  bl       #0x20560                                    ; msgSend[setSystemText:forLabel:]
+000049a0  mov      x0, x22                                   
+000049a4  bl       #0x1c8d0                                    ; IMP:_objc_release
+000049a8  mov      x0, x19                                   
+000049ac  ldp      x29, x30, [sp, #0x20]                     
+000049b0  ldp      x20, x19, [sp, #0x10]                     
+000049b4  ldp      x22, x21, [sp], #0x30                     
+000049b8  b        #0x1c8d0                                    ; IMP:_objc_release
+000049bc  stp      x22, x21, [sp, #-0x30]!                   
+000049c0  stp      x20, x19, [sp, #0x10]                     
+000049c4  stp      x29, x30, [sp, #0x20]                     
+000049c8  add      x29, sp, #0x20                            
+000049cc  mov      x19, x1                                   
+000049d0  mov      x21, x0                                   
+000049d4  mov      x0, x2                                    
+000049d8  bl       #0x1c8dc                                    ; IMP:_objc_retain
+000049dc  mov      x20, x0                                   
+000049e0  adrp     x22, #0x34000                             
+000049e4  ldr      x0, [x22, #0x78]                            ; CLS(GLTClock)
+000049e8  mov      x2, x21                                   
+000049ec  bl       #0x1e960                                    ; msgSend[isStyled:]
+000049f0  cbz      w0, #0x4a00                               
+000049f4  ldr      x0, [x22, #0x78]                            ; CLS(GLTClock)
+000049f8  bl       #0x1e940                                    ; msgSend[isRendering]
+000049fc  cbz      w0, #0x4a18                               
+00004a00  adrp     x8, #0x34000                              
+00004a04  ldr      x8, [x8, #0xec8]                            ; DATA(00034ec8/__bss)
+00004a08  mov      x0, x21                                   
+00004a0c  mov      x1, x19                                   
+00004a10  mov      x2, x20                                   
+00004a14  blr      x8                                        
+00004a18  mov      x0, x20                                   
+00004a1c  ldp      x29, x30, [sp, #0x20]                     
+00004a20  ldp      x20, x19, [sp, #0x10]                     
+00004a24  ldp      x22, x21, [sp], #0x30                     
+00004a28  b        #0x1c8d0                                    ; IMP:_objc_release
+00004a2c  stp      d9, d8, [sp, #-0x30]!                     
+00004a30  stp      x20, x19, [sp, #0x10]                     
+00004a34  stp      x29, x30, [sp, #0x20]                     
+00004a38  add      x29, sp, #0x20                            
+00004a3c  mov      x19, x0                                   
+00004a40  adrp     x8, #0x34000                              
+00004a44  ldr      x8, [x8, #0xed0]                            ; DATA(00034ed0/__bss)
+00004a48  blr      x8                                        
+00004a4c  mov      v8.16b, v0.16b                            
+00004a50  mov      v9.16b, v1.16b                            
+00004a54  adrp     x20, #0x34000                             
+00004a58  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004a5c  mov      x2, x19                                   
+00004a60  bl       #0x1e960                                    ; msgSend[isStyled:]
+00004a64  cbz      w0, #0x4a84                               
+00004a68  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004a6c  mov      x2, x19                                   
+00004a70  bl       #0x1f020                                    ; msgSend[paddingForLabel:]
+00004a74  fadd     d1, d8, d1                                
+00004a78  fadd     d8, d3, d1                                
+00004a7c  fadd     d0, d9, d0                                
+00004a80  fadd     d9, d2, d0                                
+00004a84  mov      v0.16b, v8.16b                            
+00004a88  mov      v1.16b, v9.16b                            
+00004a8c  ldp      x29, x30, [sp, #0x20]                     
+00004a90  ldp      x20, x19, [sp, #0x10]                     
+00004a94  ldp      d9, d8, [sp], #0x30                       
+00004a98  ret                                                
+00004a9c  stp      d9, d8, [sp, #-0x30]!                     
+00004aa0  stp      x20, x19, [sp, #0x10]                     
+00004aa4  stp      x29, x30, [sp, #0x20]                     
+00004aa8  add      x29, sp, #0x20                            
+00004aac  mov      x19, x0                                   
+00004ab0  adrp     x8, #0x34000                              
+00004ab4  ldr      x8, [x8, #0xed8]                            ; DATA(00034ed8/__bss)
+00004ab8  blr      x8                                        
+00004abc  mov      v8.16b, v0.16b                            
+00004ac0  mov      v9.16b, v1.16b                            
+00004ac4  adrp     x20, #0x34000                             
+00004ac8  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004acc  mov      x2, x19                                   
+00004ad0  bl       #0x1e960                                    ; msgSend[isStyled:]
+00004ad4  cbz      w0, #0x4af4                               
+00004ad8  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004adc  mov      x2, x19                                   
+00004ae0  bl       #0x1f020                                    ; msgSend[paddingForLabel:]
+00004ae4  fadd     d1, d8, d1                                
+00004ae8  fadd     d8, d3, d1                                
+00004aec  fadd     d0, d9, d0                                
+00004af0  fadd     d9, d2, d0                                
+00004af4  mov      v0.16b, v8.16b                            
+00004af8  mov      v1.16b, v9.16b                            
+00004afc  ldp      x29, x30, [sp, #0x20]                     
+00004b00  ldp      x20, x19, [sp, #0x10]                     
+00004b04  ldp      d9, d8, [sp], #0x30                       
+00004b08  ret                                                
+00004b0c  sub      sp, sp, #0x60                             
+00004b10  stp      d11, d10, [sp, #0x10]                     
+00004b14  stp      d9, d8, [sp, #0x20]                       
+00004b18  stp      x22, x21, [sp, #0x30]                     
+00004b1c  stp      x20, x19, [sp, #0x40]                     
+00004b20  stp      x29, x30, [sp, #0x50]                     
+00004b24  add      x29, sp, #0x50                            
+00004b28  mov      v8.16b, v3.16b                            
+00004b2c  mov      v9.16b, v2.16b                            
+00004b30  mov      v10.16b, v1.16b                           
+00004b34  mov      v11.16b, v0.16b                           
+00004b38  mov      x19, x1                                   
+00004b3c  mov      x20, x0                                   
+00004b40  adrp     x8, #0x34000                              
+00004b44  ldr      x0, [x8, #0xee0]                            ; DATA(00034ee0/__bss)
+00004b48  str      x0, [sp, #8]                              
+00004b4c  adrp     x21, #0x34000                             
+00004b50  ldr      x0, [x21, #0x78]                            ; CLS(GLTClock)
+00004b54  mov      x2, x20                                   
+00004b58  bl       #0x1e960                                    ; msgSend[isStyled:]
+00004b5c  cbz      w0, #0x4b84                               
+00004b60  ldr      x0, [x21, #0x78]                            ; CLS(GLTClock)
+00004b64  mov      x2, x20                                   
+00004b68  bl       #0x1f020                                    ; msgSend[paddingForLabel:]
+00004b6c  fadd     d11, d11, d1                              
+00004b70  fadd     d10, d10, d0                              
+00004b74  fadd     d1, d1, d3                                
+00004b78  fsub     d9, d9, d1                                
+00004b7c  fadd     d0, d0, d2                                
+00004b80  fsub     d8, d8, d0                                
+00004b84  mov      x0, x20                                   
+00004b88  mov      x1, x19                                   
+00004b8c  mov      v0.16b, v11.16b                           
+00004b90  mov      v1.16b, v10.16b                           
+00004b94  mov      v2.16b, v9.16b                            
+00004b98  mov      v3.16b, v8.16b                            
+00004b9c  ldr      x2, [sp, #8]                              
+00004ba0  ldp      x29, x30, [sp, #0x50]                     
+00004ba4  ldp      x20, x19, [sp, #0x40]                     
+00004ba8  ldp      x22, x21, [sp, #0x30]                     
+00004bac  ldp      d9, d8, [sp, #0x20]                       
+00004bb0  ldp      d11, d10, [sp, #0x10]                     
+00004bb4  add      sp, sp, #0x60                             
+00004bb8  br       x2                                        
+00004bbc  stp      x20, x19, [sp, #-0x20]!                   
+00004bc0  stp      x29, x30, [sp, #0x10]                     
+00004bc4  add      x29, sp, #0x10                            
+00004bc8  mov      x19, x0                                   
+00004bcc  adrp     x8, #0x34000                              
+00004bd0  ldr      x8, [x8, #0xee8]                            ; DATA(00034ee8/__bss)
+00004bd4  blr      x8                                        
+00004bd8  adrp     x20, #0x34000                             
+00004bdc  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004be0  mov      x2, x19                                   
+00004be4  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004be8  ldr      x20, [x20, #0x78]                           ; CLS(GLTClock)
+00004bec  mov      x0, x20                                   
+00004bf0  mov      x2, x19                                   
+00004bf4  bl       #0x1efe0                                    ; msgSend[ownerOfLabel:]
+00004bf8  mov      x29, x29                                  
+00004bfc  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004c00  mov      x19, x0                                   
+00004c04  mov      x0, x20                                   
+00004c08  mov      x2, x19                                   
+00004c0c  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004c10  mov      x0, x19                                   
+00004c14  ldp      x29, x30, [sp, #0x10]                     
+00004c18  ldp      x20, x19, [sp], #0x20                     
+00004c1c  b        #0x1c8d0                                    ; IMP:_objc_release
+00004c20  stp      x20, x19, [sp, #-0x20]!                   
+00004c24  stp      x29, x30, [sp, #0x10]                     
+00004c28  add      x29, sp, #0x10                            
+00004c2c  mov      x19, x0                                   
+00004c30  adrp     x8, #0x34000                              
+00004c34  ldr      x8, [x8, #0xef0]                            ; DATA(00034ef0/__bss)
+00004c38  blr      x8                                        
+00004c3c  adrp     x20, #0x34000                             
+00004c40  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004c44  mov      x2, x19                                   
+00004c48  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004c4c  ldr      x20, [x20, #0x78]                           ; CLS(GLTClock)
+00004c50  mov      x0, x20                                   
+00004c54  mov      x2, x19                                   
+00004c58  bl       #0x1efe0                                    ; msgSend[ownerOfLabel:]
+00004c5c  mov      x29, x29                                  
+00004c60  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004c64  mov      x19, x0                                   
+00004c68  mov      x0, x20                                   
+00004c6c  mov      x2, x19                                   
+00004c70  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004c74  mov      x0, x19                                   
+00004c78  ldp      x29, x30, [sp, #0x10]                     
+00004c7c  ldp      x20, x19, [sp], #0x20                     
+00004c80  b        #0x1c8d0                                    ; IMP:_objc_release
+00004c84  stp      x20, x19, [sp, #-0x20]!                   
+00004c88  stp      x29, x30, [sp, #0x10]                     
+00004c8c  add      x29, sp, #0x10                            
+00004c90  mov      x19, x0                                   
+00004c94  adrp     x8, #0x34000                              
+00004c98  ldr      x8, [x8, #0xef8]                            ; DATA(00034ef8/__bss)
+00004c9c  blr      x8                                        
+00004ca0  adrp     x20, #0x34000                             
+00004ca4  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004ca8  mov      x2, x19                                   
+00004cac  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004cb0  ldr      x20, [x20, #0x78]                           ; CLS(GLTClock)
+00004cb4  mov      x0, x20                                   
+00004cb8  mov      x2, x19                                   
+00004cbc  bl       #0x1efe0                                    ; msgSend[ownerOfLabel:]
+00004cc0  mov      x29, x29                                  
+00004cc4  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004cc8  mov      x19, x0                                   
+00004ccc  mov      x0, x20                                   
+00004cd0  mov      x2, x19                                   
+00004cd4  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004cd8  mov      x0, x19                                   
+00004cdc  ldp      x29, x30, [sp, #0x10]                     
+00004ce0  ldp      x20, x19, [sp], #0x20                     
+00004ce4  b        #0x1c8d0                                    ; IMP:_objc_release
+00004ce8  stp      x20, x19, [sp, #-0x20]!                   
+00004cec  stp      x29, x30, [sp, #0x10]                     
+00004cf0  add      x29, sp, #0x10                            
+00004cf4  mov      x19, x0                                   
+00004cf8  adrp     x8, #0x34000                              
+00004cfc  ldr      x8, [x8, #0xf00]                            ; DATA(00034f00/__bss)
+00004d00  blr      x8                                        
+00004d04  adrp     x20, #0x34000                             
+00004d08  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004d0c  mov      x2, x19                                   
+00004d10  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004d14  ldr      x20, [x20, #0x78]                           ; CLS(GLTClock)
+00004d18  mov      x0, x20                                   
+00004d1c  mov      x2, x19                                   
+00004d20  bl       #0x1efe0                                    ; msgSend[ownerOfLabel:]
+00004d24  mov      x29, x29                                  
+00004d28  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004d2c  mov      x19, x0                                   
+00004d30  mov      x0, x20                                   
+00004d34  mov      x2, x19                                   
+00004d38  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004d3c  mov      x0, x19                                   
+00004d40  ldp      x29, x30, [sp, #0x10]                     
+00004d44  ldp      x20, x19, [sp], #0x20                     
+00004d48  b        #0x1c8d0                                    ; IMP:_objc_release
+00004d4c  stp      x20, x19, [sp, #-0x20]!                   
+00004d50  stp      x29, x30, [sp, #0x10]                     
+00004d54  add      x29, sp, #0x10                            
+00004d58  mov      x19, x0                                   
+00004d5c  adrp     x8, #0x34000                              
+00004d60  ldr      x8, [x8, #0xf08]                            ; DATA(00034f08/__bss)
+00004d64  blr      x8                                        
+00004d68  adrp     x20, #0x34000                             
+00004d6c  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004d70  mov      x2, x19                                   
+00004d74  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004d78  ldr      x20, [x20, #0x78]                           ; CLS(GLTClock)
+00004d7c  mov      x0, x20                                   
+00004d80  mov      x2, x19                                   
+00004d84  bl       #0x1efe0                                    ; msgSend[ownerOfLabel:]
+00004d88  mov      x29, x29                                  
+00004d8c  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004d90  mov      x19, x0                                   
+00004d94  mov      x0, x20                                   
+00004d98  mov      x2, x19                                   
+00004d9c  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004da0  mov      x0, x19                                   
+00004da4  ldp      x29, x30, [sp, #0x10]                     
+00004da8  ldp      x20, x19, [sp], #0x20                     
+00004dac  b        #0x1c8d0                                    ; IMP:_objc_release
+00004db0  stp      x20, x19, [sp, #-0x20]!                   
+00004db4  stp      x29, x30, [sp, #0x10]                     
+00004db8  add      x29, sp, #0x10                            
+00004dbc  mov      x19, x0                                   
+00004dc0  adrp     x8, #0x34000                              
+00004dc4  ldr      x8, [x8, #0xf10]                            ; DATA(00034f10/__bss)
+00004dc8  blr      x8                                        
+00004dcc  adrp     x20, #0x34000                             
+00004dd0  ldr      x0, [x20, #0x78]                            ; CLS(GLTClock)
+00004dd4  mov      x2, x19                                   
+00004dd8  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004ddc  ldr      x20, [x20, #0x78]                           ; CLS(GLTClock)
+00004de0  mov      x0, x20                                   
+00004de4  mov      x2, x19                                   
+00004de8  bl       #0x1efe0                                    ; msgSend[ownerOfLabel:]
+00004dec  mov      x29, x29                                  
+00004df0  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004df4  mov      x19, x0                                   
+00004df8  mov      x0, x20                                   
+00004dfc  mov      x2, x19                                   
+00004e00  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+00004e04  mov      x0, x19                                   
+00004e08  ldp      x29, x30, [sp, #0x10]                     
+00004e0c  ldp      x20, x19, [sp], #0x20                     
+00004e10  b        #0x1c8d0                                    ; IMP:_objc_release
+00004e14  sub      sp, sp, #0x60                             
+00004e18  stp      d9, d8, [sp, #0x10]                       
+00004e1c  stp      x24, x23, [sp, #0x20]                     
+00004e20  stp      x22, x21, [sp, #0x30]                     
+00004e24  stp      x20, x19, [sp, #0x40]                     
+00004e28  stp      x29, x30, [sp, #0x50]                     
+00004e2c  add      x29, sp, #0x50                            
+00004e30  mov      v8.16b, v1.16b                            
+00004e34  mov      v9.16b, v0.16b                            
+00004e38  mov      x20, x0                                   
+00004e3c  mov      x0, x2                                    
+00004e40  bl       #0x1c8dc                                    ; IMP:_objc_retain
+00004e44  mov      x19, x0                                   
+00004e48  mov      x0, x20                                   
+00004e4c  bl       #0x1caa0                                    ; msgSend[acceptsKeyboard]
+00004e50  cbz      w0, #0x4e74                               
+00004e54  mov      x0, x20                                   
+00004e58  bl       #0x1e9a0                                    ; msgSend[keyboardFrame]
+00004e5c  mov      v4.16b, v9.16b                            
+00004e60  mov      v5.16b, v8.16b                            
+00004e64  bl       #0x1c630                                    ; IMP:_CGRectContainsPoint
+00004e68  tbz      w0, #0, #0x4e74                           
+00004e6c  mov      x20, #0                                   
+00004e70  b        #0x4f04                                     ; -> sub_4f04
+00004e74  adrp     x8, #0x34000                              
+00004e78  ldr      x8, [x8, #0x330]                            ; DATA(00034330/__objc_superrefs)
+00004e7c  stp      x20, x8, [sp]                             
+00004e80  adrp     x8, #0x32000                              
+00004e84  ldr      x1, [x8, #0xaa8]                            ; SEL(hitTest:withEvent:)
+00004e88  mov      x0, sp                                    
+00004e8c  mov      v0.16b, v9.16b                            
+00004e90  mov      v1.16b, v8.16b                            
+00004e94  mov      x2, x19                                   
+00004e98  bl       #0x1c894                                    ; IMP:_objc_msgSendSuper2
+00004e9c  mov      x29, x29                                  
+00004ea0  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004ea4  mov      x21, x0                                   
+00004ea8  cmp      x0, x20                                   
+00004eac  b.eq     #0x4ef8                                   
+00004eb0  mov      x0, x20                                   
+00004eb4  bl       #0x1f6c0                                    ; msgSend[rootViewController]
+00004eb8  mov      x29, x29                                  
+00004ebc  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004ec0  mov      x22, x0                                   
+00004ec4  bl       #0x214a0                                    ; msgSend[view]
+00004ec8  mov      x29, x29                                  
+00004ecc  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+00004ed0  mov      x23, x0                                   
+00004ed4  cmp      x21, x0                                   
+00004ed8  csel     x0, xzr, x21, eq                          
+00004edc  bl       #0x1c8dc                                    ; IMP:_objc_retain
+00004ee0  mov      x20, x0                                   
+00004ee4  mov      x0, x23                                   
+00004ee8  bl       #0x1c8d0                                    ; IMP:_objc_release
+00004eec  mov      x0, x22                                   
+00004ef0  bl       #0x1c8d0                                    ; IMP:_objc_release
+00004ef4  b        #0x4efc                                     ; -> sub_4efc
+00004ef8  mov      x20, #0                                   
+00004efc  mov      x0, x21                                   
+00004f00  bl       #0x1c8d0                                    ; IMP:_objc_release
+00004f04  mov      x0, x19                                   
+00004f08  bl       #0x1c8d0                                    ; IMP:_objc_release
+00004f0c  mov      x0, x20                                   
+00004f10  ldp      x29, x30, [sp, #0x50]                     
+00004f14  ldp      x20, x19, [sp, #0x40]                     
+00004f18  ldp      x22, x21, [sp, #0x30]                     
+00004f1c  ldp      x24, x23, [sp, #0x20]                     
+00004f20  ldp      d9, d8, [sp, #0x10]                       
+00004f24  add      sp, sp, #0x60                             
+00004f28  b        #0x1c81c                                    ; IMP:_objc_autoreleaseReturnValue
+00004f2c  b        #0x1caa0                                    ; msgSend[acceptsKeyboard]
+00004f30  mov      w0, #1                                    
+00004f34  ret                                                
+00004f38  adrp     x8, #0x34000                              
+00004f3c  ldrsw    x8, [x8, #0x3a0]                          
+00004f40  ldrb     w0, [x0, x8]                              
+00004f44  ret                                                
+00004f48  adrp     x8, #0x34000                              
+00004f4c  ldrsw    x8, [x8, #0x3a0]                          
+00004f50  strb     w2, [x0, x8]                              
+00004f54  ret                                                
+00004f58  adrp     x8, #0x34000                              
+00004f5c  ldrsw    x8, [x8, #0x3a4]                          
+00004f60  add      x8, x0, x8                                
+00004f64  ldp      d0, d1, [x8]                              
+00004f68  ldp      d2, d3, [x8, #0x10]                       
+00004f6c  ret                                                
+00004f70  adrp     x8, #0x34000                              
+00004f74  ldrsw    x8, [x8, #0x3a4]                          

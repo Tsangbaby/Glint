@@ -1,0 +1,248 @@
+0000d070  stp      d9, d8, [sp, #-0x70]!                     
+0000d074  stp      x28, x27, [sp, #0x10]                     
+0000d078  stp      x26, x25, [sp, #0x20]                     
+0000d07c  stp      x24, x23, [sp, #0x30]                     
+0000d080  stp      x22, x21, [sp, #0x40]                     
+0000d084  stp      x20, x19, [sp, #0x50]                     
+0000d088  stp      x29, x30, [sp, #0x60]                     
+0000d08c  add      x29, sp, #0x60                            
+0000d090  mov      x25, x6                                   
+0000d094  mov      x23, x5                                   
+0000d098  mov      x22, x4                                   
+0000d09c  mov      x20, x3                                   
+0000d0a0  mov      x21, x0                                   
+0000d0a4  mov      x0, x2                                    
+0000d0a8  bl       #0x1c8dc                                    ; IMP:_objc_retain
+0000d0ac  mov      x19, x0                                   
+0000d0b0  mov      x0, x20                                   
+0000d0b4  bl       #0x1c8dc                                    ; IMP:_objc_retain
+0000d0b8  mov      x20, x0                                   
+0000d0bc  mov      x0, x22                                   
+0000d0c0  bl       #0x1c8dc                                    ; IMP:_objc_retain
+0000d0c4  mov      x22, x0                                   
+0000d0c8  mov      x0, x23                                   
+0000d0cc  bl       #0x1c8dc                                    ; IMP:_objc_retain
+0000d0d0  mov      x23, x0                                   
+0000d0d4  mov      x0, x21                                   
+0000d0d8  mov      x2, x20                                   
+0000d0dc  bl       #0x1e960                                    ; msgSend[isStyled:]
+0000d0e0  mov      x24, x0                                   
+0000d0e4  cbnz     x19, #0xd0ec                              
+0000d0e8  cbz      w24, #0xd3a0                              
+0000d0ec  adrp     x27, #0x34000                             
+0000d0f0  cbz      x19, #0xd2c0                              
+0000d0f4  and      w8, w25, w24                              
+0000d0f8  cbz      w8, #0xd2c0                               
+0000d0fc  mov      x0, x20                                   
+0000d100  bl       #0x21660                                    ; msgSend[window]
+0000d104  mov      x29, x29                                  
+0000d108  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d10c  mov      x25, x0                                   
+0000d110  cbz      x0, #0xd120                               
+0000d114  mov      x0, x20                                   
+0000d118  bl       #0x1e8c0                                    ; msgSend[isHidden]
+0000d11c  tbz      w0, #0, #0xd3dc                           
+0000d120  mov      w28, #0                                   
+0000d124  mov      x0, x25                                   
+0000d128  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d12c  mov      w8, #1                                    
+0000d130  strb     w8, [x27, #0xf31]                         
+0000d134  tbnz     w24, #0, #0xd164                          
+0000d138  mov      x0, x20                                   
+0000d13c  bl       #0x21100                                    ; msgSend[text]
+0000d140  mov      x29, x29                                  
+0000d144  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d148  mov      x24, x0                                   
+0000d14c  mov      x0, x21                                   
+0000d150  mov      x2, x24                                   
+0000d154  mov      x3, x20                                   
+0000d158  bl       #0x20560                                    ; msgSend[setSystemText:forLabel:]
+0000d15c  mov      x0, x24                                   
+0000d160  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d164  adrp     x24, #0x34000                             
+0000d168  ldr      x0, [x24, #0xf60]                           ; DATA(00034f60/__bss)
+0000d16c  cbnz     x0, #0xd198                               
+0000d170  adrp     x8, #0x34000                              
+0000d174  ldr      x0, [x8, #0x80]                             ; CLS(NSHashTable)
+0000d178  bl       #0x21560                                    ; msgSend[weakObjectsHashTable]
+0000d17c  mov      x29, x29                                  
+0000d180  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d184  ldr      x8, [x24, #0xf60]                           ; DATA(00034f60/__bss)
+0000d188  str      x0, [x24, #0xf60]                         
+0000d18c  mov      x0, x8                                    
+0000d190  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d194  ldr      x0, [x24, #0xf60]                           ; DATA(00034f60/__bss)
+0000d198  mov      x2, x20                                   
+0000d19c  bl       #0x1cc00                                    ; msgSend[addObject:]
+0000d1a0  adrp     x1, #0x34000                              
+0000d1a4  add      x1, x1, #0xf30                              ; DATA(00034f30/__bss)
+0000d1a8  adrp     x2, #0x2f000                              
+0000d1ac  ldr      x2, [x2, #0x338]                            ; GOT:___kCFBooleanTrue
+0000d1b0  mov      x0, x20                                   
+0000d1b4  mov      w3, #1                                    
+0000d1b8  bl       #0x1c918                                    ; IMP:_objc_setAssociatedObject
+0000d1bc  mov      x0, x20                                   
+0000d1c0  bl       #0x1e0e0                                    ; msgSend[font]
+0000d1c4  mov      x29, x29                                  
+0000d1c8  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d1cc  mov      x25, x0                                   
+0000d1d0  mov      x0, x19                                   
+0000d1d4  mov      x2, x25                                   
+0000d1d8  mov      x3, x23                                   
+0000d1dc  bl       #0x1cfc0                                    ; msgSend[attributedStringWithFont:color:]
+0000d1e0  mov      x29, x29                                  
+0000d1e4  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d1e8  mov      x24, x0                                   
+0000d1ec  mov      x0, x25                                   
+0000d1f0  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d1f4  mov      x0, x20                                   
+0000d1f8  bl       #0x1cfe0                                    ; msgSend[attributedText]
+0000d1fc  mov      x29, x29                                  
+0000d200  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d204  mov      x25, x0                                   
+0000d208  mov      x2, x24                                   
+0000d20c  bl       #0x1e860                                    ; msgSend[isEqualToAttributedString:]
+0000d210  mov      x26, x0                                   
+0000d214  mov      x0, x25                                   
+0000d218  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d21c  tbnz     w26, #0, #0xd22c                          
+0000d220  mov      x0, x20                                   
+0000d224  mov      x2, x24                                   
+0000d228  bl       #0x1f9c0                                    ; msgSend[setAttributedText:]
+0000d22c  mov      x0, x20                                   
+0000d230  mov      x2, x23                                   
+0000d234  bl       #0x20600                                    ; msgSend[setTextColor:]
+0000d238  mov      x0, x21                                   
+0000d23c  mov      x2, x20                                   
+0000d240  mov      w3, #1                                    
+0000d244  bl       #0x1d080                                    ; msgSend[backgroundForLabel:create:]
+0000d248  mov      x29, x29                                  
+0000d24c  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d250  mov      x25, x0                                   
+0000d254  mov      x2, x22                                   
+0000d258  bl       #0x1fa80                                    ; msgSend[setBackgroundColor:]
+0000d25c  mov      x0, x25                                   
+0000d260  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d264  mov      x0, x24                                   
+0000d268  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d26c  strb     wzr, [x27, #0xf31]                        
+0000d270  mov      x0, x20                                   
+0000d274  bl       #0x1e720                                    ; msgSend[invalidateIntrinsicContentSize]
+0000d278  mov      x0, x20                                   
+0000d27c  bl       #0x20f00                                    ; msgSend[superview]
+0000d280  mov      x29, x29                                  
+0000d284  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d288  mov      x24, x0                                   
+0000d28c  bl       #0x202c0                                    ; msgSend[setNeedsLayout]
+0000d290  mov      x0, x24                                   
+0000d294  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d298  mov      x0, x20                                   
+0000d29c  bl       #0x202c0                                    ; msgSend[setNeedsLayout]
+0000d2a0  mov      x0, x21                                   
+0000d2a4  mov      x2, x20                                   
+0000d2a8  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+0000d2ac  tbz      w28, #0, #0xd3a0                          
+0000d2b0  mov      x0, x21                                   
+0000d2b4  mov      x2, x20                                   
+0000d2b8  bl       #0x1df60                                    ; msgSend[fadeInLabel:]
+0000d2bc  b        #0xd3a0                                     ; -> sub_d3a0
+0000d2c0  mov      w8, #1                                    
+0000d2c4  strb     w8, [x27, #0xf31]                         
+0000d2c8  cbz      x19, #0xd2d8                              
+0000d2cc  mov      w28, #0                                   
+0000d2d0  tbz      w24, #0, #0xd138                          
+0000d2d4  b        #0xd164                                     ; -> sub_d164
+0000d2d8  adrp     x1, #0x34000                              
+0000d2dc  add      x1, x1, #0xf30                              ; DATA(00034f30/__bss)
+0000d2e0  mov      x0, x20                                   
+0000d2e4  mov      x2, #0                                    
+0000d2e8  mov      w3, #1                                    
+0000d2ec  bl       #0x1c918                                    ; IMP:_objc_setAssociatedObject
+0000d2f0  mov      x0, x21                                   
+0000d2f4  mov      x2, x20                                   
+0000d2f8  mov      w3, #0                                    
+0000d2fc  bl       #0x1d080                                    ; msgSend[backgroundForLabel:create:]
+0000d300  mov      x29, x29                                  
+0000d304  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d308  mov      x24, x0                                   
+0000d30c  bl       #0x1f4a0                                    ; msgSend[removeFromSuperview]
+0000d310  mov      x0, x24                                   
+0000d314  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d318  adrp     x1, #0x34000                              
+0000d31c  add      x1, x1, #0xf32                              ; DATA(00034f32/__bss)
+0000d320  mov      x0, x20                                   
+0000d324  mov      x2, #0                                    
+0000d328  mov      w3, #1                                    
+0000d32c  bl       #0x1c918                                    ; IMP:_objc_setAssociatedObject
+0000d330  adrp     x1, #0x34000                              
+0000d334  add      x1, x1, #0xf58                              ; DATA(00034f58/__bss)
+0000d338  mov      x0, x20                                   
+0000d33c  bl       #0x1c864                                    ; IMP:_objc_getAssociatedObject
+0000d340  mov      x29, x29                                  
+0000d344  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d348  mov      x24, x0                                   
+0000d34c  mov      x0, x20                                   
+0000d350  mov      x2, x24                                   
+0000d354  bl       #0x205c0                                    ; msgSend[setText:]
+0000d358  mov      x0, x24                                   
+0000d35c  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d360  strb     wzr, [x27, #0xf31]                        
+0000d364  mov      x0, x20                                   
+0000d368  bl       #0x1e720                                    ; msgSend[invalidateIntrinsicContentSize]
+0000d36c  mov      x0, x20                                   
+0000d370  bl       #0x20f00                                    ; msgSend[superview]
+0000d374  mov      x29, x29                                  
+0000d378  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d37c  mov      x24, x0                                   
+0000d380  bl       #0x202c0                                    ; msgSend[setNeedsLayout]
+0000d384  mov      x0, x24                                   
+0000d388  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d38c  mov      x0, x20                                   
+0000d390  bl       #0x202c0                                    ; msgSend[setNeedsLayout]
+0000d394  mov      x0, x21                                   
+0000d398  mov      x2, x20                                   
+0000d39c  bl       #0x1ea40                                    ; msgSend[layoutBackgroundOfLabel:]
+0000d3a0  mov      x0, x23                                   
+0000d3a4  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d3a8  mov      x0, x22                                   
+0000d3ac  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d3b0  mov      x0, x20                                   
+0000d3b4  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d3b8  mov      x0, x19                                   
+0000d3bc  ldp      x29, x30, [sp, #0x60]                     
+0000d3c0  ldp      x20, x19, [sp, #0x50]                     
+0000d3c4  ldp      x22, x21, [sp, #0x40]                     
+0000d3c8  ldp      x24, x23, [sp, #0x30]                     
+0000d3cc  ldp      x26, x25, [sp, #0x20]                     
+0000d3d0  ldp      x28, x27, [sp, #0x10]                     
+0000d3d4  ldp      d9, d8, [sp], #0x70                       
+0000d3d8  b        #0x1c8d0                                    ; IMP:_objc_release
+0000d3dc  mov      x0, x20                                   
+0000d3e0  bl       #0x1cd40                                    ; msgSend[alpha]
+0000d3e4  mov      v8.16b, v0.16b                            
+0000d3e8  mov      x0, x25                                   
+0000d3ec  bl       #0x1c8d0                                    ; IMP:_objc_release
+0000d3f0  adrp     x8, #0x27000                              
+0000d3f4  ldr      d0, [x8, #0xe50]                            ; DATA(00027e50/__const)
+0000d3f8  fcmp     d8, d0                                    
+0000d3fc  b.le     #0xd448                                   
+0000d400  mov      x0, x21                                   
+0000d404  mov      x2, x20                                   
+0000d408  bl       #0x1df80                                    ; msgSend[fadeOutSnapshotOfLabel:]
+0000d40c  adrp     x8, #0x34000                              
+0000d410  ldr      x0, [x8, #0x128]                            ; CLS(NSDate)
+0000d414  fmov     d0, #0.50000000                           
+0000d418  bl       #0x1dba0                                    ; msgSend[dateWithTimeIntervalSinceNow:]
+0000d41c  mov      x29, x29                                  
+0000d420  bl       #0x1c900                                    ; IMP:_objc_retainAutoreleasedReturnValue
+0000d424  mov      x25, x0                                   
+0000d428  adrp     x1, #0x34000                              
+0000d42c  add      x1, x1, #0xf40                              ; DATA(00034f40/__bss)
+0000d430  mov      w28, #1                                   
+0000d434  mov      x0, x20                                   
+0000d438  mov      x2, x25                                   
+0000d43c  mov      w3, #1                                    
+0000d440  bl       #0x1c918                                    ; IMP:_objc_setAssociatedObject
+0000d444  b        #0xd124                                     ; -> sub_d124
+0000d448  mov      w28, #0                                   
+0000d44c  b        #0xd12c                                     ; -> sub_d12c

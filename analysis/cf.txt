@@ -1,0 +1,286 @@
+0002c890 EEEdMMM
+0002c8b0 jmmss
+0002c8d0 jmm
+0002c8f0 a
+0002c910 
+0002c930 volume
+0002c950 connection %@ %d
+0002c970 notification %p
+0002c990 pill %ld
+0002c9b0 speaker.slash.fill
+0002c9d0 speaker.wave.1.fill
+0002c9f0 speaker.wave.2.fill
+0002ca10 speaker.wave.3.fill
+0002ca30 Off
+0002ca50 %ld%%
+0002ca70 On
+0002ca90 headphones
+0002cab0 app.badge.fill
+0002cad0 calendar
+0002caf0 �!0
+0002cb10 event
+0002cb30 events
+0002cb50 No events
+0002cb70 reminder
+0002cb90 reminders
+0002cbb0 All done
+0002cbd0 checklist
+0002cbf0 lock.open
+0002cc10 %ld unlock
+0002cc30 %ld unlocks
+0002cc50 square.and.pencil
+0002cc70 Message
+0002cc90 battery.100.bolt
+0002ccb0 battery.100
+0002ccd0 battery.0
+0002ccf0 battery.25
+0002cd10 battery.50
+0002cd30 battery.75
+0002cd50 --%
+0002cd70 %.0f%%
+0002cd90 music.note
+0002cdb0 Not Playing
+0002cdd0 waveform
+0002cdf0 cloud.sun
+0002ce10 -
+0002ce30 EEEjmm
+0002ce50 timer
+0002ce70 pause.fill
+0002ce90 alarm
+0002ceb0 No alarms
+0002ced0 alarm.fill
+0002cef0 today
+0002cf10 now
+0002cf30 in %ld min
+0002cf50 tomorrow
+0002cf70 Event
+0002cf90 & 
+0002cfb0 %
+0002cfd0 internaldrive
+0002cff0 hourglass
+0002d010 Set a date
+0002d030 1 day
+0002d050 %ld days
+0002d070 1 day ago
+0002d090 %ld days ago
+0002d0b0 sunrise
+0002d0d0 --:--
+0002d0f0 sunrise.fill
+0002d110 sunset.fill
+0002d130 en
+0002d150 pdp_ip
+0002d170 �!%
+0002d190 %.1fM
+0002d1b0 %.0fK
+0002d1d0 %ld:%02ld:%02ld
+0002d1f0 %ld:%02ld
+0002d210  
+0002d230 %ld
+0002d250 opacity
+0002d270 glint.fade
+0002d290 transform.scale
+0002d2b0 glint.grow
+0002d2d0 transform.translation.y
+0002d2f0 glint.rise
+0002d310 backward.fill
+0002d330 play.fill
+0002d350 forward.fill
+0002d370 -
+0002d390 Upcoming
+0002d3b0 Glint can't read your calendar.
+0002d3d0 No more events today or tomorrow.
+0002d3f0 All day
+0002d410 %
+0002d430 Tomorrow, 
+0002d450 Reminders
+0002d470 Glint can't read your reminders.
+0002d490 All done.
+0002d4b0 circle
+0002d4d0 checkmark.circle.fill
+0002d4f0 Weather
+0002d510 L
+0002d530 Current Location
+0002d550 F
+0002d570 S
+0002d590 H %@  L %@
+0002d5b0 j
+0002d5d0 Now
+0002d5f0 Weather data by Open-Meteo.com
+0002d610 Timer
+0002d630 T
+0002d650 Alarms
+0002d670 No alarms are on.
+0002d690 EEEE
+0002d6b0 Today
+0002d6d0 Tomorrow
+0002d6f0 Storage
+0002d710 internaldrive.fill
+0002d730 Memory
+0002d750 memorychip.fill
+0002d770 the date
+0002d790 %@ is today
+0002d7b0 %@ until %@
+0002d7d0 day
+0002d7f0 days
+0002d810 %@ since %@
+0002d830 Countdown
+0002d850 unlock today
+0002d870 unlocks today
+0002d890 Yesterday: %ld
+0002d8b0 Unlocks
+0002d8d0 Name or number
+0002d8f0 arrow.up.circle.fill
+0002d910 New Message
+0002d930   
+0002d950 %
+0002d970 To: 
+0002d990 S
+0002d9b0 Sent
+0002d9d0 sms:
+0002d9f0 body
+0002da10 %@ free of %@
+0002da30 GLTSourcesDidChangeNotification
+0002da50 kMRMediaRemoteNowPlayingInfoDidChangeNotification
+0002da70 kMRMediaRemoteNowPlayingApplicationIsPlayingDidChangeNotification
+0002da90 kMRMediaRemoteNowPlayingApplicationDidChangeNotification
+0002dab0 SBMediaController
+0002dad0 kMRMediaRemoteNowPlayingInfoTitle
+0002daf0 kMRMediaRemoteNowPlayingInfoArtist
+0002db10 kMRMediaRemoteNowPlayingInfoArtworkData
+0002db30 kMRMediaRemoteNowPlayingInfoDuration
+0002db50 kMRMediaRemoteNowPlayingInfoElapsedTime
+0002db70 kMRMediaRemoteNowPlayingInfoTimestamp
+0002db90 kMRMediaRemoteNowPlayingInfoPlaybackRate
+0002dbb0 groupName
+0002dbd0 identifier
+0002dbf0 name
+0002dc10 internal
+0002dc30 percent
+0002dc50 parts
+0002dc70 charging
+0002dc90 L
+0002dcb0 R
+0002dcd0 Case
+0002dcf0 %@ %@
+0002dd10  
+0002dd30 MTAlarmManager
+0002dd50 MTTimerManager
+0002dd70 /private/var
+0002dd90 com.antonym.glint.unlocks
+0002ddb0 yesterday
+0002ddd0 Number
+0002ddf0 @
+0002de10 .
+0002de30 Email
+0002de50 phone
+0002de70 com.antonym.glint.recents
+0002de90 recipients
+0002deb0 address
+0002ded0 detail
+0002def0 IMDaemonController
+0002df10 BCBatteryDeviceController
+0002df30 [Glint] battery devices: %@
+0002df50 ipad
+0002df70 iphone
+0002df90 airpods max
+0002dfb0 airpodsmax
+0002dfd0 airpods pro
+0002dff0 airpodspro
+0002e010 airpods
+0002e030 beats
+0002e050 beats.headphones
+0002e070 watch
+0002e090 applewatch
+0002e0b0 pencil
+0002e0d0 applepencil
+0002e0f0 mouse
+0002e110 magicmouse
+0002e130 trackpad
+0002e150 rectangle.and.hand.point.up.left
+0002e170 keyboard
+0002e190 %04ld-%02ld-%02ld
+0002e1b0 +0123456789 ()-.
+0002e1d0 IMAccountController
+0002e1f0 IMChatRegistry
+0002e210 __kIMMessagePartAttributeName
+0002e230 IMMessage
+0002e250 [Glint] Sending failed: %@
+0002e270 Glint can't find "%@".
+0002e290 Glint can't use your location. Type a city in Glint's settings.
+0002e2b0 Location is off. Type a city in Glint's settings.
+0002e2d0 Glint can't find where you are. Type a city in Glint's settings.
+0002e2f0 https://api.open-meteo.com/v1/forecast?latitude=%.2f&longitude=%.2f&current=temperature_2m,apparent_temperature,weather_code,is_day&hourly=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto&forecast_days=2
+0002e310 current
+0002e330 The weather isn't available right now.
+0002e350 daily
+0002e370 hourly
+0002e390 temperature_2m
+0002e3b0 apparent_temperature
+0002e3d0 weather_code
+0002e3f0 is_day
+0002e410 temperature_2m_max
+0002e430 temperature_2m_min
+0002e450 precipitation_probability_max
+0002e470 en_US_POSIX
+0002e490 yyyy-MM-dd'T'HH:mm
+0002e4b0 utc_offset_seconds
+0002e4d0 time
+0002e4f0 sunset
+0002e510 sun.max.fill
+0002e530 moon.stars.fill
+0002e550 cloud.sun.fill
+0002e570 cloud.moon.fill
+0002e590 cloud.fill
+0002e5b0 cloud.fog.fill
+0002e5d0 cloud.drizzle.fill
+0002e5f0 cloud.sleet.fill
+0002e610 cloud.rain.fill
+0002e630 cloud.snow.fill
+0002e650 cloud.heavyrain.fill
+0002e670 cloud.bolt.rain.fill
+0002e690 Clear
+0002e6b0 Mostly Clear
+0002e6d0 Partly Cloudy
+0002e6f0 Cloudy
+0002e710 Fog
+0002e730 Drizzle
+0002e750 Freezing Rain
+0002e770 Heavy Rain
+0002e790 Rain
+0002e7b0 Snow
+0002e7d0 Showers
+0002e7f0 Thunderstorms
+0002e810 GLTPrefsDidChangeNotification
+0002e830 com.antonym.glint/reload
+0002e850 Time
+0002e870 Date
+0002e890 Battery
+0002e8b0 Network Speed
+0002e8d0 Now Playing
+0002e8f0 Calendar
+0002e910 Alarm & Timer
+0002e930 Next Event
+0002e950 Sunrise & Sunset
+0002e970 Storage & Memory
+0002e990 Quick Message
+0002e9b0 clock
+0002e9d0 arrow.up.arrow.down
+0002e9f0 calendar.badge.clock
+0002ea10 com.antonym.glint
+0002ea30 enabled
+0002ea50 tapToCycle
+0002ea70 backgroundStyle
+0002ea90 backgroundColor
+0002eab0 textColor
+0002ead0 showSeconds
+0002eaf0 showMediaWhilePlaying
+0002eb10 replaceBanners
+0002eb30 notificationDuration
+0002eb50 deviceConnections
+0002eb70 weatherCity
+0002eb90 countdownTitle
+0002ebb0 countdownDate
+0002ebd0 replaceVolumeHUD
+0002ebf0 volumeDuration
+0002ec10 pill
+0002ec30 #

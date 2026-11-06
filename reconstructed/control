@@ -1,0 +1,12 @@
+Package: com.antonym.glint
+Version: 1.6.3
+Architecture: iphoneos-arm64
+Section: Tweaks
+Maintainer: Antony .M <ezrahftw@gmail.com>
+Author: Antony .M <ezrahftw@gmail.com>
+Installed-Size: 748
+Depends: mobilesubstrate, preferenceloader, firmware (>= 14.0)
+Name: Glint
+Description: Turns the status bar clock into a smart pill: time, date, battery, network, storage, music, events, reminders, alarms and timer, countdown, weather, sunrise, unlocks and a quick message composer, with cards that open on tap.
+Depiction: https://chariz.com/buy/glint
+Tag: cydia::commercial, compatible_min::ios14.0
